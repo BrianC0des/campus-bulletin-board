@@ -1,0 +1,231 @@
+<mxfile host="app.diagrams.net" modified="2026-10-03T01:48:00.000Z" agent="Antigravity" version="24.7.5">
+  <diagram id="campus_signage_erd" name="Campus Bulletin Board ERD">
+    <mxGraphModel dx="1400" dy="950" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1500" pageHeight="1050" math="0" shadow="0">
+      <root>
+        <mxCell id="0" />
+        <mxCell id="1" parent="0" />
+
+        <!-- Title Block -->
+        <mxCell id="title" value="&lt;b&gt;Campus Bulletin Board Digital Signage System — Entity Relationship Diagram&lt;/b&gt;&lt;br&gt;Crow&#39;s Foot Notation | Supabase PostgreSQL v1.1 (Production Hardened)" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontSize=18;fontColor=#1e293b;" vertex="1" parent="1">
+          <mxGeometry x="380" y="20" width="700" height="40" as="geometry" />
+        </mxCell>
+
+        <!-- TABLE: auth.users (Supabase Auth External Reference) -->
+        <mxCell id="t_auth" value="auth.users (Supabase Managed)" style="swimlane;fontStyle=1;childLayout=stackLayout;horizontal=1;startSize=30;horizontalStack=0;resizeParent=1;resizeParentMax=0;resizeLast=0;collapsible=0;marginBottom=0;fillColor=#f1f5f9;strokeColor=#64748b;fontColor=#0f172a;" vertex="1" parent="1">
+          <mxGeometry x="40" y="90" width="250" height="110" as="geometry" />
+        </mxCell>
+        <mxCell id="t_auth_1" value="PK  id : uuid" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;spacingLeft=8;fontStyle=1;overflow=hidden;" vertex="1" parent="t_auth">
+          <mxGeometry y="30" width="250" height="26" as="geometry" />
+        </mxCell>
+        <mxCell id="t_auth_2" value="     email : varchar" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;spacingLeft=8;overflow=hidden;" vertex="1" parent="t_auth">
+          <mxGeometry y="56" width="250" height="26" as="geometry" />
+        </mxCell>
+        <mxCell id="t_auth_3" value="     encrypted_password : text" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;spacingLeft=8;overflow=hidden;" vertex="1" parent="t_auth">
+          <mxGeometry y="82" width="250" height="26" as="geometry" />
+        </mxCell>
+
+        <!-- TABLE: administrator_profiles -->
+        <mxCell id="t_admin" value="administrator_profiles" style="swimlane;fontStyle=1;childLayout=stackLayout;horizontal=1;startSize=30;horizontalStack=0;resizeParent=1;resizeParentMax=0;resizeLast=0;collapsible=0;marginBottom=0;fillColor=#dbeafe;strokeColor=#2563eb;fontColor=#1e3a8a;" vertex="1" parent="1">
+          <mxGeometry x="40" y="270" width="250" height="214" as="geometry" />
+        </mxCell>
+        <mxCell id="t_admin_1" value="PK,FK  user_id : uuid" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;spacingLeft=8;fontStyle=1;overflow=hidden;" vertex="1" parent="t_admin">
+          <mxGeometry y="30" width="250" height="26" as="geometry" />
+        </mxCell>
+        <mxCell id="t_admin_2" value="     first_name : text (NOT BLANK)" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;spacingLeft=8;overflow=hidden;" vertex="1" parent="t_admin">
+          <mxGeometry y="56" width="250" height="26" as="geometry" />
+        </mxCell>
+        <mxCell id="t_admin_3" value="     middle_name : text (NULLABLE)" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;spacingLeft=8;overflow=hidden;" vertex="1" parent="t_admin">
+          <mxGeometry y="82" width="250" height="26" as="geometry" />
+        </mxCell>
+        <mxCell id="t_admin_4" value="     last_name : text (NOT BLANK)" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;spacingLeft=8;overflow=hidden;" vertex="1" parent="t_admin">
+          <mxGeometry y="108" width="250" height="26" as="geometry" />
+        </mxCell>
+        <mxCell id="t_admin_5" value="     role : text = &#39;administrator&#39;" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;spacingLeft=8;overflow=hidden;" vertex="1" parent="t_admin">
+          <mxGeometry y="134" width="250" height="26" as="geometry" />
+        </mxCell>
+        <mxCell id="t_admin_6" value="     account_status : text (active|disabled)" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;spacingLeft=8;overflow=hidden;" vertex="1" parent="t_admin">
+          <mxGeometry y="160" width="250" height="26" as="geometry" />
+        </mxCell>
+        <mxCell id="t_admin_7" value="     created_at / updated_at : timestamptz" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;spacingLeft=8;overflow=hidden;" vertex="1" parent="t_admin">
+          <mxGeometry y="186" width="250" height="26" as="geometry" />
+        </mxCell>
+
+        <!-- TABLE: announcements -->
+        <mxCell id="t_announcements" value="announcements" style="swimlane;fontStyle=1;childLayout=stackLayout;horizontal=1;startSize=30;horizontalStack=0;resizeParent=1;resizeParentMax=0;resizeLast=0;collapsible=0;marginBottom=0;fillColor=#fef3c7;strokeColor=#d97706;fontColor=#78350f;" vertex="1" parent="1">
+          <mxGeometry x="400" y="270" width="290" height="292" as="geometry" />
+        </mxCell>
+        <mxCell id="t_ann_1" value="PK  id : uuid [gen_random_uuid()]" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;spacingLeft=8;fontStyle=1;overflow=hidden;" vertex="1" parent="t_announcements">
+          <mxGeometry y="30" width="290" height="26" as="geometry" />
+        </mxCell>
+        <mxCell id="t_ann_2" value="     title : text (NOT BLANK, GIN trgm)" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;spacingLeft=8;overflow=hidden;" vertex="1" parent="t_announcements">
+          <mxGeometry y="56" width="290" height="26" as="geometry" />
+        </mxCell>
+        <mxCell id="t_ann_3" value="     body : text (NOT BLANK)" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;spacingLeft=8;overflow=hidden;" vertex="1" parent="t_announcements">
+          <mxGeometry y="82" width="290" height="26" as="geometry" />
+        </mxCell>
+        <mxCell id="t_ann_4" value="     image_object_key : text (NULLABLE)" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;spacingLeft=8;overflow=hidden;" vertex="1" parent="t_announcements">
+          <mxGeometry y="108" width="290" height="26" as="geometry" />
+        </mxCell>
+        <mxCell id="t_ann_5" value="     image_mime_type : text (NULLABLE)" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;spacingLeft=8;overflow=hidden;" vertex="1" parent="t_announcements">
+          <mxGeometry y="134" width="290" height="26" as="geometry" />
+        </mxCell>
+        <mxCell id="t_ann_6" value="     image_version : int &gt;= 1" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;spacingLeft=8;overflow=hidden;" vertex="1" parent="t_announcements">
+          <mxGeometry y="160" width="290" height="26" as="geometry" />
+        </mxCell>
+        <mxCell id="t_ann_7" value="     starts_at : timestamptz" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;spacingLeft=8;overflow=hidden;" vertex="1" parent="t_announcements">
+          <mxGeometry y="186" width="290" height="26" as="geometry" />
+        </mxCell>
+        <mxCell id="t_ann_8" value="     ends_at : timestamptz (&gt; starts_at)" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;spacingLeft=8;overflow=hidden;" vertex="1" parent="t_announcements">
+          <mxGeometry y="212" width="290" height="26" as="geometry" />
+        </mxCell>
+        <mxCell id="t_ann_9" value="FK  created_by : uuid → admin_profiles" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;spacingLeft=8;fontStyle=2;overflow=hidden;" vertex="1" parent="t_announcements">
+          <mxGeometry y="238" width="290" height="26" as="geometry" />
+        </mxCell>
+        <mxCell id="t_ann_10" value="     created_at / updated_at : timestamptz" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;spacingLeft=8;overflow=hidden;" vertex="1" parent="t_announcements">
+          <mxGeometry y="264" width="290" height="26" as="geometry" />
+        </mxCell>
+
+        <!-- TABLE: announcement_displays (Bridge Table) -->
+        <mxCell id="t_ad" value="announcement_displays" style="swimlane;fontStyle=1;childLayout=stackLayout;horizontal=1;startSize=30;horizontalStack=0;resizeParent=1;resizeParentMax=0;resizeLast=0;collapsible=0;marginBottom=0;fillColor=#e0e7ff;strokeColor=#4338ca;fontColor=#312e81;" vertex="1" parent="1">
+          <mxGeometry x="780" y="310" width="290" height="136" as="geometry" />
+        </mxCell>
+        <mxCell id="t_ad_1" value="PK,FK  announcement_id : uuid" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;spacingLeft=8;fontStyle=1;overflow=hidden;" vertex="1" parent="t_ad">
+          <mxGeometry y="30" width="290" height="26" as="geometry" />
+        </mxCell>
+        <mxCell id="t_ad_2" value="PK,FK  display_id : uuid" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;spacingLeft=8;fontStyle=1;overflow=hidden;" vertex="1" parent="t_ad">
+          <mxGeometry y="56" width="290" height="26" as="geometry" />
+        </mxCell>
+        <mxCell id="t_ad_3" value="     assigned_at : timestamptz [now()]" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;spacingLeft=8;overflow=hidden;" vertex="1" parent="t_ad">
+          <mxGeometry y="82" width="290" height="26" as="geometry" />
+        </mxCell>
+        <mxCell id="t_ad_4" value="FK  assigned_by : uuid (NULLABLE)" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;spacingLeft=8;fontStyle=2;overflow=hidden;" vertex="1" parent="t_ad">
+          <mxGeometry y="108" width="290" height="26" as="geometry" />
+        </mxCell>
+
+        <!-- TABLE: displays -->
+        <mxCell id="t_displays" value="displays" style="swimlane;fontStyle=1;childLayout=stackLayout;horizontal=1;startSize=30;horizontalStack=0;resizeParent=1;resizeParentMax=0;resizeLast=0;collapsible=0;marginBottom=0;fillColor=#dcfce7;strokeColor=#16a34a;fontColor=#14532d;" vertex="1" parent="1">
+          <mxGeometry x="1160" y="270" width="290" height="214" as="geometry" />
+        </mxCell>
+        <mxCell id="t_disp_1" value="PK  id : uuid [gen_random_uuid()]" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;spacingLeft=8;fontStyle=1;overflow=hidden;" vertex="1" parent="t_displays">
+          <mxGeometry y="30" width="290" height="26" as="geometry" />
+        </mxCell>
+        <mxCell id="t_disp_2" value="     name : text (NOT BLANK, GIN trgm)" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;spacingLeft=8;overflow=hidden;" vertex="1" parent="t_displays">
+          <mxGeometry y="56" width="290" height="26" as="geometry" />
+        </mxCell>
+        <mxCell id="t_disp_3" value="     location : text (NOT BLANK, GIN trgm)" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;spacingLeft=8;overflow=hidden;" vertex="1" parent="t_displays">
+          <mxGeometry y="82" width="290" height="26" as="geometry" />
+        </mxCell>
+        <mxCell id="t_disp_4" value="     registration_status : text (reg|unreg)" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;spacingLeft=8;overflow=hidden;" vertex="1" parent="t_displays">
+          <mxGeometry y="108" width="290" height="26" as="geometry" />
+        </mxCell>
+        <mxCell id="t_disp_5" value="     registered_at : timestamptz" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;spacingLeft=8;overflow=hidden;" vertex="1" parent="t_displays">
+          <mxGeometry y="134" width="290" height="26" as="geometry" />
+        </mxCell>
+        <mxCell id="t_disp_6" value="     unregistered_at : timestamptz (NULL)" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;spacingLeft=8;overflow=hidden;" vertex="1" parent="t_displays">
+          <mxGeometry y="160" width="290" height="26" as="geometry" />
+        </mxCell>
+        <mxCell id="t_disp_7" value="     created_at / updated_at : timestamptz" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;spacingLeft=8;overflow=hidden;" vertex="1" parent="t_displays">
+          <mxGeometry y="186" width="290" height="26" as="geometry" />
+        </mxCell>
+
+        <!-- TABLE: pairing_sessions -->
+        <mxCell id="t_pairing" value="pairing_sessions" style="swimlane;fontStyle=1;childLayout=stackLayout;horizontal=1;startSize=30;horizontalStack=0;resizeParent=1;resizeParentMax=0;resizeLast=0;collapsible=0;marginBottom=0;fillColor=#fce7f3;strokeColor=#db2777;fontColor=#831843;" vertex="1" parent="1">
+          <mxGeometry x="1160" y="600" width="290" height="266" as="geometry" />
+        </mxCell>
+        <mxCell id="t_pair_1" value="PK  id : uuid [gen_random_uuid()]" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;spacingLeft=8;fontStyle=1;overflow=hidden;" vertex="1" parent="t_pairing">
+          <mxGeometry y="30" width="290" height="26" as="geometry" />
+        </mxCell>
+        <mxCell id="t_pair_2" value="     browser_session_hash : text (Partial Uniq)" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;spacingLeft=8;overflow=hidden;" vertex="1" parent="t_pairing">
+          <mxGeometry y="56" width="290" height="26" as="geometry" />
+        </mxCell>
+        <mxCell id="t_pair_3" value="UQ  code_hmac : text" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;spacingLeft=8;fontStyle=1;overflow=hidden;" vertex="1" parent="t_pairing">
+          <mxGeometry y="82" width="290" height="26" as="geometry" />
+        </mxCell>
+        <mxCell id="t_pair_4" value="     code_ciphertext : text" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;spacingLeft=8;overflow=hidden;" vertex="1" parent="t_pairing">
+          <mxGeometry y="108" width="290" height="26" as="geometry" />
+        </mxCell>
+        <mxCell id="t_pair_5" value="     created_at / expires_at : timestamptz" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;spacingLeft=8;overflow=hidden;" vertex="1" parent="t_pairing">
+          <mxGeometry y="134" width="290" height="26" as="geometry" />
+        </mxCell>
+        <mxCell id="t_pair_6" value="     last_requested_at : timestamptz" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;spacingLeft=8;overflow=hidden;" vertex="1" parent="t_pairing">
+          <mxGeometry y="160" width="290" height="26" as="geometry" />
+        </mxCell>
+        <mxCell id="t_pair_7" value="     consumed_at / closed_at : timestamptz" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;spacingLeft=8;overflow=hidden;" vertex="1" parent="t_pairing">
+          <mxGeometry y="186" width="290" height="26" as="geometry" />
+        </mxCell>
+        <mxCell id="t_pair_8" value="     close_reason : text (paired|exp|canc)" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;spacingLeft=8;overflow=hidden;" vertex="1" parent="t_pairing">
+          <mxGeometry y="212" width="290" height="26" as="geometry" />
+        </mxCell>
+        <mxCell id="t_pair_9" value="FK  display_id : uuid (NULLABLE)" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;spacingLeft=8;fontStyle=2;overflow=hidden;" vertex="1" parent="t_pairing">
+          <mxGeometry y="238" width="290" height="26" as="geometry" />
+        </mxCell>
+
+        <!-- TABLE: display_credentials -->
+        <mxCell id="t_creds" value="display_credentials" style="swimlane;fontStyle=1;childLayout=stackLayout;horizontal=1;startSize=30;horizontalStack=0;resizeParent=1;resizeParentMax=0;resizeLast=0;collapsible=0;marginBottom=0;fillColor=#ffedd5;strokeColor=#ea580c;fontColor=#7c2d12;" vertex="1" parent="1">
+          <mxGeometry x="780" y="600" width="290" height="188" as="geometry" />
+        </mxCell>
+        <mxCell id="t_cred_1" value="PK  id : uuid [gen_random_uuid()]" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;spacingLeft=8;fontStyle=1;overflow=hidden;" vertex="1" parent="t_creds">
+          <mxGeometry y="30" width="290" height="26" as="geometry" />
+        </mxCell>
+        <mxCell id="t_cred_2" value="FK  display_id : uuid (Partial Unique active)" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;spacingLeft=8;fontStyle=2;overflow=hidden;" vertex="1" parent="t_creds">
+          <mxGeometry y="56" width="290" height="26" as="geometry" />
+        </mxCell>
+        <mxCell id="t_cred_3" value="UQ  credential_hash : text" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;spacingLeft=8;fontStyle=1;overflow=hidden;" vertex="1" parent="t_creds">
+          <mxGeometry y="82" width="290" height="26" as="geometry" />
+        </mxCell>
+        <mxCell id="t_cred_4" value="     issued_at : timestamptz [now()]" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;spacingLeft=8;overflow=hidden;" vertex="1" parent="t_creds">
+          <mxGeometry y="108" width="290" height="26" as="geometry" />
+        </mxCell>
+        <mxCell id="t_cred_5" value="     revoked_at : timestamptz (NULLABLE)" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;spacingLeft=8;overflow=hidden;" vertex="1" parent="t_creds">
+          <mxGeometry y="134" width="290" height="26" as="geometry" />
+        </mxCell>
+        <mxCell id="t_cred_6" value="     revocation_reason : text (NULLABLE)" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;spacingLeft=8;overflow=hidden;" vertex="1" parent="t_creds">
+          <mxGeometry y="160" width="290" height="26" as="geometry" />
+        </mxCell>
+
+        <!-- RELATIONSHIPS WITH CROW'S FOOT NOTATION -->
+
+        <!-- 1. auth.users (1) ||- - - -|| (1) administrator_profiles [ON DELETE CASCADE] -->
+        <mxCell id="rel_auth_admin" value="identifies (1:1)" style="edgeStyle=entityRelationEdgeStyle;fontSize=11;html=1;endArrow=ERmandOne;startArrow=ERmandOne;endFill=0;startFill=0;rounded=0;strokeColor=#475569;strokeWidth=1.5;" edge="1" parent="1" source="t_auth" target="t_admin">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+
+        <!-- 2. administrator_profiles (1) ||- - - -0< (0..N) announcements [ON DELETE RESTRICT] -->
+        <mxCell id="rel_admin_ann" value="creates (1:N)" style="edgeStyle=entityRelationEdgeStyle;fontSize=11;html=1;endArrow=ERmany;startArrow=ERmandOne;endFill=0;startFill=0;rounded=0;strokeColor=#2563eb;strokeWidth=1.5;" edge="1" parent="1" source="t_admin" target="t_announcements">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+
+        <!-- 3. announcements (1) ||- - - -0< (0..N) announcement_displays [CASCADE; DB: 0..N, App: >=1] -->
+        <mxCell id="rel_ann_ad" value="assigned to (DB: 0..N, App: &gt;=1)" style="edgeStyle=entityRelationEdgeStyle;fontSize=11;html=1;endArrow=ERmany;startArrow=ERmandOne;endFill=0;startFill=0;rounded=0;strokeColor=#d97706;strokeWidth=1.5;" edge="1" parent="1" source="t_announcements" target="t_ad">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+
+        <!-- 4. displays (1) ||- - - -0< (0..N) announcement_displays [ON DELETE CASCADE] -->
+        <mxCell id="rel_disp_ad" value="receives (1:N)" style="edgeStyle=entityRelationEdgeStyle;fontSize=11;html=1;endArrow=ERmany;startArrow=ERmandOne;endFill=0;startFill=0;rounded=0;strokeColor=#16a34a;strokeWidth=1.5;" edge="1" parent="1" source="t_displays" target="t_ad">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+
+        <!-- 5. administrator_profiles (0..1) |o- - - -0< (0..N) announcement_displays (assigned_by) [ON DELETE SET NULL] -->
+        <mxCell id="rel_admin_ad" value="assigned by (0..1:N)" style="edgeStyle=orthogonalEdgeStyle;fontSize=11;html=1;endArrow=ERmany;startArrow=ERzeroToOne;endFill=0;startFill=0;rounded=0;strokeColor=#6366f1;strokeWidth=1.5;dashed=1;" edge="1" parent="1" source="t_admin" target="t_ad">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="165" y="520" />
+              <mxPoint x="880" y="520" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+
+        <!-- 6. displays (1) ||- - - -0< (0..N) display_credentials [Enforces at most one active] -->
+        <mxCell id="rel_disp_cred" value="authenticated by (at most 1 active)" style="edgeStyle=entityRelationEdgeStyle;fontSize=11;html=1;endArrow=ERmany;startArrow=ERmandOne;endFill=0;startFill=0;rounded=0;strokeColor=#ea580c;strokeWidth=1.5;" edge="1" parent="1" source="t_displays" target="t_creds">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+
+        <!-- 7. displays (0..1) |o- - - -0< (0..N) pairing_sessions (display_id) [ON DELETE SET NULL] -->
+        <mxCell id="rel_disp_pair" value="paired through (0..1:N)" style="edgeStyle=entityRelationEdgeStyle;fontSize=11;html=1;endArrow=ERmany;startArrow=ERzeroToOne;endFill=0;startFill=0;rounded=0;strokeColor=#db2777;strokeWidth=1.5;" edge="1" parent="1" source="t_displays" target="t_pairing">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+
+      </root>
+    </mxGraphModel>
+  </diagram>
+</mxfile>
