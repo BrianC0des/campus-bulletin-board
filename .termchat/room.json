@@ -1,0 +1,13 @@
+{
+  "repo": "BrianC0des/campus-bulletin-board",
+  "room": "campus-bulletin-board",
+  "relay": "wss://termchat-o51d.onrender.com/ws",
+  "auto_connect": true,
+  "creator_fingerprint": "e86413ff",
+  "creator_name": "BrianC0des",
+  "features": {
+    "ci_alerts": true,
+    "git_diff_sharing": true,
+    "pr_cards": true
+  }
+}

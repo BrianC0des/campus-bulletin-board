@@ -1,0 +1,26 @@
+services:
+  - type: web
+    name: campus-bulletin-backend
+    runtime: node
+    plan: free
+    region: singapore
+    rootDir: backend
+    buildCommand: npm install
+    startCommand: npm start
+    envVars:
+      - key: NODE_ENV
+        value: production
+      - key: PORT
+        value: 5000
+      - key: SUPABASE_URL
+        sync: false
+      - key: SUPABASE_SERVICE_ROLE_KEY
+        sync: false
+      - key: R2_ACCOUNT_ID
+        sync: false
+      - key: R2_BUCKET_NAME
+        value: campus-bulletin-images
+      - key: CAMPUS_TIMEZONE
+        value: Asia/Manila
+      - key: CLIENT_URL
+        value: https://campus-bulletin-board.vercel.app
