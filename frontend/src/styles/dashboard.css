@@ -1,0 +1,54 @@
+/* ==========================================================================
+   Admin Dashboard Styles Template
+   Assigned to: Mae
+   ========================================================================== */
+
+/* --------------------------------------------------------------------------
+   📊 MAE'S SECTION: 4 Metric Stat Cards & Dashboard Overview
+   -------------------------------------------------------------------------- */
+
+.dashboard-header {
+  margin-bottom: 2rem;
+}
+
+/* 4-column responsive grid container */
+.grid-4 {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: 1.25rem;
+  margin-bottom: 2rem;
+  /* TODO: Mae can tweak grid gaps, minimum card width, or breakpoints */
+}
+
+/* Individual Stat Summary Card */
+.stat-card {
+  background-color: #ffffff;
+  border: 1px solid var(--border-color);
+  border-radius: var(--border-radius);
+  padding: 1.25rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  /* TODO: Mae can add top colored border accents, shadows, or icon positioning */
+}
+
+.stat-label {
+  font-size: 0.875rem;
+  font-weight: 500;
+  color: var(--secondary-color);
+}
+
+.stat-number {
+  font-size: 2rem;
+  font-weight: 700;
+  color: var(--text-color);
+  line-height: 1;
+}
+
+/* Quick action buttons row */
+.quick-actions {
+  display: flex;
+  gap: 1rem;
+  margin-top: 1rem;
+  /* TODO: Mae can style the action buttons area */
+}

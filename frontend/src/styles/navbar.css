@@ -1,0 +1,63 @@
+/* ==========================================================================
+   Navigation Bar & App Layout Template
+   ========================================================================== */
+
+.app-layout {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+
+.main-content {
+  flex: 1;
+  max-width: 1200px;
+  width: 100%;
+  margin: 0 auto;
+  padding: 1.5rem;
+}
+
+/* Navbar container */
+.navbar {
+  background-color: #ffffff;
+  border-bottom: 1px solid var(--border-color);
+  padding: 0.875rem 1.5rem;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  /* TODO: Add box-shadow, sticky positioning, or custom theme colors */
+}
+
+/* Brand logo / title */
+.nav-brand {
+  font-size: 1.125rem;
+  font-weight: 700;
+  color: var(--text-color);
+  text-decoration: none;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+/* Navigation links container */
+.nav-links {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+/* Individual navigation link */
+.nav-item {
+  padding: 0.5rem 0.875rem;
+  border-radius: var(--border-radius);
+  font-size: 0.875rem;
+  font-weight: 500;
+  color: var(--secondary-color);
+  text-decoration: none;
+  transition: all 0.15s ease;
+  /* TODO: Add active state highlight or hover effect */
+}
+
+.nav-item:hover {
+  color: var(--text-color);
+  background-color: #f1f5f9;
+}

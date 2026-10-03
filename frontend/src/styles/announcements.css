@@ -1,0 +1,144 @@
+/* ==========================================================================
+   Announcements Styles Template
+   Assigned to: Jared, Alkaizer, Hafidz
+   ========================================================================== */
+
+/* --------------------------------------------------------------------------
+   🎨 JARED'S SECTION: 16:9 TV Screen Preview & Announcement Cards
+   -------------------------------------------------------------------------- */
+
+/* 16:9 Widescreen TV preview box simulating a campus TV monitor */
+.tv-preview-container {
+  aspect-ratio: 16 / 9;
+  background-color: #0f172a;
+  border-radius: var(--border-radius);
+  overflow: hidden;
+  border: 4px solid #334155;
+  display: flex;
+  flex-direction: column;
+  color: #ffffff;
+  /* TODO: Jared can customize border, bezel, drop shadow, or inner glow */
+}
+
+.tv-screen {
+  flex: 1;
+  padding: 1.5rem;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  /* TODO: Jared can style the layout of elements inside the TV preview */
+}
+
+.tv-title {
+  font-size: 1.5rem;
+  font-weight: 700;
+  margin-bottom: 0.5rem;
+  /* TODO: Style the big TV headline */
+}
+
+.tv-body {
+  font-size: 1rem;
+  color: #cbd5e1;
+  line-height: 1.6;
+  /* TODO: Style the preview text body */
+}
+
+/* Feed Announcement Card (Shown in the announcements list) */
+.card {
+  background-color: #ffffff;
+  border: 1px solid var(--border-color);
+  border-radius: var(--border-radius);
+  padding: 1.25rem;
+  margin-bottom: 1rem;
+  /* TODO: Jared can add hover shadows, card transitions, or custom borders */
+}
+
+.card-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 0.75rem;
+}
+
+.card-title {
+  font-size: 1.125rem;
+  font-weight: 600;
+  color: var(--text-color);
+}
+
+.card-body {
+  color: var(--secondary-color);
+  font-size: 0.875rem;
+  margin-bottom: 1rem;
+}
+
+.card-actions {
+  display: flex;
+  gap: 0.5rem;
+  justify-content: flex-end;
+}
+
+
+/* --------------------------------------------------------------------------
+   📝 ALKAIZER'S SECTION: Announcement Creation Form Inputs & Dates
+   -------------------------------------------------------------------------- */
+
+.form-group {
+  margin-bottom: 1.25rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.375rem;
+}
+
+.form-label {
+  font-size: 0.875rem;
+  font-weight: 600;
+  color: var(--text-color);
+}
+
+/* Text inputs, datetime pickers, and textareas */
+.form-input,
+.form-textarea {
+  width: 100%;
+  padding: 0.625rem 0.875rem;
+  border: 1px solid var(--border-color);
+  border-radius: var(--border-radius);
+  font-size: 0.875rem;
+  font-family: inherit;
+  background-color: #ffffff;
+  color: var(--text-color);
+  transition: border-color 0.15s ease;
+  /* TODO: Alkaizer can customize focus rings, padding, or placeholder color */
+}
+
+.form-input:focus,
+.form-textarea:focus {
+  outline: none;
+  border-color: var(--primary-color);
+  box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.15);
+}
+
+
+/* --------------------------------------------------------------------------
+   ⚡ HAFIDZ'S SECTION: Search Input Bar & Status Filter Tabs
+   -------------------------------------------------------------------------- */
+
+.filter-bar {
+  margin-bottom: 1.5rem;
+  display: flex;
+  gap: 1rem;
+  align-items: center;
+  /* TODO: Hafidz can adjust spacing and responsive flex wrap */
+}
+
+.search-input {
+  max-width: 320px;
+  /* TODO: Hafidz can style the search bar size and icon */
+}
+
+.tab-group {
+  display: flex;
+  gap: 0.5rem;
+  flex-wrap: wrap;
+  /* TODO: Hafidz can customize tab pill styles, active tab borders, or pill shadows */
+}
