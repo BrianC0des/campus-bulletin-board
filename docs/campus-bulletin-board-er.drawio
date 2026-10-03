@@ -202,9 +202,9 @@
         </mxCell>
 
         <!-- 3. announcements (1) ||- - - -0< (0..N) announcement_displays [CASCADE; DB: 0..N, App: 1..N] -->
-        <mxCell id="rel_ann_ad" value="assigned to&lt;br&gt;&lt;font size=&quot;9&quot;&gt;(DB: 0..N, App: 1..N)&lt;/font&gt;" style="edgeStyle=entityRelationEdgeStyle;fontSize=11;html=1;endArrow=ERmany;startArrow=ERmandOne;endFill=0;startFill=0;rounded=0;strokeColor=#d97706;strokeWidth=1.5;" edge="1" parent="1" source="t_announcements" target="t_ad">
+        <mxCell id="rel_ann_ad" value="assigned to&lt;br&gt;(DB: 0..N, App: 1..N)" style="edgeStyle=entityRelationEdgeStyle;fontSize=9;html=1;endArrow=ERmany;startArrow=ERmandOne;endFill=0;startFill=0;rounded=0;strokeColor=#d97706;strokeWidth=1.5;" edge="1" parent="1" source="t_announcements" target="t_ad">
           <mxGeometry relative="1" as="geometry">
-            <mxPoint x="-12" y="-18" as="offset" />
+            <mxPoint x="-10" y="-12" as="offset" />
           </mxGeometry>
         </mxCell>
 
