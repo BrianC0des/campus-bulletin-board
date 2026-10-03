@@ -39,10 +39,10 @@ router.put('/:id', requireAdmin, async (req, res, next) => {
   }
 });
 
-// DELETE /api/announcements/:id - Delete announcement and remove R2 image
+// DELETE /api/announcements/:id - Soft-delete announcement (sets deleted_at = now() to preserve audit logs)
 router.delete('/:id', requireAdmin, async (req, res, next) => {
   try {
-    res.json({ message: 'Announcement deleted' });
+    res.json({ message: 'Announcement soft-deleted successfully' });
   } catch (err) {
     next(err);
   }

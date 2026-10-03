@@ -39,6 +39,8 @@ CREATE TABLE IF NOT EXISTS public.announcements (
   image_version integer NOT NULL DEFAULT 1,
   starts_at timestamptz NOT NULL,
   ends_at timestamptz NOT NULL,
+  publish_status text NOT NULL DEFAULT 'published',
+  deleted_at timestamptz NULL,
   created_by uuid NOT NULL REFERENCES public.administrator_profiles(user_id) ON DELETE RESTRICT,
   created_at timestamptz NOT NULL DEFAULT now(),
   updated_at timestamptz NOT NULL DEFAULT now(),
@@ -46,6 +48,7 @@ CREATE TABLE IF NOT EXISTS public.announcements (
   CONSTRAINT chk_announcement_title_not_blank CHECK (length(trim(title)) > 0),
   CONSTRAINT chk_announcement_body_not_blank CHECK (length(trim(body)) > 0),
   CONSTRAINT chk_announcement_schedule CHECK (ends_at > starts_at),
+  CONSTRAINT chk_announcement_publish_status CHECK (publish_status IN ('draft', 'published', 'archived')),
   CONSTRAINT chk_image_version_positive CHECK (image_version > 0),
   CONSTRAINT chk_image_consistency CHECK (
     (image_object_key IS NULL AND image_mime_type IS NULL) OR

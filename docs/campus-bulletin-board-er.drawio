@@ -52,7 +52,7 @@
 
         <!-- TABLE: announcements -->
         <mxCell id="t_announcements" value="announcements" style="swimlane;fontStyle=1;childLayout=stackLayout;horizontal=1;startSize=30;horizontalStack=0;resizeParent=1;resizeParentMax=0;resizeLast=0;collapsible=0;marginBottom=0;fillColor=#fef3c7;strokeColor=#d97706;fontColor=#78350f;" vertex="1" parent="1">
-          <mxGeometry x="400" y="270" width="290" height="292" as="geometry" />
+          <mxGeometry x="400" y="270" width="290" height="344" as="geometry" />
         </mxCell>
         <mxCell id="t_ann_1" value="PK  id : uuid [gen_random_uuid()]" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;spacingLeft=8;fontStyle=1;overflow=hidden;" vertex="1" parent="t_announcements">
           <mxGeometry y="30" width="290" height="26" as="geometry" />
@@ -83,6 +83,12 @@
         </mxCell>
         <mxCell id="t_ann_10" value="     created_at / updated_at : timestamptz" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;spacingLeft=8;overflow=hidden;" vertex="1" parent="t_announcements">
           <mxGeometry y="264" width="290" height="26" as="geometry" />
+        </mxCell>
+        <mxCell id="t_ann_11" value="     publish_status : text (draft|published|archived)" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;spacingLeft=8;overflow=hidden;" vertex="1" parent="t_announcements">
+          <mxGeometry y="290" width="290" height="26" as="geometry" />
+        </mxCell>
+        <mxCell id="t_ann_12" value="     deleted_at : timestamptz (NULLABLE soft-del)" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;spacingLeft=8;fontStyle=2;overflow=hidden;" vertex="1" parent="t_announcements">
+          <mxGeometry y="316" width="290" height="26" as="geometry" />
         </mxCell>
 
         <!-- TABLE: announcement_displays (Bridge Table) -->
@@ -209,8 +215,8 @@
         <mxCell id="rel_admin_ad" value="assigned by (0..1:N)" style="edgeStyle=orthogonalEdgeStyle;fontSize=11;html=1;endArrow=ERmany;startArrow=ERzeroToOne;endFill=0;startFill=0;rounded=0;strokeColor=#6366f1;strokeWidth=1.5;dashed=1;" edge="1" parent="1" source="t_admin" target="t_ad">
           <mxGeometry relative="1" as="geometry">
             <Array as="points">
-              <mxPoint x="165" y="520" />
-              <mxPoint x="880" y="520" />
+              <mxPoint x="165" y="220" />
+              <mxPoint x="925" y="220" />
             </Array>
           </mxGeometry>
         </mxCell>
