@@ -115,3 +115,55 @@ BEGIN
   RETURN v_announcement;
 END;
 $$;
+
+
+-- ============================================================================
+-- 5. STANDARDIZED DATABASE VIEWS (Eliminates Divergent Status Logic)
+-- ============================================================================
+
+-- View 1: Unified Announcement Status View for Admin Dashboard & API
+CREATE OR REPLACE VIEW public.v_announcements AS
+SELECT 
+  a.id,
+  a.title,
+  a.body,
+  a.image_object_key,
+  a.image_mime_type,
+  a.image_version,
+  a.starts_at,
+  a.ends_at,
+  a.publish_status,
+  a.deleted_at,
+  a.created_by,
+  a.created_at,
+  a.updated_at,
+  CASE 
+    WHEN a.deleted_at IS NOT NULL THEN 'deleted'
+    WHEN a.publish_status = 'draft' THEN 'draft'
+    WHEN a.publish_status = 'archived' THEN 'archived'
+    WHEN now() < a.starts_at THEN 'scheduled'
+    WHEN now() >= a.starts_at AND now() < a.ends_at THEN 'active'
+    ELSE 'expired'
+  END AS computed_status
+FROM public.announcements a;
+
+-- View 2: Live Kiosk Feed View (Hardware Displays Only)
+-- Guaranteed to filter out deleted rows, drafts, and inactive schedules
+CREATE OR REPLACE VIEW public.v_kiosk_active_announcements AS
+SELECT 
+  ad.display_id,
+  a.id AS announcement_id,
+  a.title,
+  a.body,
+  a.image_object_key,
+  a.image_mime_type,
+  a.image_version,
+  a.starts_at,
+  a.ends_at,
+  ad.assigned_at
+FROM public.announcements a
+JOIN public.announcement_displays ad ON ad.announcement_id = a.id
+WHERE a.deleted_at IS NULL
+  AND a.publish_status = 'published'
+  AND now() >= a.starts_at 
+  AND now() < a.ends_at;
