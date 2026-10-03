@@ -72,13 +72,13 @@
         <mxCell id="t_ann_6" value="     image_version : int &gt;= 1" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;spacingLeft=8;overflow=hidden;" vertex="1" parent="t_announcements">
           <mxGeometry y="160" width="290" height="26" as="geometry" />
         </mxCell>
-        <mxCell id="t_ann_7" value="     starts_at : timestamptz" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;spacingLeft=8;overflow=hidden;" vertex="1" parent="t_announcements">
+        <mxCell id="t_ann_7" value="     starts_at : timestamptz (NOT NULL)" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;spacingLeft=8;overflow=hidden;" vertex="1" parent="t_announcements">
           <mxGeometry y="186" width="290" height="26" as="geometry" />
         </mxCell>
-        <mxCell id="t_ann_8" value="     ends_at : timestamptz (&gt; starts_at)" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;spacingLeft=8;overflow=hidden;" vertex="1" parent="t_announcements">
+        <mxCell id="t_ann_8" value="     ends_at : timestamptz (&gt; starts_at, NOT NULL)" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;spacingLeft=8;overflow=hidden;" vertex="1" parent="t_announcements">
           <mxGeometry y="212" width="290" height="26" as="geometry" />
         </mxCell>
-        <mxCell id="t_ann_9" value="FK  created_by : uuid → admin_profiles" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;spacingLeft=8;fontStyle=2;overflow=hidden;" vertex="1" parent="t_announcements">
+        <mxCell id="t_ann_9" value="FK  created_by : uuid (NOT NULL) → administrator_profiles" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;spacingLeft=8;fontStyle=2;overflow=hidden;" vertex="1" parent="t_announcements">
           <mxGeometry y="238" width="290" height="26" as="geometry" />
         </mxCell>
         <mxCell id="t_ann_10" value="     created_at / updated_at : timestamptz" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;spacingLeft=8;overflow=hidden;" vertex="1" parent="t_announcements">
@@ -104,7 +104,7 @@
         <mxCell id="t_ad_3" value="     assigned_at : timestamptz [now()]" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;spacingLeft=8;overflow=hidden;" vertex="1" parent="t_ad">
           <mxGeometry y="82" width="290" height="26" as="geometry" />
         </mxCell>
-        <mxCell id="t_ad_4" value="FK  assigned_by : uuid (NULLABLE)" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;spacingLeft=8;fontStyle=2;overflow=hidden;" vertex="1" parent="t_ad">
+        <mxCell id="t_ad_4" value="FK  assigned_by : uuid (NULLABLE) → administrator_profiles" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;spacingLeft=8;fontStyle=2;overflow=hidden;" vertex="1" parent="t_ad">
           <mxGeometry y="108" width="290" height="26" as="geometry" />
         </mxCell>
 
@@ -202,9 +202,9 @@
         </mxCell>
 
         <!-- 3. announcements (1) ||- - - -0< (0..N) announcement_displays [CASCADE; DB: 0..N, App: 1..N] -->
-        <mxCell id="rel_ann_ad" value="assigned to&lt;br&gt;(DB: 0..N, App: 1..N)" style="edgeStyle=entityRelationEdgeStyle;fontSize=9;html=1;endArrow=ERmany;startArrow=ERmandOne;endFill=0;startFill=0;rounded=0;strokeColor=#d97706;strokeWidth=1.5;" edge="1" parent="1" source="t_announcements" target="t_ad">
+        <mxCell id="rel_ann_ad" value="assigned to&lt;br&gt;(DB: 0..N, App: 1..N)" style="edgeStyle=entityRelationEdgeStyle;fontSize=11;html=1;endArrow=ERmany;startArrow=ERmandOne;endFill=0;startFill=0;rounded=0;strokeColor=#d97706;strokeWidth=1.5;" edge="1" parent="1" source="t_announcements" target="t_ad">
           <mxGeometry relative="1" as="geometry">
-            <mxPoint x="-10" y="-12" as="offset" />
+            <mxPoint x="-10" y="-14" as="offset" />
           </mxGeometry>
         </mxCell>
 
