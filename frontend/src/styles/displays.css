@@ -1,0 +1,12 @@
+.tv-fullscreen-screen {
+  width: 100vw;
+  height: 100vh;
+  background-color: #090d16;
+  color: #ffffff;
+  display: flex;
+  flex-direction: column;
+}
+
+.tv-standby-header {
+  padding: 24px 32px;
+}
