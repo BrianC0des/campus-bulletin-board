@@ -52,65 +52,65 @@
 
         <!-- TABLE: announcements -->
         <mxCell id="t_announcements" value="announcements" style="swimlane;fontStyle=1;childLayout=stackLayout;horizontal=1;startSize=30;horizontalStack=0;resizeParent=1;resizeParentMax=0;resizeLast=0;collapsible=0;marginBottom=0;fillColor=#fef3c7;strokeColor=#d97706;fontColor=#78350f;" vertex="1" parent="1">
-          <mxGeometry x="400" y="270" width="290" height="344" as="geometry" />
+          <mxGeometry x="380" y="270" width="330" height="344" as="geometry" />
         </mxCell>
         <mxCell id="t_ann_1" value="PK  id : uuid [gen_random_uuid()]" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;spacingLeft=8;fontStyle=1;overflow=hidden;" vertex="1" parent="t_announcements">
-          <mxGeometry y="30" width="290" height="26" as="geometry" />
+          <mxGeometry y="30" width="330" height="26" as="geometry" />
         </mxCell>
         <mxCell id="t_ann_2" value="     title : text (NOT BLANK, GIN trgm)" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;spacingLeft=8;overflow=hidden;" vertex="1" parent="t_announcements">
-          <mxGeometry y="56" width="290" height="26" as="geometry" />
+          <mxGeometry y="56" width="330" height="26" as="geometry" />
         </mxCell>
         <mxCell id="t_ann_3" value="     body : text (NOT BLANK)" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;spacingLeft=8;overflow=hidden;" vertex="1" parent="t_announcements">
-          <mxGeometry y="82" width="290" height="26" as="geometry" />
+          <mxGeometry y="82" width="330" height="26" as="geometry" />
         </mxCell>
         <mxCell id="t_ann_4" value="     image_object_key : text (NULLABLE)" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;spacingLeft=8;overflow=hidden;" vertex="1" parent="t_announcements">
-          <mxGeometry y="108" width="290" height="26" as="geometry" />
+          <mxGeometry y="108" width="330" height="26" as="geometry" />
         </mxCell>
         <mxCell id="t_ann_5" value="     image_mime_type : text (NULLABLE)" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;spacingLeft=8;overflow=hidden;" vertex="1" parent="t_announcements">
-          <mxGeometry y="134" width="290" height="26" as="geometry" />
+          <mxGeometry y="134" width="330" height="26" as="geometry" />
         </mxCell>
         <mxCell id="t_ann_6" value="     image_version : int &gt;= 1" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;spacingLeft=8;overflow=hidden;" vertex="1" parent="t_announcements">
-          <mxGeometry y="160" width="290" height="26" as="geometry" />
+          <mxGeometry y="160" width="330" height="26" as="geometry" />
         </mxCell>
         <mxCell id="t_ann_7" value="     starts_at : timestamptz (NOT NULL)" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;spacingLeft=8;overflow=hidden;" vertex="1" parent="t_announcements">
-          <mxGeometry y="186" width="290" height="26" as="geometry" />
+          <mxGeometry y="186" width="330" height="26" as="geometry" />
         </mxCell>
         <mxCell id="t_ann_8" value="     ends_at : timestamptz (&gt; starts_at, NOT NULL)" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;spacingLeft=8;overflow=hidden;" vertex="1" parent="t_announcements">
-          <mxGeometry y="212" width="290" height="26" as="geometry" />
+          <mxGeometry y="212" width="330" height="26" as="geometry" />
         </mxCell>
         <mxCell id="t_ann_9" value="FK  created_by : uuid (NOT NULL) → administrator_profiles" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;spacingLeft=8;fontStyle=2;overflow=hidden;" vertex="1" parent="t_announcements">
-          <mxGeometry y="238" width="290" height="26" as="geometry" />
+          <mxGeometry y="238" width="330" height="26" as="geometry" />
         </mxCell>
         <mxCell id="t_ann_10" value="     created_at / updated_at : timestamptz" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;spacingLeft=8;overflow=hidden;" vertex="1" parent="t_announcements">
-          <mxGeometry y="264" width="290" height="26" as="geometry" />
+          <mxGeometry y="264" width="330" height="26" as="geometry" />
         </mxCell>
         <mxCell id="t_ann_11" value="     publish_status : text (draft|published|archived)" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;spacingLeft=8;overflow=hidden;" vertex="1" parent="t_announcements">
-          <mxGeometry y="290" width="290" height="26" as="geometry" />
+          <mxGeometry y="290" width="330" height="26" as="geometry" />
         </mxCell>
         <mxCell id="t_ann_12" value="     deleted_at : timestamptz (NULLABLE soft-del)" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;spacingLeft=8;fontStyle=2;overflow=hidden;" vertex="1" parent="t_announcements">
-          <mxGeometry y="316" width="290" height="26" as="geometry" />
+          <mxGeometry y="316" width="330" height="26" as="geometry" />
         </mxCell>
 
         <!-- TABLE: announcement_displays (Bridge Table) -->
         <mxCell id="t_ad" value="announcement_displays" style="swimlane;fontStyle=1;childLayout=stackLayout;horizontal=1;startSize=30;horizontalStack=0;resizeParent=1;resizeParentMax=0;resizeLast=0;collapsible=0;marginBottom=0;fillColor=#e0e7ff;strokeColor=#4338ca;fontColor=#312e81;" vertex="1" parent="1">
-          <mxGeometry x="780" y="310" width="290" height="136" as="geometry" />
+          <mxGeometry x="770" y="310" width="330" height="136" as="geometry" />
         </mxCell>
         <mxCell id="t_ad_1" value="PK,FK  announcement_id : uuid" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;spacingLeft=8;fontStyle=1;overflow=hidden;" vertex="1" parent="t_ad">
-          <mxGeometry y="30" width="290" height="26" as="geometry" />
+          <mxGeometry y="30" width="330" height="26" as="geometry" />
         </mxCell>
         <mxCell id="t_ad_2" value="PK,FK  display_id : uuid" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;spacingLeft=8;fontStyle=1;overflow=hidden;" vertex="1" parent="t_ad">
-          <mxGeometry y="56" width="290" height="26" as="geometry" />
+          <mxGeometry y="56" width="330" height="26" as="geometry" />
         </mxCell>
         <mxCell id="t_ad_3" value="     assigned_at : timestamptz [now()]" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;spacingLeft=8;overflow=hidden;" vertex="1" parent="t_ad">
-          <mxGeometry y="82" width="290" height="26" as="geometry" />
+          <mxGeometry y="82" width="330" height="26" as="geometry" />
         </mxCell>
         <mxCell id="t_ad_4" value="FK  assigned_by : uuid (NULLABLE) → administrator_profiles" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;spacingLeft=8;fontStyle=2;overflow=hidden;" vertex="1" parent="t_ad">
-          <mxGeometry y="108" width="290" height="26" as="geometry" />
+          <mxGeometry y="108" width="330" height="26" as="geometry" />
         </mxCell>
 
         <!-- TABLE: displays -->
         <mxCell id="t_displays" value="displays" style="swimlane;fontStyle=1;childLayout=stackLayout;horizontal=1;startSize=30;horizontalStack=0;resizeParent=1;resizeParentMax=0;resizeLast=0;collapsible=0;marginBottom=0;fillColor=#dcfce7;strokeColor=#16a34a;fontColor=#14532d;" vertex="1" parent="1">
-          <mxGeometry x="1160" y="270" width="290" height="214" as="geometry" />
+          <mxGeometry x="1160" y="270" width="290" height="240" as="geometry" />
         </mxCell>
         <mxCell id="t_disp_1" value="PK  id : uuid [gen_random_uuid()]" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;spacingLeft=8;fontStyle=1;overflow=hidden;" vertex="1" parent="t_displays">
           <mxGeometry y="30" width="290" height="26" as="geometry" />
@@ -132,6 +132,9 @@
         </mxCell>
         <mxCell id="t_disp_7" value="     created_at / updated_at : timestamptz" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;spacingLeft=8;overflow=hidden;" vertex="1" parent="t_displays">
           <mxGeometry y="186" width="290" height="26" as="geometry" />
+        </mxCell>
+        <mxCell id="t_disp_8" value="     last_seen_at : timestamptz (NULLABLE)" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;spacingLeft=8;fontStyle=2;overflow=hidden;" vertex="1" parent="t_displays">
+          <mxGeometry y="212" width="290" height="26" as="geometry" />
         </mxCell>
 
         <!-- TABLE: pairing_sessions -->
