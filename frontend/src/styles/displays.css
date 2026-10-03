@@ -1,0 +1,139 @@
+/* ==========================================================================
+   Displays & Physical TV Screen Styles Template
+   Assigned to: Jay Jasper & Kelvin
+   ========================================================================== */
+
+/* --------------------------------------------------------------------------
+   📺 JAY JASPER'S SECTION: Fullscreen Campus TV Display (/display)
+   -------------------------------------------------------------------------- */
+
+/* Fullscreen dark container running on the physical campus TV 24/7 */
+.tv-fullscreen-screen {
+  position: fixed;
+  inset: 0;
+  background-color: #020617;
+  color: #ffffff;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  padding: 3rem;
+  /* TODO: Jay Jasper can customize TV background, gradients, or ambient border */
+}
+
+/* Big 8-character pairing code box shown when TV is not yet paired */
+.pairing-code-box {
+  font-family: monospace;
+  font-size: 4rem;
+  font-weight: 800;
+  letter-spacing: 0.5rem;
+  background-color: #0f172a;
+  border: 2px dashed #38bdf8;
+  padding: 1.5rem 3rem;
+  border-radius: var(--border-radius);
+  color: #38bdf8;
+  margin-bottom: 1.5rem;
+  /* TODO: Jay Jasper can add glowing text shadow or animations */
+}
+
+.tv-instructions {
+  font-size: 1.5rem;
+  color: #94a3b8;
+  text-align: center;
+  max-width: 600px;
+}
+
+.tv-clock {
+  position: absolute;
+  top: 2rem;
+  right: 2.5rem;
+  font-family: monospace;
+  font-size: 1.5rem;
+  color: #64748b;
+}
+
+/* 10-Second Carousel Slide Card */
+.tv-slide-card {
+  width: 100%;
+  max-width: 1200px;
+  background-color: #0f172a;
+  border: 1px solid #1e293b;
+  border-radius: 16px;
+  padding: 3rem;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  /* TODO: Jay Jasper can add smooth fade or slide transition effects */
+}
+
+.tv-slide-title {
+  font-size: 3rem;
+  font-weight: 800;
+  margin-bottom: 1.5rem;
+  color: #f8fafc;
+}
+
+.tv-slide-body {
+  font-size: 1.75rem;
+  color: #cbd5e1;
+  line-height: 1.6;
+}
+
+
+/* --------------------------------------------------------------------------
+   🔒 KELVIN'S SECTION: TV Screen Pairing Modal Popup
+   -------------------------------------------------------------------------- */
+
+/* Dimmed backdrop overlay covering the page */
+.modal-backdrop {
+  position: fixed;
+  inset: 0;
+  background-color: rgba(0, 0, 0, 0.5);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+  /* TODO: Kelvin can add backdrop blur or fade-in transition */
+}
+
+/* White modal card box */
+.modal-content {
+  background-color: #ffffff;
+  border-radius: var(--border-radius);
+  padding: 1.5rem;
+  max-width: 480px;
+  width: 90%;
+  box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1);
+  /* TODO: Kelvin can customize modal padding, borders, or slide-up animation */
+}
+
+
+/* --------------------------------------------------------------------------
+   🖥️ Displays Management Page Grid
+   -------------------------------------------------------------------------- */
+
+.displays-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  gap: 1.25rem;
+  margin-top: 1.5rem;
+}
+
+.display-card {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+}
+
+.display-card-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  margin-bottom: 0.5rem;
+}
+
+.display-location {
+  color: var(--secondary-color);
+  font-size: 0.875rem;
+  margin-bottom: 1rem;
+}
