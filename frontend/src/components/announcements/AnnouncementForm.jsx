@@ -12,10 +12,19 @@ export default function AnnouncementForm({ onSave, onCancel }) {
 
   return (
     <form className="af-form" onSubmit={handleSubmit}>
-      <h2>Create Announcement</h2>
-      <input value={title} onChange={(e) => setTitle(e.target.value)} placeholder="Title" required />
-      <textarea value={message} onChange={(e) => setMessage(e.target.value)} placeholder="Message" required />
-      <button type="submit">Save</button>
+      <h2 className="af-heading">Create / Edit Announcement</h2>
+      <div className="af-layout">
+        <div className="af-main">
+          <fieldset className="af-box">
+            <legend>Title Area</legend>
+            <input className="af-input" value={title} onChange={(e) => setTitle(e.target.value)} placeholder="Title" required />
+          </fieldset>
+          <fieldset className="af-box">
+            <legend>Content / Body Area</legend>
+            <textarea className="af-input" value={message} onChange={(e) => setMessage(e.target.value)} placeholder="Message" rows={8} required />
+          </fieldset>
+        </div>
+      </div>
     </form>
   );
 }
