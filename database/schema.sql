@@ -26,3 +26,14 @@ CREATE TABLE IF NOT EXISTS announcements (
     created_by UUID NOT NULL REFERENCES administrator_profiles(id),
     created_at TIMESTAMPTZ DEFAULT CURRENT_TIMESTAMP NOT NULL
 );
+
+CREATE OR REPLACE VIEW v_announcements AS
+SELECT 
+    a.id, a.title, a.body,
+    CASE 
+        WHEN CURRENT_TIMESTAMP < a.starts_at THEN 'scheduled'
+        WHEN CURRENT_TIMESTAMP >= a.starts_at AND CURRENT_TIMESTAMP < a.ends_at THEN 'active'
+        ELSE 'expired'
+    END AS status,
+    a.starts_at, a.ends_at, a.created_by, a.created_at
+FROM announcements a;
