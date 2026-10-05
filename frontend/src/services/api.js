@@ -8,12 +8,17 @@ const api = axios.create({
   withCredentials: true, // For passing display HTTP-only credential cookies
 });
 
-// Request Interceptor: Automatically attach Admin JWT token
+// Request Interceptor: Attach current user ID if logged in
 api.interceptors.request.use(
   (config) => {
-    const token = localStorage.getItem('auth_token');
-    if (token) {
-      config.headers.Authorization = `Bearer ${token}`;
+    const savedUser = localStorage.getItem('campus_user');
+    if (savedUser) {
+      try {
+        const user = JSON.parse(savedUser);
+        if (user.id) {
+          config.headers['x-user-id'] = user.id;
+        }
+      } catch (e) {}
     }
     return config;
   },

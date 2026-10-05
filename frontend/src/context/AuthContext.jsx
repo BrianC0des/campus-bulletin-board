@@ -7,35 +7,31 @@ export function AuthProvider({ children }) {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    // Check initial local session
-    const token = localStorage.getItem('auth_token');
-    const savedUser = localStorage.getItem('user_profile');
+    // Check initial local session from localStorage
+    const savedUser = localStorage.getItem('campus_user');
 
-    if (token && savedUser) {
+    if (savedUser) {
       try {
         setUser(JSON.parse(savedUser));
       } catch (e) {
-        localStorage.removeItem('auth_token');
-        localStorage.removeItem('user_profile');
+        localStorage.removeItem('campus_user');
       }
     }
     setLoading(false);
   }, []);
 
-  const login = (token, userProfile) => {
-    localStorage.setItem('auth_token', token);
-    localStorage.setItem('user_profile', JSON.stringify(userProfile));
+  const login = (userProfile) => {
+    localStorage.setItem('campus_user', JSON.stringify(userProfile));
     setUser(userProfile);
   };
 
   const logout = () => {
-    localStorage.removeItem('auth_token');
-    localStorage.removeItem('user_profile');
+    localStorage.removeItem('campus_user');
     setUser(null);
   };
 
   return (
-    <AuthContext.Provider value={{ user, loading, login, logout }}>
+    <AuthContext.Provider value={{ user, loading, login, logout, isAuthenticated: !!user }}>
       {!loading && children}
     </AuthContext.Provider>
   );

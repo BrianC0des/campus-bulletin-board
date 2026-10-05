@@ -12,13 +12,13 @@ A centralized web-based digital signage platform where campus administrators cre
               ▼
 [ Express.js REST API ] ──(Connection Pool / pg.Pool)──▶ [ Raw PostgreSQL (Port 5432) ]
               ▲                                                       │
-              │ (JWT Access Token)                                    ▼
+              │ (Admin Login Session)                                 ▼
 [ Administrator Dashboard (React + Vite) ]                  [ Local Static /uploads ]
 ```
 
 ### Core Security & Architectural Principles
 - **Raw PostgreSQL (Zero-BaaS)**: Standard DDL schema without managed BaaS wrappers. All table structures, constraints, and views run directly on PostgreSQL 14+.
-- **Strict Role Separation**: Physical TV displays authenticate via claim tokens; administrators authenticate via email/password verified against `bcrypt` password hashes with signed JWT session tokens.
+- **Simple SQL Authentication**: Administrators authenticate by matching `email` and `password` directly against `administrator_profiles` via SQL query.
 - **Dynamic Content Lifecycle**: Statuses (`scheduled`, `active`, `expired`) are computed dynamically on query via database view `v_announcements` using UTC timestamps.
 - **Local Media Storage**: Announcement banner images are handled locally via `multer` disk storage and served statically via Express `/uploads`.
 - **Soft Deletion Protocol**: Notices are marked with `deleted_at = CURRENT_TIMESTAMP` to preserve institutional audit trails while instantly removing them from live displays.
@@ -61,7 +61,7 @@ A centralized web-based digital signage platform where campus administrators cre
 
 | Table | Purpose | Key Constraints & Invariants |
 | :--- | :--- | :--- |
-| `administrator_profiles` | Staff credentials & roles | `id UUID PRIMARY KEY`, `email UNIQUE`, `password_hash VARCHAR(255) NOT NULL` |
+| `administrator_profiles` | Staff credentials & roles | `id UUID PRIMARY KEY`, `email UNIQUE`, `password VARCHAR(255) NOT NULL` |
 | `announcements` | Notice titles, bodies, images, schedule | `ends_at > starts_at`, `publish_status IN ('draft', 'published', 'archived')`, `deleted_at` soft delete |
 | `displays` | Physical TV screens & kiosks | `pairing_code VARCHAR(10) UNIQUE`, `is_paired BOOLEAN`, `last_seen_at` heartbeat |
 | `announcement_displays` | Many-to-many screen assignments | Composite Primary Key `(announcement_id, display_id)`, `ON DELETE CASCADE` |

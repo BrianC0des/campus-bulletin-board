@@ -1,37 +1,31 @@
-import jwt from 'jsonwebtoken';
-
-const JWT_SECRET = process.env.JWT_SECRET || 'campus-bulletin-secret-key-change-in-prod';
-
 /**
- * Administrator authentication & active account verification middleware
+ * Simple Administrator authentication middleware
+ * Checks if the request contains an authenticated user ID header
  */
 export async function requireAdmin(req, res, next) {
   try {
-    const authHeader = req.headers.authorization;
-    if (!authHeader || !authHeader.startsWith('Bearer ')) {
-      return res.status(401).json({ error: 'Authorization token required' });
+    const userId = req.headers['x-user-id'];
+    
+    // In simple auth, the client passes their logged-in user ID
+    if (!userId) {
+      return res.status(401).json({ error: 'Administrator login required' });
     }
 
-    const token = authHeader.split(' ')[1];
-    
-    // Verify standard JWT token
-    const decoded = jwt.verify(token, JWT_SECRET);
-    req.user = decoded; // { id, email, role }
-    
+    req.user = { id: userId };
     next();
   } catch (err) {
-    return res.status(401).json({ error: 'Invalid or expired session token' });
+    next(err);
   }
 }
 
 /**
- * Display credential verification middleware (via cookie or header)
+ * Display credential verification middleware
  */
 export async function requireDisplayCredential(req, res, next) {
   try {
-    const displayToken = req.headers['x-display-token'] || req.headers.authorization;
-    if (!displayToken) {
-      return res.status(401).json({ error: 'Display authentication token required' });
+    const displayId = req.headers['x-display-id'] || req.query.display_id;
+    if (!displayId) {
+      return res.status(401).json({ error: 'Display identifier required' });
     }
     next();
   } catch (err) {

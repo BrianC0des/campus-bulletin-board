@@ -4,6 +4,7 @@ import dotenv from 'dotenv';
 import path from 'path';
 import { fileURLToPath } from 'url';
 
+import authRoutes from './routes/auth.js';
 import announcementRoutes from './routes/announcements.js';
 import displayRoutes from './routes/displays.js';
 import pairingRoutes from './routes/pairing.js';
@@ -31,6 +32,7 @@ app.get('/health', (req, res) => {
 });
 
 // Route Modules
+app.use('/api/auth', authRoutes);
 app.use('/api/announcements', announcementRoutes);
 app.use('/api/displays', displayRoutes);
 app.use('/api/pairing', pairingRoutes);
