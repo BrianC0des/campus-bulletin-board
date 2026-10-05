@@ -13,13 +13,14 @@ A centralized web-based digital signage platform where campus administrators cre
 [ Express.js REST API ] ──(Connection Pool / pg.Pool)──▶ [ Raw PostgreSQL (Port 5432) ]
               ▲                                                       │
               │ (JWT Access Token)                                    ▼
-[ Administrator Dashboard (React + Vite) ]                   [ Cloudflare R2 (Images) ]
+[ Administrator Dashboard (React + Vite) ]                  [ Local Static /uploads ]
 ```
 
 ### Core Security & Architectural Principles
 - **Raw PostgreSQL (Zero-BaaS)**: Standard DDL schema without managed BaaS wrappers. All table structures, constraints, and views run directly on PostgreSQL 14+.
 - **Strict Role Separation**: Physical TV displays authenticate via claim tokens; administrators authenticate via email/password verified against `bcrypt` password hashes with signed JWT session tokens.
 - **Dynamic Content Lifecycle**: Statuses (`scheduled`, `active`, `expired`) are computed dynamically on query via database view `v_announcements` using UTC timestamps.
+- **Local Media Storage**: Announcement banner images are handled locally via `multer` disk storage and served statically via Express `/uploads`.
 - **Soft Deletion Protocol**: Notices are marked with `deleted_at = CURRENT_TIMESTAMP` to preserve institutional audit trails while instantly removing them from live displays.
 
 ---
@@ -31,12 +32,13 @@ A centralized web-based digital signage platform where campus administrators cre
 ├── backend/
 │   ├── src/
 │   │   ├── config/
-│   │   │   ├── db.js                   # PostgreSQL pg.Pool configuration
-│   │   │   └── r2.js                   # Cloudflare R2 S3 client
+│   │   │   └── db.js                   # PostgreSQL pg.Pool configuration
 │   │   ├── middleware/
-│   │   │   └── auth.js                 # JWT & Display auth middleware
+│   │   │   ├── auth.js                 # JWT & Display auth middleware
+│   │   │   └── upload.js               # Multer local image storage
 │   │   ├── routes/                     # REST endpoints
 │   │   └── server.js                   # Express application entrypoint
+│   ├── uploads/                        # Local uploaded image banners
 │   └── package.json
 ├── frontend/
 │   ├── src/

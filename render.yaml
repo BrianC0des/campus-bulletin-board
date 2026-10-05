@@ -16,10 +16,7 @@ services:
         sync: false
       - key: JWT_SECRET
         sync: false
-      - key: R2_ACCOUNT_ID
-        sync: false
-      - key: R2_BUCKET_NAME
-        value: campus-bulletin-images
+
       - key: CAMPUS_TIMEZONE
         value: Asia/Manila
       - key: CLIENT_URL
