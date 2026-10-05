@@ -8,10 +8,10 @@ const api = axios.create({
   withCredentials: true, // For passing display HTTP-only credential cookies
 });
 
-// Request Interceptor: Automatically attach Supabase Auth JWT token
+// Request Interceptor: Automatically attach Admin JWT token
 api.interceptors.request.use(
   (config) => {
-    const token = localStorage.getItem('supabase_access_token');
+    const token = localStorage.getItem('auth_token');
     if (token) {
       config.headers.Authorization = `Bearer ${token}`;
     }

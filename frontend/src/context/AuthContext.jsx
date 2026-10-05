@@ -1,5 +1,4 @@
 import React, { createContext, useContext, useState, useEffect } from 'react';
-import { supabase } from '../services/supabase.js';
 
 const AuthContext = createContext(null);
 
@@ -8,30 +7,35 @@ export function AuthProvider({ children }) {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    // Check initial session
-    supabase.auth.getSession().then(({ data: { session } }) => {
-      setUser(session?.user || null);
-      if (session?.access_token) {
-        localStorage.setItem('supabase_access_token', session.access_token);
-      }
-      setLoading(false);
-    });
+    // Check initial local session
+    const token = localStorage.getItem('auth_token');
+    const savedUser = localStorage.getItem('user_profile');
 
-    // Listen for auth state changes
-    const { data: { subscription } } = supabase.auth.onAuthStateChange((_event, session) => {
-      setUser(session?.user || null);
-      if (session?.access_token) {
-        localStorage.setItem('supabase_access_token', session.access_token);
-      } else {
-        localStorage.removeItem('supabase_access_token');
+    if (token && savedUser) {
+      try {
+        setUser(JSON.parse(savedUser));
+      } catch (e) {
+        localStorage.removeItem('auth_token');
+        localStorage.removeItem('user_profile');
       }
-    });
-
-    return () => subscription.unsubscribe();
+    }
+    setLoading(false);
   }, []);
 
+  const login = (token, userProfile) => {
+    localStorage.setItem('auth_token', token);
+    localStorage.setItem('user_profile', JSON.stringify(userProfile));
+    setUser(userProfile);
+  };
+
+  const logout = () => {
+    localStorage.removeItem('auth_token');
+    localStorage.removeItem('user_profile');
+    setUser(null);
+  };
+
   return (
-    <AuthContext.Provider value={{ user, loading }}>
+    <AuthContext.Provider value={{ user, loading, login, logout }}>
       {!loading && children}
     </AuthContext.Provider>
   );

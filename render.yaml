@@ -12,9 +12,9 @@ services:
         value: production
       - key: PORT
         value: 5000
-      - key: SUPABASE_URL
+      - key: DATABASE_URL
         sync: false
-      - key: SUPABASE_SERVICE_ROLE_KEY
+      - key: JWT_SECRET
         sync: false
       - key: R2_ACCOUNT_ID
         sync: false

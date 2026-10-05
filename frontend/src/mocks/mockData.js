@@ -33,7 +33,7 @@
 
 /**
  * 📢 MOCK ANNOUNCEMENTS CONTRACT
- * Matches the Supabase view `v_announcements` and Express API `GET /api/announcements`
+ * Matches the PostgreSQL view `v_announcements` and Express API `GET /api/announcements`
  */
 export const MOCK_ANNOUNCEMENTS = [
   {
@@ -130,7 +130,7 @@ export const MOCK_ANNOUNCEMENTS = [
 
 /**
  * 📺 MOCK DISPLAYS CONTRACT
- * Matches the Supabase table `displays` and Express API `GET /api/displays`
+ * Matches the PostgreSQL table `displays` and Express API `GET /api/displays`
  */
 export const MOCK_DISPLAYS = [
   {

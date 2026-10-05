@@ -5,7 +5,7 @@ export default function Login() {
     <div className="modal-backdrop">
       <div className="modal-content" style={{ maxWidth: '420px' }}>
         <h2 className="page-title" style={{ textAlign: 'center', marginBottom: '1.5rem' }}>Administrator Login</h2>
-        {/* TODO: Email & Password form calling supabase.auth.signInWithPassword */}
+        {/* TODO: Email & Password form calling POST /api/auth/login */}
       </div>
     </div>
   );
