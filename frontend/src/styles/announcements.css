@@ -1,0 +1,21 @@
+/* announcement styles */
+.announcement-card {
+  border: 1px solid #000;
+  padding: 16px;
+  background: #fff;
+  margin-bottom: 12px;
+}
+.announcement-card-top {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 8px;
+}
+.announcement-card-title {
+  font-size: 16px;
+  font-weight: 600;
+}
+.announcement-card-status {
+  font-size: 12px;
+  font-weight: 600;
+}
