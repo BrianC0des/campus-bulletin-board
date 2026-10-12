@@ -6,15 +6,22 @@ export default function AnnouncementForm({ onSave, onCancel }) {
   const [message, setMessage] = useState('');
   const [startsAt, setStartsAt] = useState('');
   const [endsAt, setEndsAt] = useState('');
+  const [error, setError] = useState('');
 
   const handleSubmit = (e) => {
     e.preventDefault();
+    if (startsAt && endsAt && new Date(endsAt) <= new Date(startsAt)) {
+      setError('End date must be later than start date.');
+      return;
+    }
+    setError('');
     if (onSave) onSave({ title, body: message, starts_at: startsAt, ends_at: endsAt });
   };
 
   return (
     <form className="af-form" onSubmit={handleSubmit}>
       <h2 className="af-heading">Create / Edit Announcement</h2>
+      {error && <p className="af-error">{error}</p>}
       <div className="af-layout">
         <div className="af-main">
           <fieldset className="af-box">
@@ -34,6 +41,7 @@ export default function AnnouncementForm({ onSave, onCancel }) {
             <label className="af-label" htmlFor="endsAt">End date / time</label>
             <input className="af-input" id="endsAt" type="datetime-local" value={endsAt} onChange={(e) => setEndsAt(e.target.value)} required />
           </fieldset>
+          <button className="af-button" type="submit">Save Notice</button>
         </div>
       </div>
     </form>
