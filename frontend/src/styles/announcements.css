@@ -25,3 +25,9 @@
   font-size: 13px;
   margin: 6px 0;
 }
+
+.announcements-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  gap: 16px;
+}
