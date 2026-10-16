@@ -2,29 +2,38 @@
    Navigation Bar & App Layout Template
    ========================================================================== */
 
+/* Desktop layout */
 .app-layout {
   min-height: 100vh;
   display: flex;
-  flex-direction: column;
 }
 
 .main-content {
   flex: 1;
-  max-width: 1200px;
-  width: 100%;
-  margin: 0 auto;
+  min-width: 0;
   padding: 1.5rem;
+}
+
+.top-nav {
+  height: 35px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin: -1rem -1.5rem 0;
+  padding: 0 24px;
+  border-bottom: 1px solid #000;
+  font-size: 12px;
 }
 
 /* Navbar container */
 .navbar {
-  background-color: #ffffff;
-  border-bottom: 1px solid var(--border-color);
-  padding: 0.875rem 1.5rem;
+  flex: 0 0 220px;
+  width: 220px;
+  min-height: 100vh;
   display: flex;
-  justify-content: space-between;
-  align-items: center;
-  /* TODO: Add box-shadow, sticky positioning, or custom theme colors */
+  flex-direction: column;
+  padding: 20px 14px;
+  border-right: 1px solid #000;
 }
 
 /* Brand logo / title */
@@ -40,24 +49,37 @@
 
 /* Navigation links container */
 .nav-links {
+  margin-top: 10px;
   display: flex;
-  align-items: center;
-  gap: 0.5rem;
+  flex-direction: column;
 }
 
 /* Individual navigation link */
-.nav-item {
-  padding: 0.5rem 0.875rem;
-  border-radius: var(--border-radius);
-  font-size: 0.875rem;
-  font-weight: 500;
-  color: var(--secondary-color);
-  text-decoration: none;
-  transition: all 0.15s ease;
-  /* TODO: Add active state highlight or hover effect */
+.nav-link {
+  height: 44px;
+  margin-bottom: 4px;
+  padding: 0 14px;
+  background: none;
+  border: 1px solid transparent;
+  text-align: left;
+  display: flex;
+  align-items: center;
+  letter-spacing: 0.5px;
+  color: #000;
+  text-decoration: none; 
 }
 
-.nav-item:hover {
-  color: var(--text-color);
-  background-color: #f1f5f9;
+.nav-link:hover { background-color: #f3f3f3; }
+.nav-links .nav-link:visited { color: #000; }
+
+.nav-links .nav-link.active {
+  border-color: #000;
+}
+
+.logout-btn {
+  margin-top: auto;
+  padding: 14px;
+  background: #fff;
+  border: none;
+  cursor: pointer;
 }

@@ -1,6 +1,7 @@
 import React from 'react';
 import { Outlet, Navigate } from 'react-router-dom';
 import Navbar from './Navbar.jsx';
+import TopNav from './TopNav.jsx';
 import { useAuth } from '../../context/AuthContext.jsx';
 
 export default function Layout() {
@@ -15,6 +16,7 @@ export default function Layout() {
     <div className="app-layout">
       <Navbar />
       <main className="main-content">
+        <TopNav />
         <Outlet />
       </main>
     </div>
