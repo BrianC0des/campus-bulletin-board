@@ -1,0 +1,109 @@
+.labelSmall {
+  margin: 0 0 6px;
+  font-size: 11px;
+  font-weight: bold;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+}
+
+.btn {
+  padding: 10px 16px;
+  border: 1px solid #111111;
+  background: #ffffff;
+  color: #111111;
+  font-family: sans-serif;
+  font-size: 12px;
+  font-weight: bold;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+  cursor: pointer;
+}
+
+.btnDark {
+  background: #111111;
+  color: #ffffff;
+}
+
+.btnDanger {
+  color: #b3261e;
+  border-color: #b3261e;
+}
+
+.field {
+  margin-bottom: 18px;
+}
+
+.errorText {
+  color: #b3261e;
+}
+
+.modalBackdrop {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.5);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 16px;
+}
+
+.modalContent,
+.modalContent * {
+  box-sizing: border-box;
+}
+
+.modalContent {
+  width: 100%;
+  max-width: 520px;
+  background: #ffffff;
+  color: #111111;
+  border: 2px solid #111111;
+  border-radius: 8px;
+  padding: 24px;
+  font-family: sans-serif;
+}
+
+.modalContent h2 {
+  margin: 0;
+}
+
+.modalContent input {
+  width: 100%;
+  padding: 14px;
+  border: 1px solid #111111;
+  background: #fafafa;
+  color: #111111;
+  font-family: sans-serif;
+  font-size: 14px;
+}
+
+.modalHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  border-bottom: 1px solid #111111;
+  padding-bottom: 16px;
+  margin-bottom: 20px;
+}
+
+.modalClose {
+  border: none;
+  background: none;
+  color: #000000;
+  font-family: sans-serif;
+  font-size: 11px;
+  font-weight: bold;
+  cursor: pointer;
+}
+
+.modalActions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 12px;
+  border-top: 1px solid #111111;
+  padding-top: 20px;
+  margin-top: 8px;
+}

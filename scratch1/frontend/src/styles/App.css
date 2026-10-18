@@ -1,0 +1,123 @@
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  background: #ffffff;
+  color: #111111;
+  font-family: sans-serif;
+}
+
+h1,
+h2,
+h3 {
+  margin: 0 0 12px;
+}
+
+hr {
+  border: 0;
+  border-top: 1px solid #111111;
+  margin: 24px 0;
+}
+
+.success {
+  color: #1c7a45;
+}
+
+.adminPage {
+  max-width: 650px;
+  margin: 30px auto;
+  padding: 20px;
+}
+
+.adminPage input {
+  width: 100%;
+  padding: 14px;
+  border: 1px solid #111111;
+  background: #fafafa;
+  color: #111111;
+  font-family: sans-serif;
+  font-size: 14px;
+}
+
+.screenCard {
+  border: 1px solid #111111;
+  padding: 16px;
+  margin-bottom: 12px;
+}
+
+.cardActions {
+  display: flex;
+  gap: 8px;
+  margin-top: 8px;
+}
+
+.editForm input {
+  margin-bottom: 8px;
+}
+
+.tvPage {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  text-align: center;
+}
+
+.tvHeader {
+  padding: 24px;
+  border-bottom: 1px solid #000000;
+  font-size: 14px;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+}
+
+.tvBody {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 24px;
+}
+
+.tvTitle {
+  margin-bottom: 40px;
+  font-family: sans-serif;
+  font-size: 28px;
+  font-weight: 900;
+  text-transform: uppercase;
+}
+
+.tvCodeBox {
+  margin: 8px 0 24px;
+  padding: 20px 40px;
+  border: 2px solid #000000;
+  font-size: 32px;
+  font-weight: bold;
+  letter-spacing: 8px;
+}
+
+.tvNameBox {
+  letter-spacing: 2px;
+  font-size: 26px;
+}
+
+.tvHint {
+  margin: 0;
+  font-size: 11px;
+  line-height: 1.6;
+}
+
+.tvDivider {
+  width: 220px;
+  margin: 20px 0 12px;
+  border-top: 1px solid #111111;
+}
+
+.tvWaiting {
+  margin: 0;
+  font-size: 10px;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+}
