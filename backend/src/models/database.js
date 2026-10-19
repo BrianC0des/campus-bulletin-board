@@ -140,9 +140,17 @@ export const APP_CONFIG = {
  * @param {string|Date} startsAt
  * @param {string|Date} endsAt
  * @param {Date} [now=new Date()]
+ * @param {string} [publishStatus='published']
  * @returns {AnnouncementStatus}
  */
-export function computeAnnouncementStatus(startsAt, endsAt, now = new Date()) {
+export function computeAnnouncementStatus(startsAt, endsAt, now = new Date(), publishStatus = 'published') {
+  if (publishStatus === 'draft') {
+    return 'draft';
+  }
+  if (publishStatus === 'archived') {
+    return 'archived';
+  }
+
   const start = new Date(startsAt).getTime();
   const end = new Date(endsAt).getTime();
   const current = now.getTime();
@@ -214,7 +222,9 @@ export function formatAnnouncement(row, serverNow = new Date(), assignedDisplayI
     imageVersion: row.image_version || 1,
     startsAt: row.starts_at,
     endsAt: row.ends_at,
-    status: computeAnnouncementStatus(row.starts_at, row.ends_at, serverNow),
+    publishStatus: row.publish_status || 'published',
+    deletedAt: row.deleted_at || null,
+    status: computeAnnouncementStatus(row.starts_at, row.ends_at, serverNow, row.publish_status),
     assignedDisplayIds,
     createdBy: row.created_by,
     createdAt: row.created_at,
