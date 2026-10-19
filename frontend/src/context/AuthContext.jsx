@@ -1,5 +1,4 @@
 import React, { createContext, useContext, useState, useEffect } from 'react';
-import { supabase } from '../services/supabase.js';
 
 const AuthContext = createContext(null);
 
@@ -8,30 +7,31 @@ export function AuthProvider({ children }) {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    // Check initial session
-    supabase.auth.getSession().then(({ data: { session } }) => {
-      setUser(session?.user || null);
-      if (session?.access_token) {
-        localStorage.setItem('supabase_access_token', session.access_token);
-      }
-      setLoading(false);
-    });
+    // Check initial local session from localStorage
+    const savedUser = localStorage.getItem('campus_user');
 
-    // Listen for auth state changes
-    const { data: { subscription } } = supabase.auth.onAuthStateChange((_event, session) => {
-      setUser(session?.user || null);
-      if (session?.access_token) {
-        localStorage.setItem('supabase_access_token', session.access_token);
-      } else {
-        localStorage.removeItem('supabase_access_token');
+    if (savedUser) {
+      try {
+        setUser(JSON.parse(savedUser));
+      } catch (e) {
+        localStorage.removeItem('campus_user');
       }
-    });
-
-    return () => subscription.unsubscribe();
+    }
+    setLoading(false);
   }, []);
 
+  const login = (userProfile) => {
+    localStorage.setItem('campus_user', JSON.stringify(userProfile));
+    setUser(userProfile);
+  };
+
+  const logout = () => {
+    localStorage.removeItem('campus_user');
+    setUser(null);
+  };
+
   return (
-    <AuthContext.Provider value={{ user, loading }}>
+    <AuthContext.Provider value={{ user, loading, login, logout, isAuthenticated: !!user }}>
       {!loading && children}
     </AuthContext.Provider>
   );
