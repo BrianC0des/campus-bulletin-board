@@ -1,7 +1,7 @@
 import React from 'react';
 import { NavLink } from 'react-router-dom';
 
-export default function Navbar() {
+export default function Navbar({onLogout}) {
   return (
     <nav className="navbar">
       <div className="nav-brand">Campus Bulletin Board</div>
@@ -11,9 +11,10 @@ export default function Navbar() {
         <NavLink to="/displays" className="nav-link">Displays</NavLink>
         <NavLink to="/users" className="nav-link">Users</NavLink>
       </div>
-      <div>
-        {/* TODO: Logout button */}
-      </div>
+
+      <button className="logout-btn" onClick={onLogout}>
+        LOG OUT
+      </button>
     </nav>
   );
 }
