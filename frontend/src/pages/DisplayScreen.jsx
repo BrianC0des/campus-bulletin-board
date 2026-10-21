@@ -1,12 +1,42 @@
-import React from 'react';
+
+import React, { useState, useEffect } from 'react';
 
 export default function DisplayScreen() {
+  const [currentTime, setCurrentTime] = useState(
+    new Date().toLocaleTimeString()
+  );
+
+  const pairingCode = '7K4P - 92QM';
+
+  useEffect(() => {
+    const timer = setInterval(() => {
+      setCurrentTime(new Date().toLocaleTimeString());
+    }, 1000);
+
+    return () => clearInterval(timer);
+  }, []);
+
   return (
-    <div className="fullscreen-tv">
-      {/* TODO: State handling for Pairing Code vs Announcement Carousel */}
-      <h1 style={{ fontSize: '2.5rem', fontFamily: 'monospace', letterSpacing: '2px' }}>
-        Digital Signage Screen
-      </h1>
-    </div>
+    <main>
+      <pre>{`
+────────────────────────────────────────────────────────
+
+              🏛️ CAMPUS DIGITAL SIGNAGE
+
+────────────────────────────────────────────────────────
+
+                    Pairing Code:
+
+                ┌───────────────────┐
+                │   ${pairingCode}    │
+                └───────────────────┘
+
+      Go to Admin Dashboard > Displays to Pair Screen
+
+              ${currentTime}  •  Offline
+
+────────────────────────────────────────────────────────
+      `}</pre>
+    </main>
   );
 }
