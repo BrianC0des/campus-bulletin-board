@@ -1,4 +1,4 @@
-import "../styles/Dashboard.css";
+import "../styles/dashboard.css";
 
 const cardText = [
     { id: "active", title: "Active Content"},
