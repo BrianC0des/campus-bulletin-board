@@ -1,11 +1,5 @@
 import React from 'react';
 
-/**
- * Physical Screen View (/display):
- * - If unregistered: displays 8-character pairing code (e.g. 7K4P-92QM)
- * - If registered: polls /api/displays/active-content and rotates up to 6 notices
- * - If no active content: shows campus fallback screen
- */
 export default function DisplayScreen() {
   return (
     <div className="fullscreen-tv">
