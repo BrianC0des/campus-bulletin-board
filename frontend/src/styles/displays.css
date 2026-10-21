@@ -178,3 +178,96 @@
 .row + .row.row:not(.DisplayHeader) {
   padding-top: 18px;
 }
+
+/* Kelvin's Pairing Modal Styles */
+.modalBackdrop {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.5);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 16px;
+  z-index: 100;
+}
+
+.modalContent {
+  width: 100%;
+  max-width: 480px;
+  background: #ffffff;
+  color: #000000;
+  border: 2px solid #000000;
+  padding: 24px;
+}
+
+.modalHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  border-bottom: 1px solid #000000;
+  padding-bottom: 14px;
+  margin-bottom: 18px;
+}
+
+.modalHeader h2 {
+  font-size: 1.25rem;
+  margin: 0;
+}
+
+.labelSmall {
+  margin: 0 0 6px;
+  font-size: 11px;
+  font-weight: bold;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+  color: #555;
+}
+
+.modalClose {
+  border: none;
+  background: none;
+  color: #000000;
+  font-size: 14px;
+  font-weight: bold;
+  cursor: pointer;
+}
+
+.modalField {
+  margin-bottom: 16px;
+  display: flex;
+  flex-direction: column;
+}
+
+.modalField input {
+  width: 100%;
+  padding: 10px 12px;
+  border: 1px solid #000000;
+  background: #fff;
+  color: #000000;
+  font-family: inherit;
+  font-size: 14px;
+}
+
+.modalActions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 10px;
+  border-top: 1px solid #000000;
+  padding-top: 16px;
+  margin-top: 16px;
+}
+
+.btnDark {
+  background: #000000 !important;
+  color: #ffffff !important;
+  border: 1px solid #000000 !important;
+}
+
+.btnOutline {
+  background: #ffffff !important;
+  color: #000000 !important;
+  border: 1px solid #000000 !important;
+}
