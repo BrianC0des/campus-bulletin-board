@@ -12,6 +12,7 @@ import Announcements from './pages/Announcements.jsx';
 import Displays from './pages/Displays.jsx';
 import Users from './pages/Users.jsx';
 import DisplayScreen from './pages/DisplayScreen.jsx';
+import AnnouncementForm from './components/announcements/AnnouncementForm.jsx';
 
 export default function App() {
   return (
@@ -19,6 +20,8 @@ export default function App() {
       <Routes>
         {/* Physical Display Screen Route (No Admin Layout) */}
         <Route path="/display" element={<DisplayScreen />} />
+
+        <Route path="/form-test" element={<AnnouncementForm />} />
 
         {/* Administrator Login */}
         <Route path="/login" element={<Login />} />
