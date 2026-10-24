@@ -1,5 +1,7 @@
+
 import React, { useState, useEffect } from 'react';
 import { MOCK_ANNOUNCEMENTS } from '../mocks/mockData.js';
+import '../styles/displays.css';
 
 export default function DisplayScreen() {
   const [currentTime, setCurrentTime] = useState(
@@ -16,9 +18,10 @@ export default function DisplayScreen() {
     )
   );
 
+  // Temporary placeholder until the backend provides a real pairing code.
   const pairingCode = '7K4P - 92QM';
 
-
+  // Update the clock every second.
   useEffect(() => {
     const clockTimer = setInterval(() => {
       setCurrentTime(new Date().toLocaleTimeString('en-US'));
@@ -27,7 +30,7 @@ export default function DisplayScreen() {
     return () => clearInterval(clockTimer);
   }, []);
 
-
+  // Rotate announcements every 10 seconds.
   useEffect(() => {
     if (slides.length === 0) return;
 
@@ -42,56 +45,70 @@ export default function DisplayScreen() {
 
   const currentSlide = slides[currentIndex];
 
-  return (
-    <main>
-      <pre>{`
-────────────────────────────────────────────────────────
+  // Standby screen when no active announcements are available.
+  if (slides.length === 0) {
+    return (
+      <main className="tv-fullscreen-screen">
+        <header className="tv-standby-header">
+          <h1>🏛️ CAMPUS DIGITAL SIGNAGE</h1>
+        </header>
 
-              🏛️ CAMPUS DIGITAL SIGNAGE
+        <section className="tv-standby-content">
+          <p className="tv-instructions">Pairing Code:</p>
 
-────────────────────────────────────────────────────────
+          <div className="pairing-code-box">
+            {pairingCode}
+          </div>
 
-                    Pairing Code:
-                 ┌───────────────────┐
-                 │   ${pairingCode}   │
-                 └───────────────────┘
-
-────────────────────────────────────────────────────────
-      `}</pre>
-
-      {slides.length === 0 ? (
-        <p>No active announcements.</p>
-      ) : (
-        <>
-          {currentSlide.image_url && (
-            <p>
-              <img
-                src={currentSlide.image_url}
-                alt={currentSlide.title || 'Campus announcement'}
-                width="600"
-              />
-            </p>
-          )}
-
-          {currentSlide.title && <h1>{currentSlide.title}</h1>}
-
-          {currentSlide.body && <p>{currentSlide.body}</p>}
-
-          <p>
-            Slide {currentIndex + 1} of {slides.length}
+          <p className="tv-instructions">
+            To link this display, open Admin Dashboard
+            {' > '}Displays{' > '}Pair New Display
           </p>
-        </>
-      )}
+        </section>
 
-      <pre>{`
-────────────────────────────────────────────────────────
+        <footer className="tv-clock">
+          {currentTime} • Offline
+        </footer>
+      </main>
+    );
+  }
 
-      Go to Admin Dashboard > Displays to Pair Screen
+  // Playback screen for active announcements.
+  return (
+    <main className="tv-fullscreen-screen">
+      <header className="tv-standby-header">
+        <h1>🏛️ CAMPUS DIGITAL SIGNAGE</h1>
+      </header>
 
-                 ${currentTime} • Offline
+      <section className="tv-slide-card">
+        {currentSlide.image_url && (
+          <img
+            className="tv-slide-image"
+            src={currentSlide.image_url}
+            alt={currentSlide.title || 'Campus announcement'}
+          />
+        )}
 
-────────────────────────────────────────────────────────
-      `}</pre>
+        {currentSlide.title && (
+          <h2 className="tv-slide-title">
+            {currentSlide.title}
+          </h2>
+        )}
+
+        {currentSlide.body && (
+          <p className="tv-slide-body">
+            {currentSlide.body}
+          </p>
+        )}
+
+        <p className="tv-slide-counter">
+          Slide {currentIndex + 1} of {slides.length}
+        </p>
+      </section>
+
+      <footer className="tv-clock">
+        {currentTime} • Offline
+      </footer>
     </main>
   );
 }
