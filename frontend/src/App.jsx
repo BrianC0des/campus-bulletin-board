@@ -1,4 +1,3 @@
-import React from 'react';
 import { Routes, Route, Navigate } from 'react-router-dom';
 
 // Layout & Context
@@ -17,13 +16,12 @@ export default function App() {
   return (
     <AuthProvider>
       <Routes>
-        {/* Physical Display Screen Route (No Admin Layout) */}
+        {/* Physical display screen — no admin layout */}
         <Route path="/display" element={<DisplayScreen />} />
 
-        {/* Administrator Login */}
         <Route path="/login" element={<Login />} />
 
-        {/* Protected Administrator Dashboard Routes */}
+        {/* Admin dashboard routes */}
         <Route path="/" element={<Layout />}>
           <Route index element={<Navigate to="/dashboard" replace />} />
           <Route path="dashboard" element={<Dashboard />} />
