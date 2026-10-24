@@ -5,10 +5,10 @@ const api = axios.create({
   headers: {
     'Content-Type': 'application/json',
   },
-  withCredentials: true, // For passing display HTTP-only credential cookies
+  withCredentials: true,
 });
 
-// Request Interceptor: Attach current user ID if logged in
+// attach user id to every request if logged in
 api.interceptors.request.use(
   (config) => {
     const savedUser = localStorage.getItem('campus_user');
@@ -25,7 +25,7 @@ api.interceptors.request.use(
   (error) => Promise.reject(error)
 );
 
-// Response Interceptor: Handle common API errors (e.g. 401 Unauthorized)
+// handle errors globally
 api.interceptors.response.use(
   (response) => response.data,
   (error) => {

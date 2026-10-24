@@ -34,10 +34,10 @@ lerna-debug.log*
 .idea/
 .vscode/
 
-# Supabase Local Cache
-.branches/
-.temp/
-supabase/.temp/
+# Uploads
+uploads/*
+!uploads/.gitkeep
 
-# Wrangler Cache
-.wrangler/
+# AI assistant files
+AGENTS.md
+.agents/
