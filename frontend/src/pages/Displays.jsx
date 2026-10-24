@@ -46,7 +46,7 @@ export default function Displays() {
 
   return (
     <div>
-      <div className="page-header" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: '10px 0' }}>
+      <div className="page-header">
         <h1 className="page-title">Display Management</h1>
         <button className="btn btn-primary" onClick={() => setIsPairModalOpen(true)}>
           + Pair New Display
@@ -62,7 +62,11 @@ export default function Displays() {
         />
 
         <div className="filter-container">
-          <select value={filter} onChange={(e) => setFilter(e.target.value)} style={{ padding: '6px', border: '1px solid #000' }}>
+          <select
+            className="display-filter-select"
+            value={filter}
+            onChange={(e) => setFilter(e.target.value)}
+          >
             <option value="all">ALL</option>
             <option value="registered">REGISTERED</option>
             <option value="unregistered">UNREGISTERED</option>
@@ -70,11 +74,11 @@ export default function Displays() {
         </div>
       </div>
 
-      <div style={{ marginTop: '20px' }}>
+      <div className="displays-section">
         {filteredDisplays.length === 0 ? (
-          <p style={{ color: '#666' }}>No displays found.</p>
+          <p className="empty-text">No displays found.</p>
         ) : (
-          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(280px, 1fr))', gap: '16px' }}>
+          <div className="displays-grid">
             {filteredDisplays.map((display) => (
               <DisplayCard
                 key={display.id}

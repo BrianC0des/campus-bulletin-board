@@ -113,3 +113,17 @@ html, body, #root {
   margin-bottom: 1rem;
   font-size: 0.875rem;
 }
+
+/* Page Headers & Common Utilities */
+.page-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 10px 0;
+}
+
+.empty-text {
+  color: #666666;
+  padding: 20px 0;
+}
+

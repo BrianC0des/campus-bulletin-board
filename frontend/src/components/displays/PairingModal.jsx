@@ -66,17 +66,17 @@ export default function PairingModal({ isOpen, onClose, onPairSuccess }) {
         </div>
 
         <form onSubmit={handleSubmit}>
-          {error && <p className="errorText" style={{ color: '#b3261e', marginBottom: '12px' }}>{error}</p>}
+          {error && <p className="errorText">{error}</p>}
 
           <div className="modalField">
             <label className="labelSmall" htmlFor="pairCode">Pairing Code</label>
             <input
               id="pairCode"
+              className="pairing-code-input"
               type="text"
               value={code}
               onChange={handleCodeChange}
               placeholder="ABCD-1234"
-              style={{ fontFamily: 'monospace', letterSpacing: '2px', fontWeight: 'bold' }}
               required
             />
           </div>
