@@ -32,7 +32,7 @@ export default function Login() {
         <h1>Campus Bulletin Board</h1>
         <p className="subtitle">Administrator Sign In</p>
 
-        {error && <p style={{ color: '#b3261e', fontSize: '13px', marginBottom: '14px' }}>{error}</p>}
+        {error && <p className="login-error">{error}</p>}
 
         <form onSubmit={handleSubmit}>
           <div className="login-field">
@@ -61,8 +61,7 @@ export default function Login() {
 
           <button
             type="submit"
-            className="btn btnDark"
-            style={{ width: '100%', marginTop: '8px', padding: '12px' }}
+            className="btn btnDark login-btn"
           >
             Sign In
           </button>

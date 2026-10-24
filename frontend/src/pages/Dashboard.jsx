@@ -13,8 +13,8 @@ function StatCard({ title, value, status }) {
   const hasData = value !== undefined && value !== null;
 
   return (
-    <div className="stat-cards" style={{ border: '1px solid #000', padding: '18px 16px', minHeight: '110px', background: '#fff' }}>
-      <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '14px', fontWeight: 'bold', letterSpacing: '1px' }}>
+    <div className="stat-cards">
+      <div className="stat-card-header">
         <span>{title.toUpperCase()}</span>
         {status && <span className="status-tag">[ {status} ]</span>}
       </div>
@@ -27,10 +27,8 @@ function StatCard({ title, value, status }) {
 
 function Panel({ title, children }) {
   return (
-    <section className="panel" style={{ border: '1px solid #000', padding: '16px', minHeight: '200px', display: 'flex', flexDirection: 'column', background: '#fff' }}>
-      <h3 className="panel-title" style={{ margin: '0 0 16px 0', paddingBottom: '8px', borderBottom: '1px solid #000', fontSize: '18px', fontWeight: 'bold' }}>
-        {title}
-      </h3>
+    <section className="panel">
+      <h3 className="panel-title">{title}</h3>
       {children}
     </section>
   );
@@ -40,14 +38,14 @@ function RecentContent() {
   const recent = MOCK_ANNOUNCEMENTS.slice(0, 3);
   return (
     <Panel title="Recent Content">
-      <div style={{ display: 'flex', flexDirection: 'column', gap: '10px' }}>
+      <div className="panel-list">
         {recent.map((a) => (
-          <div key={a.id} style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: '6px 0', borderBottom: '1px solid #eee' }}>
+          <div key={a.id} className="panel-list-item">
             <div>
-              <div style={{ fontWeight: 'bold', fontSize: '14px' }}>{a.title}</div>
-              <div style={{ fontSize: '12px', color: '#666' }}>Ends: {new Date(a.ends_at).toLocaleDateString()}</div>
+              <div className="panel-item-title">{a.title}</div>
+              <div className="panel-item-sub">Ends: {new Date(a.ends_at).toLocaleDateString()}</div>
             </div>
-            <span style={{ fontSize: '12px', fontWeight: 'bold' }}>[ {a.status.toUpperCase()} ]</span>
+            <span className="panel-item-status">[ {a.status.toUpperCase()} ]</span>
           </div>
         ))}
       </div>
@@ -58,14 +56,14 @@ function RecentContent() {
 function DisplaysPanel() {
   return (
     <Panel title="DISPLAYS">
-      <div style={{ display: 'flex', flexDirection: 'column', gap: '10px' }}>
+      <div className="panel-list">
         {MOCK_DISPLAYS.map((d) => (
-          <div key={d.id} style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: '6px 0', borderBottom: '1px solid #eee' }}>
+          <div key={d.id} className="panel-list-item">
             <div>
-              <div style={{ fontWeight: 'bold', fontSize: '14px' }}>{d.name}</div>
-              <div style={{ fontSize: '12px', color: '#666' }}>{d.location}</div>
+              <div className="panel-item-title">{d.name}</div>
+              <div className="panel-item-sub">{d.location}</div>
             </div>
-            <span style={{ fontSize: '12px', fontWeight: 'bold' }}>
+            <span className="panel-item-status">
               [ {d.is_paired ? 'ONLINE' : 'UNPAIRED'} ]
             </span>
           </div>

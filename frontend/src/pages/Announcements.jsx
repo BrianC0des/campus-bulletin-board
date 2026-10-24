@@ -19,20 +19,20 @@ export default function Announcements() {
 
   return (
     <div>
-      <div className="page-header" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: '10px 0' }}>
+      <div className="page-header">
         <h1 className="page-title">Announcements</h1>
         <button className="btn btn-primary" onClick={() => alert('Announcement form')}>
           + New Announcement
         </button>
       </div>
 
-      <div style={{ display: 'flex', gap: '8px', alignItems: 'center', margin: '10px 0 20px 0', flexWrap: 'wrap' }}>
+      <div className="announcements-filter-row">
         <input
           type="text"
+          className="announcements-search"
           placeholder="Search announcements..."
           value={search}
           onChange={(e) => setSearch(e.target.value)}
-          style={{ padding: '8px 12px', border: '1px solid #000', fontSize: '14px', width: '240px' }}
         />
         <button className="btn btn-secondary" onClick={() => setActiveTab('all')}>All</button>
         <button className="btn btn-secondary" onClick={() => setActiveTab('active')}>Active</button>
@@ -41,9 +41,9 @@ export default function Announcements() {
       </div>
 
       {filteredAnnouncements.length === 0 ? (
-        <p style={{ color: '#666', padding: '20px 0' }}>No announcements found.</p>
+        <p className="empty-text">No announcements found.</p>
       ) : (
-        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(300px, 1fr))', gap: '16px' }}>
+        <div className="announcements-grid">
           {filteredAnnouncements.map((announcement) => (
             <AnnouncementCard key={announcement.id} announcement={announcement} />
           ))}

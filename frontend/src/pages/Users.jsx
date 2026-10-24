@@ -20,35 +20,32 @@ export default function Users() {
 
   return (
     <div>
-      <div className="page-header" style={{ padding: '10px 0' }}>
+      <div className="page-header">
         <h1 className="page-title">User Management</h1>
       </div>
 
-      <div style={{ border: '1px solid #000', background: '#fff', marginTop: '10px' }}>
-        <table style={{ width: '100%', borderCollapse: 'collapse', textAlign: 'left', fontSize: '13px' }}>
+      <div className="users-table-container">
+        <table className="users-table">
           <thead>
-            <tr style={{ borderBottom: '1px solid #000', background: '#f5f5f5' }}>
-              <th style={{ padding: '10px 14px' }}>Name</th>
-              <th style={{ padding: '10px 14px' }}>Email</th>
-              <th style={{ padding: '10px 14px' }}>Role</th>
-              <th style={{ padding: '10px 14px' }}>Status</th>
-              <th style={{ padding: '10px 14px', textAlign: 'right' }}>Action</th>
+            <tr>
+              <th>Name</th>
+              <th>Email</th>
+              <th>Role</th>
+              <th>Status</th>
+              <th className="admin-actions">Action</th>
             </tr>
           </thead>
           <tbody>
             {admins.map((admin) => (
-              <tr key={admin.id} style={{ borderBottom: '1px solid #eee' }}>
-                <td style={{ padding: '10px 14px', fontWeight: 'bold' }}>{admin.name}</td>
-                <td style={{ padding: '10px 14px', color: '#555' }}>{admin.email}</td>
-                <td style={{ padding: '10px 14px' }}>{admin.role}</td>
-                <td style={{ padding: '10px 14px', fontWeight: 'bold' }}>
-                  [ {admin.status.toUpperCase()} ]
-                </td>
-                <td style={{ padding: '10px 14px', textAlign: 'right' }}>
+              <tr key={admin.id}>
+                <td className="admin-name">{admin.name}</td>
+                <td className="admin-email">{admin.email}</td>
+                <td>{admin.role}</td>
+                <td className="admin-status">[ {admin.status.toUpperCase()} ]</td>
+                <td className="admin-actions">
                   <button
                     type="button"
-                    className="btn btn-secondary"
-                    style={{ padding: '4px 8px', fontSize: '11px' }}
+                    className="btn btn-secondary btn-toggle-status"
                     onClick={() => toggleStatus(admin.id)}
                   >
                     {admin.status === 'active' ? 'Disable' : 'Enable'}
