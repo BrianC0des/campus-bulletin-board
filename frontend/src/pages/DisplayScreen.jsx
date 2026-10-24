@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect } from 'react';
 import { MOCK_ANNOUNCEMENTS } from '../mocks/mockData.js';
 
@@ -19,7 +18,7 @@ export default function DisplayScreen() {
 
   const pairingCode = '7K4P - 92QM';
 
-  
+
   useEffect(() => {
     const clockTimer = setInterval(() => {
       setCurrentTime(new Date().toLocaleTimeString('en-US'));
@@ -28,7 +27,7 @@ export default function DisplayScreen() {
     return () => clearInterval(clockTimer);
   }, []);
 
-  
+
   useEffect(() => {
     if (slides.length === 0) return;
 
@@ -68,15 +67,15 @@ export default function DisplayScreen() {
             <p>
               <img
                 src={currentSlide.image_url}
-                alt={currentSlide.title}
+                alt={currentSlide.title || 'Campus announcement'}
                 width="600"
               />
             </p>
           )}
 
-          <h1>{currentSlide.title}</h1>
+          {currentSlide.title && <h1>{currentSlide.title}</h1>}
 
-          <p>{currentSlide.body}</p>
+          {currentSlide.body && <p>{currentSlide.body}</p>}
 
           <p>
             Slide {currentIndex + 1} of {slides.length}
@@ -89,7 +88,7 @@ export default function DisplayScreen() {
 
       Go to Admin Dashboard > Displays to Pair Screen
 
-                 ${currentTime}  •  Offline
+                 ${currentTime} • Offline
 
 ────────────────────────────────────────────────────────
       `}</pre>
