@@ -1,40 +1,7 @@
 /**
- * ============================================================================
- * 🤝 CAMPUS BULLETIN BOARD — SHARED API CONTRACT & MOCK DATA
- * ============================================================================
- * 
- * WHY THIS FILE EXISTS:
- * When building a full-stack web application, frontend developers should NOT
- * be blocked waiting for backend APIs or database migrations to finish.
- * 
- * An "API Contract" is an agreement between frontend and backend on:
- *   1. What keys exist (e.g. `publish_status`, not `publishStatus`)
- *   2. What data types they have (string, number, ISO-8601 timestamp string)
- *   3. What values to expect ('draft' | 'published' | 'archived')
- * 
- * HOW TO USE THIS IN YOUR REACT COMPONENTS:
- * 
- *   // 1. Import what you need:
- *   import { MOCK_ANNOUNCEMENTS } from '../mocks/mockData';
- * 
- *   // 2. Put it in your React state:
- *   const [announcements, setAnnouncements] = useState(MOCK_ANNOUNCEMENTS);
- * 
- *   // 3. Build & style your component using real array methods (.filter, .map):
- *   const activeList = announcements.filter(a => a.status === 'active');
- * 
- * LATER WHEN THE REAL BACKEND IS READY:
- * You only replace the initial state with an API fetch! Your JSX and CSS stay 100% untouched:
- *   useEffect(() => {
- *     fetch('/api/announcements').then(res => res.json()).then(setAnnouncements);
- *   }, []);
- * ============================================================================
+ * Mock data matching the PostgreSQL view `v_announcements` and Express API `GET /api/announcements`
  */
 
-/**
- * 📢 MOCK ANNOUNCEMENTS CONTRACT
- * Matches the PostgreSQL view `v_announcements` and Express API `GET /api/announcements`
- */
 export const MOCK_ANNOUNCEMENTS = [
   {
     id: "ann-001",
@@ -129,8 +96,7 @@ export const MOCK_ANNOUNCEMENTS = [
 ];
 
 /**
- * 📺 MOCK DISPLAYS CONTRACT
- * Matches the PostgreSQL table `displays` and Express API `GET /api/displays`
+ * Mock data matching the PostgreSQL table `displays` and Express API `GET /api/displays`
  */
 export const MOCK_DISPLAYS = [
   {
@@ -172,8 +138,7 @@ export const MOCK_DISPLAYS = [
 ];
 
 /**
- * 📊 MOCK DASHBOARD METRICS CONTRACT
- * Matches the aggregated numbers returned on `GET /api/dashboard/stats`
+ * Mock data matching the aggregated numbers returned on `GET /api/dashboard/stats`
  */
 export const MOCK_METRICS = {
   totalAnnouncements: 14,
@@ -184,8 +149,7 @@ export const MOCK_METRICS = {
 };
 
 /**
- * 🔑 MOCK PAIRING CONTRACT
- * Matches the payload returned by `POST /api/displays/pair`
+ * Mock data matching the payload returned by `POST /api/displays/pair`
  */
 export const MOCK_PAIRING_RESPONSES = {
   // Simulates entering a valid 8-character pairing code

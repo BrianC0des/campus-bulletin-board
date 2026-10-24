@@ -1,10 +1,11 @@
 import React from 'react';
 import { Outlet, Navigate } from 'react-router-dom';
 import Navbar from './Navbar.jsx';
+import TopNav from './TopNav.jsx';
 import { useAuth } from '../../context/AuthContext.jsx';
 
 export default function Layout() {
-  const { user } = useAuth();
+  const { user, logout } = useAuth();
 
   // If not logged in, redirect to login
   if (!user) {
@@ -13,8 +14,9 @@ export default function Layout() {
 
   return (
     <div className="app-layout">
-      <Navbar />
+      <Navbar onLogout={logout} />
       <main className="main-content">
+        <TopNav />
         <Outlet />
       </main>
     </div>

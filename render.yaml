@@ -14,8 +14,6 @@ services:
         value: 5000
       - key: DATABASE_URL
         sync: false
-
-
       - key: CAMPUS_TIMEZONE
         value: Asia/Manila
       - key: CLIENT_URL

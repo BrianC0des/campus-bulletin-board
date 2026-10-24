@@ -1,18 +1,114 @@
-import React from 'react';
 
-/**
- * Physical Screen View (/display):
- * - If unregistered: displays 8-character pairing code (e.g. 7K4P-92QM)
- * - If registered: polls /api/displays/active-content and rotates up to 6 notices
- * - If no active content: shows campus fallback screen
- */
+import React, { useState, useEffect } from 'react';
+import { MOCK_ANNOUNCEMENTS } from '../mocks/mockData.js';
+import '../styles/displays.css';
+
 export default function DisplayScreen() {
+  const [currentTime, setCurrentTime] = useState(
+    new Date().toLocaleTimeString('en-US')
+  );
+
+  const [currentIndex, setCurrentIndex] = useState(0);
+
+  const [slides] = useState(() =>
+    MOCK_ANNOUNCEMENTS.filter(
+      (announcement) =>
+        announcement.publish_status === 'published' &&
+        announcement.status === 'active'
+    )
+  );
+
+  // Temporary placeholder until the backend provides a real pairing code.
+  const pairingCode = '7K4P - 92QM';
+
+  // Update the clock every second.
+  useEffect(() => {
+    const clockTimer = setInterval(() => {
+      setCurrentTime(new Date().toLocaleTimeString('en-US'));
+    }, 1000);
+
+    return () => clearInterval(clockTimer);
+  }, []);
+
+  // Rotate announcements every 10 seconds.
+  useEffect(() => {
+    if (slides.length === 0) return;
+
+    const slideTimer = setInterval(() => {
+      setCurrentIndex(
+        (previousIndex) => (previousIndex + 1) % slides.length
+      );
+    }, 10000);
+
+    return () => clearInterval(slideTimer);
+  }, [slides.length]);
+
+  const currentSlide = slides[currentIndex];
+
+  // Standby screen when no active announcements are available.
+  if (slides.length === 0) {
+    return (
+      <main className="tv-fullscreen-screen">
+        <header className="tv-standby-header">
+          <h1>🏛️ CAMPUS DIGITAL SIGNAGE</h1>
+        </header>
+
+        <section className="tv-standby-content">
+          <p className="tv-instructions">Pairing Code:</p>
+
+          <div className="pairing-code-box">
+            {pairingCode}
+          </div>
+
+          <p className="tv-instructions">
+            To link this display, open Admin Dashboard
+            {' > '}Displays{' > '}Pair New Display
+          </p>
+        </section>
+
+        <footer className="tv-clock">
+          {currentTime} • Offline
+        </footer>
+      </main>
+    );
+  }
+
+  // Playback screen for active announcements.
   return (
-    <div className="fullscreen-tv">
-      {/* TODO: State handling for Pairing Code vs Announcement Carousel */}
-      <h1 style={{ fontSize: '2.5rem', fontFamily: 'monospace', letterSpacing: '2px' }}>
-        Digital Signage Screen
-      </h1>
-    </div>
+    <main className="tv-fullscreen-screen">
+      <header className="tv-standby-header">
+        <h1>🏛️ CAMPUS DIGITAL SIGNAGE</h1>
+      </header>
+
+      <section className="tv-slide-card">
+        {currentSlide.image_url && (
+          <img
+            className="tv-slide-image"
+            src={currentSlide.image_url}
+            alt={currentSlide.title || 'Campus announcement'}
+          />
+        )}
+
+        {currentSlide.title && (
+          <h2 className="tv-slide-title">
+            {currentSlide.title}
+          </h2>
+        )}
+
+        {currentSlide.body && (
+          <p className="tv-slide-body">
+            {currentSlide.body}
+          </p>
+        )}
+
+        <p className="tv-slide-counter">
+          Slide {currentIndex + 1} of {slides.length}
+        </p>
+      </section>
+
+      <footer className="tv-clock">
+        {currentTime} • Offline
+      </footer>
+    </main>
   );
 }

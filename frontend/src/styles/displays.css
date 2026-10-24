@@ -1,90 +1,146 @@
-/* ==========================================================================
-   Displays & Physical TV Screen Styles Template
-   Assigned to: Jay Jasper & Kelvin
-   ========================================================================== */
 
 /* --------------------------------------------------------------------------
-   📺 JAY JASPER'S SECTION: Fullscreen Campus TV Display (/display)
+   JAY JASPER'S SECTION: Fullscreen Campus TV Display (/display)
    -------------------------------------------------------------------------- */
 
-/* Fullscreen dark container running on the physical campus TV 24/7 */
+/* Fullscreen display */
 .tv-fullscreen-screen {
   position: fixed;
   inset: 0;
-  background-color: #020617;
-  color: #ffffff;
+  box-sizing: border-box;
+  overflow: auto;
+  padding: 24px;
+  background: #ffffff;
+  color: #000000;
+  font-family: monospace;
   display: flex;
   flex-direction: column;
-  justify-content: center;
-  align-items: center;
-  padding: 3rem;
-  /* TODO: Jay Jasper can customize TV background, gradients, or ambient border */
-}
-
-/* Big 8-character pairing code box shown when TV is not yet paired */
-.pairing-code-box {
-  font-family: monospace;
-  font-size: 4rem;
-  font-weight: 800;
-  letter-spacing: 0.5rem;
-  background-color: #0f172a;
-  border: 2px dashed #38bdf8;
-  padding: 1.5rem 3rem;
-  border-radius: var(--border-radius);
-  color: #38bdf8;
-  margin-bottom: 1.5rem;
-  /* TODO: Jay Jasper can add glowing text shadow or animations */
-}
-
-.tv-instructions {
-  font-size: 1.5rem;
-  color: #94a3b8;
+  justify-content: space-between;
+  align-items: stretch;
   text-align: center;
-  max-width: 600px;
+  border: 2px solid #000000;
 }
 
-.tv-clock {
-  position: absolute;
-  top: 2rem;
-  right: 2.5rem;
+/* Campus heading */
+.tv-fullscreen-screen .tv-standby-header {
+  padding: 12px 0;
+  border-bottom: 1px solid #000000;
+}
+
+.tv-fullscreen-screen .tv-standby-header h1 {
+  margin: 12px 0;
+  color: #000000;
+  font-size: clamp(1.2rem, 2vw, 1.8rem);
+  font-weight: bold;
+}
+
+/* Standby content */
+.tv-fullscreen-screen .tv-standby-content {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  flex: 1;
+  padding: 24px 0;
+}
+
+.tv-fullscreen-screen .tv-instructions {
+  max-width: 100%;
+  color: #000000;
+  font-size: clamp(0.9rem, 1.2vw, 1rem);
+  text-align: center;
+}
+
+/* Pairing code */
+.tv-fullscreen-screen .pairing-code-box {
+  display: inline-block;
+  box-sizing: border-box;
+  padding: 12px 24px;
+  margin: 12px 0 24px;
+  background: #ffffff;
+  color: #000000;
+  border: 1px solid #000000;
+  border-radius: 0;
+  box-shadow: none;
   font-family: monospace;
-  font-size: 1.5rem;
-  color: #64748b;
+  font-size: clamp(1.4rem, 3vw, 2rem);
+  font-weight: bold;
+  letter-spacing: 4px;
 }
 
-/* 10-Second Carousel Slide Card */
-.tv-slide-card {
+/* Announcement card */
+.tv-fullscreen-screen .tv-slide-card {
+  flex: 1;
   width: 100%;
-  max-width: 1200px;
-  background-color: #0f172a;
-  border: 1px solid #1e293b;
-  border-radius: 16px;
-  padding: 3rem;
+  max-width: none;
+  box-sizing: border-box;
+  margin: 20px 0;
+  padding: 24px;
+  background: #ffffff;
+  color: #000000;
+  border: 1px solid #000000;
+  border-radius: 0;
+  box-shadow: none;
   display: flex;
   flex-direction: column;
   justify-content: center;
-  /* TODO: Jay Jasper can add smooth fade or slide transition effects */
+  align-items: stretch;
 }
 
-.tv-slide-title {
-  font-size: 3rem;
-  font-weight: 800;
-  margin-bottom: 1.5rem;
-  color: #f8fafc;
+/* Announcement image */
+.tv-fullscreen-screen .tv-slide-image {
+  display: block;
+  max-width: 100%;
+  max-height: 40vh;
+  object-fit: contain;
+  margin: 0 auto 20px;
 }
 
-.tv-slide-body {
-  font-size: 1.75rem;
-  color: #cbd5e1;
+/* Announcement title */
+.tv-fullscreen-screen .tv-slide-title {
+  margin: 0 0 16px;
+  color: #000000;
+  font-size: clamp(1.4rem, 3vw, 2rem);
+  font-weight: bold;
+  text-align: left;
+}
+
+/* Announcement body */
+.tv-fullscreen-screen .tv-slide-body {
+  margin: 0;
+  color: #000000;
+  font-size: clamp(1rem, 1.5vw, 1.1rem);
   line-height: 1.6;
+  text-align: left;
+}
+
+/* Slide counter */
+.tv-fullscreen-screen .tv-slide-counter {
+  margin-top: 24px;
+  color: #000000;
+  font-size: 0.9rem;
+  text-align: center;
+}
+
+/* Clock and bottom divider */
+.tv-fullscreen-screen .tv-clock {
+  position: static;
+  padding: 16px 0 0;
+  margin: 0;
+  border-top: 1px solid #000000;
+  background: #ffffff;
+  color: #000000;
+  font-family: monospace;
+  font-size: 1rem;
+  text-align: center;
 }
 
 
 /* --------------------------------------------------------------------------
-   🔒 KELVIN'S SECTION: TV Screen Pairing Modal Popup
+   KELVIN'S SECTION: TV Screen Pairing Modal Popup
    -------------------------------------------------------------------------- */
 
-/* Dimmed backdrop overlay covering the page */
+/* Dimmed backdrop overlay */
 .modal-backdrop {
   position: fixed;
   inset: 0;
@@ -93,10 +149,9 @@
   align-items: center;
   justify-content: center;
   z-index: 1000;
-  /* TODO: Kelvin can add backdrop blur or fade-in transition */
 }
 
-/* White modal card box */
+/* White modal card */
 .modal-content {
   background-color: #ffffff;
   border-radius: var(--border-radius);
@@ -104,12 +159,11 @@
   max-width: 480px;
   width: 90%;
   box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1);
-  /* TODO: Kelvin can customize modal padding, borders, or slide-up animation */
 }
 
 
 /* --------------------------------------------------------------------------
-   🖥️ Displays Management Page Grid
+   Displays Management Page Grid
    -------------------------------------------------------------------------- */
 
 .displays-grid {
@@ -117,6 +171,10 @@
   grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
   gap: 1.25rem;
   margin-top: 1.5rem;
+}
+
+.displays-section {
+  margin-top: 20px;
 }
 
 .display-card {
@@ -136,4 +194,199 @@
   color: var(--secondary-color);
   font-size: 0.875rem;
   margin-bottom: 1rem;
+}
+
+.searchInput {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  border: 1px solid #000;
+  padding: 0 15px;
+  height: 40px;
+  margin-top: 10px;
+}
+
+.searchInput input {
+  flex: 1;
+  border: none;
+  outline: none;
+  background: none;
+  font-family: inherit;
+  font-size: 15px;
+  font-weight: bold;
+}
+
+.DisplayTable {
+  margin-top: 5px;
+  font-size: 10px;
+  font-weight: bold;
+}
+
+.row {
+  display: grid;
+  grid-template-columns: 90px 2fr 1.5fr 1.2fr 1fr;
+  align-items: center;
+  padding: 10px 24px;
+}
+
+.DisplayHeader {
+  padding-bottom: 10px;
+  letter-spacing: 1px;
+}
+
+.row + .row:not(.DisplayHeader) {
+  padding-top: 18px;
+}
+
+
+/* Kelvin's Pairing Modal Styles */
+.modalBackdrop {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.5);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 16px;
+  z-index: 100;
+}
+
+.modalContent {
+  width: 100%;
+  max-width: 480px;
+  background: #ffffff;
+  color: #000000;
+  border: 2px solid #000000;
+  padding: 24px;
+}
+
+.modalHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  border-bottom: 1px solid #000000;
+  padding-bottom: 14px;
+  margin-bottom: 18px;
+}
+
+.modalHeader h2 {
+  font-size: 1.25rem;
+  margin: 0;
+}
+
+.labelSmall {
+  margin: 0 0 6px;
+  font-size: 11px;
+  font-weight: bold;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+  color: #555;
+}
+
+.modalClose {
+  border: none;
+  background: none;
+  color: #000000;
+  font-size: 14px;
+  font-weight: bold;
+  cursor: pointer;
+}
+
+.modalField {
+  margin-bottom: 16px;
+  display: flex;
+  flex-direction: column;
+}
+
+.modalField input {
+  width: 100%;
+  padding: 10px 12px;
+  border: 1px solid #000000;
+  background: #ffffff;
+  color: #000000;
+  font-family: inherit;
+  font-size: 14px;
+}
+
+.modalActions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 10px;
+  border-top: 1px solid #000000;
+  padding-top: 16px;
+  margin-top: 16px;
+}
+
+.btnDark {
+  background: #000000 !important;
+  color: #ffffff !important;
+  border: 1px solid #000000 !important;
+}
+
+.btnOutline {
+  background: #ffffff !important;
+  color: #000000 !important;
+  border: 1px solid #000000 !important;
+}
+
+
+/* Display Card and Fleet Grid */
+.display-fleet-card {
+  border: 1px solid #000000;
+  padding: 16px;
+  background: #ffffff;
+  display: flex;
+  flex-direction: column;
+}
+
+.display-fleet-top {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+}
+
+.display-fleet-name {
+  font-size: 15px;
+  font-weight: bold;
+  margin: 0;
+}
+
+.display-fleet-location {
+  font-size: 12px;
+  color: #666666;
+  margin: 4px 0 0;
+}
+
+.display-fleet-status {
+  font-size: 11px;
+  font-weight: bold;
+  letter-spacing: 1px;
+}
+
+.display-fleet-info {
+  margin: 14px 0;
+  font-size: 12px;
+  color: #444444;
+}
+
+.display-fleet-actions {
+  display: flex;
+  gap: 8px;
+  margin-top: auto;
+  padding-top: 10px;
+  border-top: 1px solid #eeeeee;
+}
+
+.display-filter-select {
+  padding: 6px 10px;
+  border: 1px solid #000000;
+  background: #ffffff;
+  font-family: inherit;
+  font-size: 13px;
+}
+
+.pairing-code-input {
+  font-family: monospace !important;
+  letter-spacing: 2px !important;
+  font-weight: bold !important;
 }
