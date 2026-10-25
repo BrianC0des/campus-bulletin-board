@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect } from 'react';
 import { MOCK_ANNOUNCEMENTS } from '../mocks/mockData.js';
 import '../styles/displays.css';
@@ -18,10 +17,9 @@ export default function DisplayScreen() {
     )
   );
 
-  // Temporary placeholder until the backend provides a real pairing code.
+
   const pairingCode = '7K4P - 92QM';
 
-  // Update the clock every second.
   useEffect(() => {
     const clockTimer = setInterval(() => {
       setCurrentTime(new Date().toLocaleTimeString('en-US'));
@@ -30,7 +28,6 @@ export default function DisplayScreen() {
     return () => clearInterval(clockTimer);
   }, []);
 
-  // Rotate announcements every 10 seconds.
   useEffect(() => {
     if (slides.length === 0) return;
 
@@ -45,7 +42,7 @@ export default function DisplayScreen() {
 
   const currentSlide = slides[currentIndex];
 
-  // Standby screen when no active announcements are available.
+
   if (slides.length === 0) {
     return (
       <main className="tv-fullscreen-screen">
@@ -73,7 +70,7 @@ export default function DisplayScreen() {
     );
   }
 
-  // Playback screen for active announcements.
+  
   return (
     <main className="tv-fullscreen-screen">
       <header className="tv-standby-header">
