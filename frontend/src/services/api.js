@@ -1,9 +1,9 @@
 import axios from 'axios';
 
 const defaultBaseUrl =
-  typeof window !== 'undefined' && window.location.hostname && window.location.hostname !== 'localhost'
-    ? `http://${window.location.hostname}:5000/api`
-    : 'http://localhost:5000/api';
+  typeof window !== 'undefined' && window.location.hostname === 'localhost'
+    ? 'http://localhost:5000/api'
+    : 'https://campus-bulletin-backend.onrender.com/api';
 
 const api = axios.create({
   baseURL: import.meta.env.VITE_API_URL || defaultBaseUrl,
