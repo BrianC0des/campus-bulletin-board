@@ -70,6 +70,7 @@ export default function Announcements() {
               title={previewData.title}
               body={previewData.body}
               imageUrl={previewData.imageUrl}
+              onClose={() => setShowPreview(false)}
             />
           )}
         </div>
@@ -94,7 +95,21 @@ export default function Announcements() {
       ) : (
         <div className="announcements-grid">
           {filteredAnnouncements.map((announcement) => (
-            <AnnouncementCard key={announcement.id} announcement={announcement} />
+            <AnnouncementCard
+              key={announcement.id}
+              announcement={announcement}
+              onPreview={(ann) => {
+                setPreviewData({
+                  title: ann.title,
+                  body: ann.body,
+                  imageUrl: ann.image_url,
+                });
+                setShowPreview(true);
+              }}
+              onDelete={(id) => {
+                setAnnouncements((prev) => prev.filter((a) => a.id !== id));
+              }}
+            />
           ))}
         </div>
       )}

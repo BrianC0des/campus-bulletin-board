@@ -1,33 +1,114 @@
-import React from 'react';
 
-export default function AnnouncementCard({ announcement }) {
-  if (!announcement) return null;
+export default function AnnouncementCard({
+  announcement,
+  onEdit,
+  onDelete,
+  onPreview,
+}) {
+  const {
+    id,
+    title,
+    body,
+    image_url,
+    status,
+    starts_at,
+    ends_at,
+    author_email,
+    created_by,
+  } = announcement;
 
-  const { title, body, status, starts_at, ends_at, image_url, assigned_displays } = announcement;
+  function formatDate(dateString) {
+    if (!dateString) return 'No date';
+
+    const date = new Date(dateString);
+
+    if (Number.isNaN(date.getTime())) {
+      return 'Invalid date';
+    }
+
+    return date.toLocaleDateString('en-US', {
+      month: 'short',
+      day: 'numeric',
+      year: 'numeric',
+    });
+  }
+
+  const statuses = ['active', 'scheduled', 'expired'];
+  const statusValue = status?.toLowerCase();
+
+  const normalizedStatus = statuses.includes(statusValue)
+    ? statusValue
+    : 'unknown';
+
+  const author = author_email || created_by;
 
   return (
-    <div className="announcement-card">
-      {image_url && (
-        <div className="announcement-card-image">
-          <img src={image_url} alt={title} />
-        </div>
-      )}
+    <article className="announcement-feed-card">
+      <div className="card-header-row">
+        <div className="card-heading">
+          <h2 className="card-title">
+            {title || 'Untitled Announcement'}
+          </h2>
 
-      <div className="announcement-card-top">
-        <h3 className="announcement-card-title">{title}</h3>
-        <span className="announcement-card-status">[ {status} ]</span>
+          {author && (
+            <p className="card-author">By {author}</p>
+          )}
+        </div>
+
+        <span className={`badge badge-${normalizedStatus}`}>
+          {normalizedStatus.toUpperCase()}
+        </span>
       </div>
 
-      <p className="announcement-card-body">{body}</p>
-
-      <div className="announcement-card-meta">
-        <div>Schedule: {new Date(starts_at).toLocaleDateString()} - {new Date(ends_at).toLocaleDateString()}</div>
-        {assigned_displays && assigned_displays.length > 0 && (
-          <div className="announcement-displays-tag">
-            Displays: {assigned_displays.map((d) => d.name).join(', ')}
+      <div className="card-content-row">
+        {image_url ? (
+          <img
+            src={image_url}
+            alt={title || 'Announcement thumbnail'}
+            className="card-thumbnail"
+          />
+        ) : (
+          <div className="card-thumbnail card-no-image">
+            No Image
           </div>
         )}
+
+        <div className="card-details">
+          <p className="card-body-text">
+            {body?.trim() || '(Graphic Poster Notice)'}
+          </p>
+
+          <div className="card-schedule-info">
+            <span>Start: {formatDate(starts_at)}</span>
+            <span>End: {formatDate(ends_at)}</span>
+          </div>
+        </div>
       </div>
-    </div>
+
+      <div className="card-actions-row">
+        <button
+          type="button"
+          onClick={() => onPreview?.(announcement)}
+        >
+          Preview
+        </button>
+
+        <button
+          type="button"
+          className="card-edit-btn"
+          onClick={() => onEdit?.(announcement)}
+        >
+          Edit
+        </button>
+
+        <button
+          type="button"
+          className="card-delete-btn"
+          onClick={() => onDelete?.(id)}
+        >
+          Delete
+        </button>
+      </div>
+    </article>
   );
 }
