@@ -14,6 +14,8 @@ export default function Users() {
   const [fullName, setFullName] = useState('');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
+  const [department, setDepartment] = useState('');
+  const [position, setPosition] = useState('');
   const [role, setRole] = useState('admin');
   const [modalError, setModalError] = useState('');
   const [submitting, setSubmitting] = useState(false);
@@ -69,6 +71,8 @@ export default function Users() {
         full_name: fullName.trim(),
         email: email.trim(),
         password: password.trim(),
+        department: department.trim() || undefined,
+        position: position.trim() || undefined,
         role,
       });
 
@@ -78,6 +82,8 @@ export default function Users() {
         setFullName('');
         setEmail('');
         setPassword('');
+        setDepartment('');
+        setPosition('');
         setRole('admin');
       }
     } catch (err) {
@@ -112,6 +118,8 @@ export default function Users() {
             <thead>
               <tr>
                 <th>Name</th>
+                <th>Department / College</th>
+                <th>Position</th>
                 <th>Email</th>
                 <th>Role</th>
                 <th>Status</th>
@@ -125,6 +133,12 @@ export default function Users() {
                   <tr key={admin.id}>
                     <td className="admin-name">
                       {admin.full_name} {isSelf && <span style={{ color: '#888', fontWeight: 'normal' }}>(You)</span>}
+                    </td>
+                    <td style={{ fontSize: '13px', color: admin.department ? '#111' : '#888' }}>
+                      {admin.department || '—'}
+                    </td>
+                    <td style={{ fontSize: '13px', color: admin.position ? '#111' : '#888' }}>
+                      {admin.position || '—'}
                     </td>
                     <td className="admin-email">{admin.email}</td>
                     <td>
@@ -200,6 +214,28 @@ export default function Users() {
                   onChange={(e) => setEmail(e.target.value)}
                   placeholder="e.g. juan@wmsu.edu.ph"
                   required
+                />
+              </div>
+
+              <div className="modalField">
+                <label className="labelSmall" htmlFor="newAdminDept">Department / College (Optional)</label>
+                <input
+                  id="newAdminDept"
+                  type="text"
+                  value={department}
+                  onChange={(e) => setDepartment(e.target.value)}
+                  placeholder="e.g. College of Computing Studies"
+                />
+              </div>
+
+              <div className="modalField">
+                <label className="labelSmall" htmlFor="newAdminPos">Position / Designation (Optional)</label>
+                <input
+                  id="newAdminPos"
+                  type="text"
+                  value={position}
+                  onChange={(e) => setPosition(e.target.value)}
+                  placeholder="e.g. Faculty Adviser / Department Head"
                 />
               </div>
 

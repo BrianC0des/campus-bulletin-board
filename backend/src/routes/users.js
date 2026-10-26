@@ -9,7 +9,7 @@ const router = express.Router();
 router.get('/', requireLeadAdmin, async (req, res, next) => {
   try {
     const result = await query(
-      'SELECT id, email, full_name, role, status, created_at FROM administrator_profiles ORDER BY created_at ASC'
+      'SELECT id, email, full_name, role, department, position, status, created_at FROM administrator_profiles ORDER BY created_at ASC'
     );
     res.json({ administrators: result.rows });
   } catch (err) {
@@ -20,7 +20,7 @@ router.get('/', requireLeadAdmin, async (req, res, next) => {
 // POST /api/users - Create new administrator (Lead Admin only)
 router.post('/', requireLeadAdmin, async (req, res, next) => {
   try {
-    const { email, password, full_name, role } = req.body;
+    const { email, password, full_name, role, department, position } = req.body;
 
     if (!email || !password || !full_name) {
       return res.status(400).json({ error: 'Email, password, and full name are required' });
@@ -30,10 +30,17 @@ router.post('/', requireLeadAdmin, async (req, res, next) => {
     const passwordHash = await bcrypt.hash(password.trim(), 10);
 
     const result = await query(
-      `INSERT INTO administrator_profiles (email, password_hash, full_name, role, status)
-       VALUES ($1, $2, $3, $4, 'active')
-       RETURNING id, email, full_name, role, status, created_at`,
-      [email.trim().toLowerCase(), passwordHash, full_name.trim(), assignedRole]
+      `INSERT INTO administrator_profiles (email, password_hash, full_name, role, department, position, status)
+       VALUES ($1, $2, $3, $4, $5, $6, 'active')
+       RETURNING id, email, full_name, role, department, position, status, created_at`,
+      [
+        email.trim().toLowerCase(),
+        passwordHash,
+        full_name.trim(),
+        assignedRole,
+        department ? department.trim() : null,
+        position ? position.trim() : null,
+      ]
     );
 
     res.status(201).json({ success: true, administrator: result.rows[0] });
@@ -64,7 +71,7 @@ router.patch('/:id/status', requireLeadAdmin, async (req, res, next) => {
       `UPDATE administrator_profiles
        SET status = $1, updated_at = CURRENT_TIMESTAMP
        WHERE id = $2
-       RETURNING id, email, full_name, role, status`,
+       RETURNING id, email, full_name, role, department, position, status`,
       [status, id]
     );
 

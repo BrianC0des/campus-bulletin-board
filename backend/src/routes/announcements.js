@@ -12,7 +12,7 @@ router.get('/', requireAdmin, async (req, res, next) => {
     const result = await query(`
       SELECT 
         a.id, a.title, a.body, a.publish_status, a.status, a.starts_at, a.ends_at,
-        a.image_url, a.created_by, a.author_name, a.created_at,
+        a.image_url, a.created_by, a.author_name, a.author_department, a.author_position, a.created_at,
         COALESCE(
           json_agg(json_build_object('id', d.id, 'name', d.name)) 
           FILTER (WHERE d.id IS NOT NULL), '[]'
@@ -21,7 +21,7 @@ router.get('/', requireAdmin, async (req, res, next) => {
       LEFT JOIN announcement_displays ad ON a.id = ad.announcement_id
       LEFT JOIN displays d ON ad.display_id = d.id
       GROUP BY a.id, a.title, a.body, a.publish_status, a.status, a.starts_at, 
-               a.ends_at, a.image_url, a.created_by, a.author_name, a.created_at
+               a.ends_at, a.image_url, a.created_by, a.author_name, a.author_department, a.author_position, a.created_at
       ORDER BY a.created_at DESC
     `);
     res.json({ announcements: result.rows });

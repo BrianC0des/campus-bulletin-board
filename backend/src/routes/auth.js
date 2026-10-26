@@ -13,7 +13,7 @@ router.post('/login', async (req, res, next) => {
     }
 
     const result = await query(
-      'SELECT id, email, password_hash, full_name, role, status FROM administrator_profiles WHERE email = $1',
+      'SELECT id, email, password_hash, full_name, role, department, position, status FROM administrator_profiles WHERE email = $1',
       [email.trim()]
     );
 
@@ -39,6 +39,8 @@ router.post('/login', async (req, res, next) => {
       email: admin.email,
       full_name: admin.full_name,
       role: admin.role,
+      department: admin.department || null,
+      position: admin.position || null,
       status: admin.status,
     };
 

@@ -9,6 +9,8 @@ CREATE TABLE IF NOT EXISTS administrator_profiles (
     password_hash VARCHAR(255) NOT NULL,
     full_name VARCHAR(150) NOT NULL,
     role VARCHAR(50) DEFAULT 'admin' NOT NULL,
+    department VARCHAR(100),
+    position VARCHAR(100),
     status VARCHAR(20) DEFAULT 'active' NOT NULL,
     created_at TIMESTAMPTZ DEFAULT CURRENT_TIMESTAMP NOT NULL,
     updated_at TIMESTAMPTZ DEFAULT CURRENT_TIMESTAMP NOT NULL,
@@ -84,6 +86,8 @@ SELECT
     a.image_url,
     a.created_by,
     p.full_name AS author_name,
+    p.department AS author_department,
+    p.position AS author_position,
     a.created_at,
     a.deleted_at
 FROM announcements a

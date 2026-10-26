@@ -1,7 +1,7 @@
 export default function AnnouncementCard({ announcement, onEdit, onDelete, onPreview }) {
   if (!announcement) return null;
 
-  const { id, title, body, image_url, status, starts_at, ends_at, author_name, assigned_displays } = announcement;
+  const { id, title, body, image_url, status, starts_at, ends_at, author_name, author_department, assigned_displays } = announcement;
 
   function formatDate(dateString) {
     if (!dateString) return '—';
@@ -10,7 +10,9 @@ export default function AnnouncementCard({ announcement, onEdit, onDelete, onPre
     return date.toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' });
   }
 
-  const author = author_name || null;
+  const author = author_name
+    ? (author_department ? `${author_name} (${author_department})` : author_name)
+    : null;
 
   return (
     <div className="announcement-card">
