@@ -1,4 +1,5 @@
 import React from 'react';
+import { getImageUrl } from '../../utils/imageUrl.js';
 
 export default function AnnouncementPreview({ title, body, imageUrl, image_url, onClose }) {
   const activeImage = imageUrl || image_url;
@@ -29,7 +30,7 @@ export default function AnnouncementPreview({ title, body, imageUrl, image_url, 
             <>
               {activeImage && (
                 <div className="preview-image-wrap">
-                  <img src={activeImage} alt="Announcement preview" />
+                  <img src={getImageUrl(activeImage)} alt="Announcement preview" />
                 </div>
               )}
               {title?.trim() && <h2 className="preview-title">{title}</h2>}

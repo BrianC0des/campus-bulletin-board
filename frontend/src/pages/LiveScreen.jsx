@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import api from '../services/api.js';
+import { getImageUrl } from '../utils/imageUrl.js';
 import '../styles/displays.css';
 
 export default function LiveScreen() {
@@ -123,29 +124,47 @@ export default function LiveScreen() {
 
   const currentSlide = slides[currentIndex] || slides[0];
 
+  // Helper to test if title is just an ugly generated filename
+  const isRawFilename = (t) => {
+    if (!t) return true;
+    return (
+      /^screenshot[-_0-9]+/i.test(t) ||
+      /^img[-_0-9]+/i.test(t) ||
+      t.toLowerCase().endsWith('.png') ||
+      t.toLowerCase().endsWith('.jpg') ||
+      t.toLowerCase().endsWith('.jpeg') ||
+      t === 'Graphic Poster'
+    );
+  };
+
+  const hasBody = Boolean(currentSlide?.body && currentSlide.body.trim());
+  const hasImage = Boolean(currentSlide?.image_url);
+  const displayTitle = isRawFilename(currentSlide?.title) ? '' : currentSlide?.title;
+
   // State 1: Not yet paired — show pairing code
   if (!isPaired) {
     return (
       <main className="tv-fullscreen-screen">
         <header className="tv-standby-header">
-          <h1>🏛️ CAMPUS DIGITAL SIGNAGE</h1>
+          <h1>CAMPUS DIGITAL SIGNAGE</h1>
+          <span className="tv-live-badge">[ UNPAIRED ]</span>
         </header>
 
         <section className="tv-standby-content">
-          <p className="tv-instructions">Pairing Code:</p>
+          <p className="tv-instructions">PAIRING CODE</p>
 
           <div className="pairing-code-box">
             {pairingCode}
           </div>
 
           <p className="tv-instructions">
-            To link this display, open Admin Dashboard
-            {' > '}Displays{' > '}Pair New Display
+            Open Admin Dashboard &gt; Displays &gt; Pair New Display to connect this screen.
           </p>
         </section>
 
         <footer className="tv-clock">
-          {currentTime} • Standby Mode
+          <span className="tv-footer-clock">{currentTime}</span>
+          <div className="tv-footer-indicator">[ STANDBY ]</div>
         </footer>
       </main>
     );
@@ -156,59 +175,78 @@ export default function LiveScreen() {
     return (
       <main className="tv-fullscreen-screen">
         <header className="tv-standby-header">
-          <h1>🏛️ CAMPUS DIGITAL SIGNAGE</h1>
+          <h1>CAMPUS DIGITAL SIGNAGE</h1>
+          <span className="tv-live-badge">[ CONNECTED ]</span>
         </header>
 
         <section className="tv-standby-content">
-          <div className="pairing-code-box" style={{ fontSize: '1.2rem', padding: '1.5rem 2rem' }}>
-            ✅ Display Connected
+          <div className="pairing-code-box" style={{ fontSize: '1.25rem', padding: '16px 28px', letterSpacing: '2px' }}>
+            DISPLAY CONNECTED
           </div>
-          <p className="tv-instructions" style={{ marginTop: '1rem' }}>
-            This screen is paired and ready. Waiting for published announcements...
+          <p className="tv-instructions">
+            Waiting for active published announcements to broadcast.
           </p>
         </section>
 
         <footer className="tv-clock">
-          {currentTime} • Connected — No Active Content
+          <span className="tv-footer-clock">{currentTime}</span>
+          <div className="tv-footer-indicator">[ IDLE ]</div>
         </footer>
       </main>
     );
   }
 
   return (
-    <main className="tv-fullscreen-screen">
-      <header className="tv-standby-header">
-        <h1>🏛️ CAMPUS DIGITAL SIGNAGE</h1>
-      </header>
-
-      <section key={currentIndex} className="tv-slide-card">
-        {currentSlide.image_url && (
-          <img
-            className="tv-slide-image"
-            src={currentSlide.image_url}
-            alt={currentSlide.title || 'Campus announcement'}
-          />
+    <main className="tv-fullscreen-screen tv-live-mode">
+      <section key={currentIndex} className="tv-slide-viewport">
+        {/* Case A: Poster Only */}
+        {hasImage && !hasBody && (
+          <div className="tv-poster-hero">
+            <img
+              src={getImageUrl(currentSlide.image_url)}
+              alt={displayTitle || 'Campus announcement'}
+            />
+            {displayTitle && (
+              <div className="tv-poster-hero-caption">
+                {displayTitle}
+              </div>
+            )}
+          </div>
         )}
 
-        {currentSlide.title && (
-          <h2 className="tv-slide-title">
-            {currentSlide.title}
-          </h2>
+        {/* Case B: Poster + Body Text */}
+        {hasImage && hasBody && (
+          <div className="tv-split-slide">
+            <div className="tv-split-media">
+              <img
+                src={getImageUrl(currentSlide.image_url)}
+                alt={displayTitle || 'Campus announcement'}
+              />
+            </div>
+            <div className="tv-split-info">
+              {displayTitle && <h2 className="tv-split-title">{displayTitle}</h2>}
+              <p className="tv-split-body">{currentSlide.body}</p>
+            </div>
+          </div>
         )}
 
-        {currentSlide.body && (
-          <p className="tv-slide-body">
-            {currentSlide.body}
-          </p>
+        {/* Case C: Text Only Notice */}
+        {!hasImage && (
+          <div className="tv-text-slide">
+            {displayTitle && <h2>{displayTitle}</h2>}
+            {hasBody && <p>{currentSlide.body}</p>}
+          </div>
         )}
-
-        <p className="tv-slide-counter">
-          Slide {currentIndex + 1} of {slides.length}
-        </p>
       </section>
 
       <footer className="tv-clock">
-        {currentTime} • Live Broadcast
+        <span className="tv-footer-clock">{currentTime}</span>
+        <span className="tv-footer-branding">CAMPUS DIGITAL SIGNAGE</span>
+        <div className="tv-footer-indicator">
+          <span>SLIDE {currentIndex + 1} OF {slides.length}</span>
+          <span>•</span>
+          <span>PHILIPPINE STANDARD TIME</span>
+        </div>
       </footer>
     </main>
   );

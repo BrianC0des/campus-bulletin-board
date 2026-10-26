@@ -1,3 +1,5 @@
+import { getImageUrl } from '../../utils/imageUrl.js';
+
 export default function AnnouncementCard({ announcement, onEdit, onDelete, onPreview }) {
   if (!announcement) return null;
 
@@ -28,7 +30,7 @@ export default function AnnouncementCard({ announcement, onEdit, onDelete, onPre
       {/* Image thumbnail */}
       {image_url && (
         <div className="announcement-card-image">
-          <img src={image_url} alt={title || 'Announcement'} />
+          <img src={getImageUrl(image_url)} alt={title || 'Announcement'} />
         </div>
       )}
 
