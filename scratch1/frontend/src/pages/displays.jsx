@@ -2,7 +2,7 @@ import { useState, useEffect } from "react";
 import axios from "axios";
 import PairingModal from "../components/displays/pairingModal";
 
-const API_URL = "http://localhost:3000/api";
+const API_URL = `http://${window.location.hostname}:3000/api`;
 
 function Displays() {
   const [screens, setScreens] = useState([]);

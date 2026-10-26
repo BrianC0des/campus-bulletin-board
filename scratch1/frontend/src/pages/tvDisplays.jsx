@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
 import axios from "axios";
 
-const API_URL = "http://localhost:3000/api/pairing";
+const API_URL = `http://${window.location.hostname}:3000/api/pairing`;
 
 function TvDisplay() {
   const [code, setCode] = useState("");
