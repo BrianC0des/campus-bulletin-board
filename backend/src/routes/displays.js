@@ -4,10 +4,10 @@ import { requireAdmin, requireDisplayCredential } from '../middleware/auth.js';
 
 const router = express.Router();
 
-// GET /api/displays - List all campus displays
+// GET /api/displays - List all registered campus displays
 router.get('/', requireAdmin, async (req, res, next) => {
   try {
-    const result = await query('SELECT * FROM displays ORDER BY created_at DESC');
+    const result = await query('SELECT * FROM displays WHERE is_paired = TRUE ORDER BY created_at DESC');
     res.json({ displays: result.rows });
   } catch (err) {
     next(err);

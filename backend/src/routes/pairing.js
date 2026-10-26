@@ -13,6 +13,9 @@ router.post('/code', async (req, res, next) => {
       if (i === 4) code += '-';
       code += chars.charAt(Math.floor(Math.random() * chars.length));
     }
+    // Clean up old unclaimed pairing codes older than 10 minutes
+    await query("DELETE FROM displays WHERE is_paired = FALSE AND created_at < NOW() - INTERVAL '10 minutes'");
+
     // Save the code in DB so the live screen can later check pairing status
     await query(
       `INSERT INTO displays (pairing_code, is_paired)

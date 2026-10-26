@@ -7,7 +7,6 @@ export default function Displays() {
   const [displays, setDisplays] = useState([]);
   const [loading, setLoading] = useState(true);
   const [search, setSearch] = useState('');
-  const [filter, setFilter] = useState('all');
   const [isPairModalOpen, setIsPairModalOpen] = useState(false);
 
   const fetchDisplays = async () => {
@@ -34,12 +33,7 @@ export default function Displays() {
       disp.name?.toLowerCase().includes(query) ||
       disp.location?.toLowerCase().includes(query);
 
-    const matchesFilter =
-      filter === 'all' ||
-      (filter === 'registered' && disp.is_paired) ||
-      (filter === 'unregistered' && !disp.is_paired);
-
-    return matchesSearch && matchesFilter;
+    return matchesSearch && disp.is_paired;
   });
 
   const handlePairSuccess = async ({ code, name, location }) => {
@@ -81,24 +75,9 @@ export default function Displays() {
           value={search}
           onChange={(e) => setSearch(e.target.value)}
         />
-        <button
-          className={`btn btn-secondary ${filter === 'all' ? 'active' : ''}`}
-          onClick={() => setFilter('all')}
-        >
-          All
-        </button>
-        <button
-          className={`btn btn-secondary ${filter === 'registered' ? 'active' : ''}`}
-          onClick={() => setFilter('registered')}
-        >
-          Paired
-        </button>
-        <button
-          className={`btn btn-secondary ${filter === 'unregistered' ? 'active' : ''}`}
-          onClick={() => setFilter('unregistered')}
-        >
-          Unpaired
-        </button>
+        <span style={{ fontSize: '12px', color: '#666', padding: '6px 12px', border: '1px solid #000' }}>
+          {filteredDisplays.length} Active {filteredDisplays.length === 1 ? 'Screen' : 'Screens'}
+        </span>
       </div>
 
       <div className="displays-section">
