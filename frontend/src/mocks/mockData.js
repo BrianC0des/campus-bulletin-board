@@ -15,7 +15,7 @@ export const MOCK_ANNOUNCEMENTS = [
     created_by: "admin-uuid-1",
     created_at: "2026-09-30T10:00:00.000Z",
     assigned_displays: [
-      { id: "disp-001", name: "Main Library Kiosk" },
+      { id: "disp-001", name: "Main Library Display Screen" },
       { id: "disp-002", name: "Student Center TV" }
     ]
   },
@@ -46,7 +46,7 @@ export const MOCK_ANNOUNCEMENTS = [
     created_by: "admin-uuid-2",
     created_at: "2026-09-14T08:00:00.000Z",
     assigned_displays: [
-      { id: "disp-001", name: "Main Library Kiosk" }
+      { id: "disp-001", name: "Main Library Display Screen" }
     ]
   },
   {
@@ -80,7 +80,7 @@ export const MOCK_ANNOUNCEMENTS = [
   },
   {
     id: "ann-006",
-    title: "EXTREMELY LONG ANNOUNCEMENT TITLE DESIGNED SPECIFICALLY TO TEST CSS TRUNCATION AND RESPONSIVE WRAPPING ON MOBILE AND 1080P KIOSK SCREENS WITHOUT BREAKING THE CARD LAYOUT",
+    title: "EXTREMELY LONG ANNOUNCEMENT TITLE DESIGNED SPECIFICALLY TO TEST CSS TRUNCATION AND RESPONSIVE WRAPPING ON MOBILE AND 1080P DISPLAY SCREENS WITHOUT BREAKING THE CARD LAYOUT",
     body: "This is edge-case test data. If your card design breaks when text is long, you need CSS classes like `line-clamp-2` or `break-words`.",
     publish_status: "published",
     status: "active",
@@ -90,7 +90,7 @@ export const MOCK_ANNOUNCEMENTS = [
     created_by: "admin-uuid-1",
     created_at: "2026-10-02T09:00:00.000Z",
     assigned_displays: [
-      { id: "disp-001", name: "Main Library Kiosk" }
+      { id: "disp-001", name: "Main Library Display Screen" }
     ]
   }
 ];
@@ -101,7 +101,7 @@ export const MOCK_ANNOUNCEMENTS = [
 export const MOCK_DISPLAYS = [
   {
     id: "disp-001",
-    name: "Main Library Kiosk",
+    name: "Main Library Display Screen",
     location: "Library 1st Floor - Main Entrance",
     is_paired: true,
     is_online: true,

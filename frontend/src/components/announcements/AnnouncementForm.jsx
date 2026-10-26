@@ -1,20 +1,56 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { MOCK_DISPLAYS } from '../../mocks/mockData.js';
+import api from '../../services/api.js';
 import '../../styles/announcements.css';
 
-export default function AnnouncementForm({ onSave, onCancel, onPreviewChange }) {
-  const [title, setTitle] = useState('');
-  const [message, setMessage] = useState('');
-  const [startsAt, setStartsAt] = useState('');
-  const [endsAt, setEndsAt] = useState('');
+export default function AnnouncementForm({ initialData, onSave, onCancel, onPreview }) {
+  const isEditing = Boolean(initialData && initialData.id);
+
+  const [availableDisplays, setAvailableDisplays] = useState([]);
+  const [title, setTitle] = useState(initialData?.title || '');
+  const [body, setBody] = useState(initialData?.body || initialData?.message || '');
+  const [startsAt, setStartsAt] = useState(() => {
+    if (!initialData?.starts_at) return '';
+    try {
+      return new Date(initialData.starts_at).toISOString().slice(0, 16);
+    } catch {
+      return '';
+    }
+  });
+  const [endsAt, setEndsAt] = useState(() => {
+    if (!initialData?.ends_at) return '';
+    try {
+      return new Date(initialData.ends_at).toISOString().slice(0, 16);
+    } catch {
+      return '';
+    }
+  });
   const [imageFile, setImageFile] = useState(null);
-  const [imagePreviewUrl, setImagePreviewUrl] = useState(null);
-  const [selectedDisplays, setSelectedDisplays] = useState([]);
+  const [imagePreviewUrl, setImagePreviewUrl] = useState(initialData?.image_url || null);
+  const [selectedDisplays, setSelectedDisplays] = useState(() => {
+    if (!initialData?.assigned_displays) return [];
+    return initialData.assigned_displays.map((d) => (typeof d === 'string' ? d : d.id));
+  });
   const [error, setError] = useState('');
 
-  const updatePreview = (newTitle, newMessage, imgUrl) => {
-    if (onPreviewChange) onPreviewChange(newTitle, newMessage, imgUrl ?? imagePreviewUrl);
+  // Notify preview modal on demand
+  const handlePreview = () => {
+    if (onPreview) {
+      onPreview({ title, body, imageUrl: imagePreviewUrl });
+    }
   };
+
+  useEffect(() => {
+    api.get('/displays')
+      .then((res) => {
+        if (res?.displays) {
+          setAvailableDisplays(res.displays.filter((d) => d.is_paired));
+        }
+      })
+      .catch((err) => {
+        console.error('Failed to load screens:', err);
+      });
+  }, []);
 
   const handleImageChange = (e) => {
     const file = e.target.files[0];
@@ -22,7 +58,6 @@ export default function AnnouncementForm({ onSave, onCancel, onPreviewChange }) 
     setImageFile(file);
     const url = URL.createObjectURL(file);
     setImagePreviewUrl(url);
-    updatePreview(title, message, url);
   };
 
   const handleDisplayToggle = (id) => {
@@ -57,11 +92,14 @@ export default function AnnouncementForm({ onSave, onCancel, onPreviewChange }) 
 
     if (onSave) {
       onSave({
+        id: initialData?.id,
         title: title.trim(),
-        body: message.trim(),
-        starts_at: startsAt || new Date().toISOString(),
-        ends_at: endsAt || new Date(Date.now() + 7 * 86400000).toISOString(),
+        body: body.trim(),
+        message: body.trim(),
+        starts_at: startsAt ? new Date(startsAt).toISOString() : new Date().toISOString(),
+        ends_at: endsAt ? new Date(endsAt).toISOString() : new Date(Date.now() + 7 * 86400000).toISOString(),
         image_url: imagePreviewUrl || null,
+        imageFile,
         display_ids: selectedDisplays,
         status,
         publish_status: 'published',
@@ -71,29 +109,35 @@ export default function AnnouncementForm({ onSave, onCancel, onPreviewChange }) 
 
   return (
     <form className="af-form" onSubmit={handleSubmit}>
-      <h2 className="af-heading">Create / Edit Announcement</h2>
+      <h2 className="af-heading">
+        {isEditing ? 'Edit Announcement' : 'Create New Announcement'}
+      </h2>
 
       <div className="af-layout">
         {/* LEFT COLUMN */}
         <div className="af-main">
           <fieldset className="af-box">
-            <legend>Title Area</legend>
+            <legend>Notice Title</legend>
             <input
               className="af-input"
               type="text"
               value={title}
-              onChange={(e) => { setTitle(e.target.value); updatePreview(e.target.value, message, null); }}
-              placeholder="e.g. Midterm Examination Schedule"
+              onChange={(e) => {
+                setTitle(e.target.value);
+              }}
+              placeholder="e.g. Midterm Examination Schedule & Guidelines"
               required
             />
           </fieldset>
 
           <fieldset className="af-box">
-            <legend>Content / Body Area</legend>
+            <legend>Notice Content & Instructions</legend>
             <textarea
               className="af-input"
-              value={message}
-              onChange={(e) => { setMessage(e.target.value); updatePreview(title, e.target.value, null); }}
+              value={body}
+              onChange={(e) => {
+                setBody(e.target.value);
+              }}
               placeholder="Enter announcement details, instructions, or venue..."
               rows={8}
               required
@@ -101,18 +145,20 @@ export default function AnnouncementForm({ onSave, onCancel, onPreviewChange }) 
           </fieldset>
 
           <fieldset className="af-box">
-            <legend>Banner Image (optional)</legend>
+            <legend>Graphic Poster / Banner Image (optional)</legend>
             <input
               type="file"
               accept="image/jpeg,image/png,image/webp,image/gif"
               onChange={handleImageChange}
             />
             {imagePreviewUrl && (
-              <img
-                src={imagePreviewUrl}
-                alt="preview"
-                style={{ marginTop: 8, width: '100%', maxHeight: 140, objectFit: 'cover' }}
-              />
+              <div style={{ marginTop: 8 }}>
+                <img
+                  src={imagePreviewUrl}
+                  alt="preview"
+                  style={{ width: '100%', maxHeight: 160, objectFit: 'contain', background: '#f5f5f5', borderRadius: 4 }}
+                />
+              </div>
             )}
           </fieldset>
         </div>
@@ -131,10 +177,9 @@ export default function AnnouncementForm({ onSave, onCancel, onPreviewChange }) 
               type="datetime-local"
               value={startsAt}
               onChange={(e) => setStartsAt(e.target.value)}
-              required
             />
 
-            <label className="af-label" htmlFor="endsAt">
+            <label className="af-label" htmlFor="endsAt" style={{ marginTop: '12px' }}>
               End date / time
             </label>
             <input
@@ -143,13 +188,12 @@ export default function AnnouncementForm({ onSave, onCancel, onPreviewChange }) 
               type="datetime-local"
               value={endsAt}
               onChange={(e) => setEndsAt(e.target.value)}
-              required
             />
           </fieldset>
 
           <fieldset className="af-box">
-            <legend>Assign to Displays</legend>
-            {MOCK_DISPLAYS.map((display) => (
+            <legend>Assign to Display Screens</legend>
+            {availableDisplays.map((display) => (
               <label key={display.id} className="af-display-check">
                 <input
                   type="checkbox"
@@ -165,7 +209,14 @@ export default function AnnouncementForm({ onSave, onCancel, onPreviewChange }) 
 
           <div className="af-actions">
             <button className="af-button" type="submit">
-              Save Notice
+              {isEditing ? 'Update Notice' : 'Save Notice'}
+            </button>
+            <button
+              type="button"
+              className="af-button-cancel"
+              onClick={handlePreview}
+            >
+              Preview
             </button>
             {onCancel && (
               <button

@@ -4,7 +4,7 @@ import { requireAdmin } from '../middleware/auth.js';
 
 const router = express.Router();
 
-// POST /api/pairing/code - Display requests an 8-character pairing code
+// POST /api/pairing/code - Display requests an 8-character pairing code and saves it to DB
 router.post('/code', async (req, res, next) => {
   try {
     const chars = 'ABCDEFGHJKLMNPQRSTUVWXYZ23456789';
@@ -13,7 +13,31 @@ router.post('/code', async (req, res, next) => {
       if (i === 4) code += '-';
       code += chars.charAt(Math.floor(Math.random() * chars.length));
     }
+    // Save the code in DB so the live screen can later check pairing status
+    await query(
+      `INSERT INTO displays (pairing_code, is_paired)
+       VALUES ($1, FALSE)
+       ON CONFLICT (pairing_code) DO NOTHING`,
+      [code]
+    );
     res.json({ pairingCode: code, expiresInSeconds: 600 });
+  } catch (err) {
+    next(err);
+  }
+});
+
+// GET /api/pairing/status?code=XXXX-XXXX - Check if a pairing code has been claimed
+router.get('/status', async (req, res, next) => {
+  try {
+    const { code } = req.query;
+    if (!code) return res.status(400).json({ error: 'code is required' });
+    const result = await query(
+      'SELECT id, name, location, is_paired FROM displays WHERE pairing_code = $1',
+      [code]
+    );
+    if (result.rows.length === 0) return res.json({ found: false, isPaired: false });
+    const display = result.rows[0];
+    res.json({ found: true, isPaired: display.is_paired, displayId: display.id, name: display.name });
   } catch (err) {
     next(err);
   }
