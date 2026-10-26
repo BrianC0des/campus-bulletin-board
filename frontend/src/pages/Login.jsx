@@ -62,7 +62,16 @@ export default function Login() {
           </div>
 
           <div className="login-field">
-            <label htmlFor="loginPassword">Password</label>
+            <div className="login-field-header">
+              <label htmlFor="loginPassword">Password</label>
+              <a
+                href="#forgot-password"
+                className="forgot-password-link"
+                onClick={(e) => e.preventDefault()}
+              >
+                Forgot password?
+              </a>
+            </div>
             <input
               id="loginPassword"
               type="password"

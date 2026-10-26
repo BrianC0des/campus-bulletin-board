@@ -112,12 +112,35 @@
   flex-direction: column;
 }
 
+.login-field-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 6px;
+}
+
 .login-field label {
   font-size: 11px;
   font-weight: bold;
   letter-spacing: 1px;
   text-transform: uppercase;
   margin-bottom: 6px;
+}
+
+.login-field-header label {
+  margin-bottom: 0;
+}
+
+.forgot-password-link {
+  font-size: 11px;
+  color: #666;
+  text-decoration: none;
+  cursor: pointer;
+}
+
+.forgot-password-link:hover {
+  color: #000;
+  text-decoration: underline;
 }
 
 .login-field input {
