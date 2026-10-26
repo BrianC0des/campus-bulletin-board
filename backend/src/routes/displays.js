@@ -18,13 +18,32 @@ router.get('/', requireAdmin, async (req, res, next) => {
 router.get('/active-content', requireDisplayCredential, async (req, res, next) => {
   try {
     const { display_id } = req.query;
-    let queryText = 'SELECT * FROM v_display_screen_announcements';
+    let queryText = `
+      SELECT DISTINCT ON (a.id)
+        ad.display_id,
+        a.id AS announcement_id,
+        a.title,
+        a.body,
+        a.image_url,
+        a.starts_at,
+        a.ends_at
+      FROM announcements a
+      JOIN announcement_displays ad ON a.id = ad.announcement_id
+      JOIN displays d ON ad.display_id = d.id
+      WHERE a.deleted_at IS NULL
+        AND a.publish_status = 'published'
+        AND CURRENT_TIMESTAMP >= a.starts_at
+        AND CURRENT_TIMESTAMP < a.ends_at
+        AND d.is_paired = TRUE
+    `;
     const params = [];
 
     if (display_id) {
-      queryText += ' WHERE display_id = $1';
+      queryText += ' AND ad.display_id = $1';
       params.push(display_id);
     }
+
+    queryText += ' ORDER BY a.id, a.created_at DESC';
 
     const result = await query(queryText, params);
     res.json({

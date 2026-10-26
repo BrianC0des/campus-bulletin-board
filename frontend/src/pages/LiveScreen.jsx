@@ -10,13 +10,18 @@ export default function LiveScreen() {
   const [currentIndex, setCurrentIndex] = useState(0);
   const [pairingCode, setPairingCode] = useState('--------');
   const [isPaired, setIsPaired] = useState(false);
+  const [displayId, setDisplayId] = useState(null);
   const [slides, setSlides] = useState([]);
   const [rotationSeconds, setRotationSeconds] = useState(10);
 
   // Fetch real-time active slide playlist
-  const fetchActiveContent = async () => {
+  const fetchActiveContent = async (activeDisplayId) => {
     try {
-      const res = await api.get('/displays/active-content');
+      const idToUse = activeDisplayId !== undefined ? activeDisplayId : displayId;
+      const url = idToUse
+        ? `/displays/active-content?display_id=${encodeURIComponent(idToUse)}`
+        : '/displays/active-content';
+      const res = await api.get(url);
       if (res?.announcements) {
         setSlides(res.announcements);
         if (res.rotationSeconds) setRotationSeconds(res.rotationSeconds);
@@ -32,7 +37,12 @@ export default function LiveScreen() {
       const data = await api.get(`/pairing/status?code=${encodeURIComponent(code)}`);
       if (data?.isPaired) {
         setIsPaired(true);
-        fetchActiveContent();
+        if (data.displayId) setDisplayId(data.displayId);
+        fetchActiveContent(data.displayId);
+      } else {
+        setIsPaired(false);
+        setDisplayId(null);
+        setSlides([]);
       }
     } catch (err) {
       console.error('Failed to check pairing status:', err);
@@ -63,19 +73,21 @@ export default function LiveScreen() {
 
     initCode();
 
-    // Poll pairing status every 5s until paired, then poll content every 20s
+    // Poll pairing status and active content every 5s for fast reactivity
     const pairPoll = setInterval(async () => {
       const storedCode = localStorage.getItem('live_pairing_code');
       if (storedCode) await checkPairingStatus(storedCode);
     }, 5000);
 
-    const contentPoll = setInterval(fetchActiveContent, 20000);
+    const contentPoll = setInterval(() => {
+      fetchActiveContent();
+    }, 5000);
 
     return () => {
       clearInterval(pairPoll);
       clearInterval(contentPoll);
     };
-  }, []);
+  }, [displayId]);
 
   // Manila Clock Timer
   useEffect(() => {
@@ -90,7 +102,10 @@ export default function LiveScreen() {
 
   // Slide Rotation Timer
   useEffect(() => {
-    if (slides.length <= 1) return;
+    if (slides.length <= 1) {
+      setCurrentIndex(0);
+      return;
+    }
 
     const slideTimer = setInterval(() => {
       setCurrentIndex((prev) => (prev + 1) % slides.length);
@@ -99,7 +114,14 @@ export default function LiveScreen() {
     return () => clearInterval(slideTimer);
   }, [slides.length, rotationSeconds]);
 
-  const currentSlide = slides[currentIndex];
+  // Safely clamp currentIndex if slides change or an announcement expires
+  useEffect(() => {
+    if (currentIndex >= slides.length) {
+      setCurrentIndex(0);
+    }
+  }, [slides.length, currentIndex]);
+
+  const currentSlide = slides[currentIndex] || slides[0];
 
   // State 1: Not yet paired — show pairing code
   if (!isPaired) {
@@ -129,8 +151,8 @@ export default function LiveScreen() {
     );
   }
 
-  // State 2: Paired but no announcements yet
-  if (slides.length === 0) {
+  // State 2: Paired but no announcements yet (or all announcements expired)
+  if (!slides || slides.length === 0 || !currentSlide) {
     return (
       <main className="tv-fullscreen-screen">
         <header className="tv-standby-header">

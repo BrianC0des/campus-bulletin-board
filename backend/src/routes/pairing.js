@@ -60,7 +60,20 @@ router.post('/pair', requireAdmin, async (req, res, next) => {
       [name, location || null, code]
     );
 
-    res.json({ success: true, message: 'Display paired successfully', display: result.rows[0] });
+    const display = result.rows[0];
+
+    // Auto-link active published announcements to this newly paired display
+    const actorId = req.user?.id || (await query('SELECT id FROM administrator_profiles LIMIT 1')).rows[0]?.id;
+    await query(
+      `INSERT INTO announcement_displays (announcement_id, display_id, assigned_by)
+       SELECT id, $1, $2
+       FROM announcements
+       WHERE deleted_at IS NULL AND publish_status = 'published' AND CURRENT_TIMESTAMP < ends_at
+       ON CONFLICT DO NOTHING`,
+      [display.id, actorId]
+    );
+
+    res.json({ success: true, message: 'Display paired successfully', display });
   } catch (err) {
     next(err);
   }

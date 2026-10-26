@@ -1,7 +1,16 @@
 import { useState, useEffect } from 'react';
-import { MOCK_DISPLAYS } from '../../mocks/mockData.js';
 import api from '../../services/api.js';
 import '../../styles/announcements.css';
+
+function toLocalInputString(date) {
+  const pad = (n) => String(n).padStart(2, '0');
+  const y = date.getFullYear();
+  const m = pad(date.getMonth() + 1);
+  const d = pad(date.getDate());
+  const hh = pad(date.getHours());
+  const mm = pad(date.getMinutes());
+  return `${y}-${m}-${d}T${hh}:${mm}`;
+}
 
 export default function AnnouncementForm({ initialData, onSave, onCancel, onPreview }) {
   const isEditing = Boolean(initialData && initialData.id);
@@ -10,20 +19,25 @@ export default function AnnouncementForm({ initialData, onSave, onCancel, onPrev
   const [title, setTitle] = useState(initialData?.title || '');
   const [body, setBody] = useState(initialData?.body || initialData?.message || '');
   const [startsAt, setStartsAt] = useState(() => {
-    if (!initialData?.starts_at) return '';
-    try {
-      return new Date(initialData.starts_at).toISOString().slice(0, 16);
-    } catch {
-      return '';
+    if (initialData?.starts_at) {
+      try {
+        return toLocalInputString(new Date(initialData.starts_at));
+      } catch {
+        return '';
+      }
     }
+    return toLocalInputString(new Date());
   });
   const [endsAt, setEndsAt] = useState(() => {
-    if (!initialData?.ends_at) return '';
-    try {
-      return new Date(initialData.ends_at).toISOString().slice(0, 16);
-    } catch {
-      return '';
+    if (initialData?.ends_at) {
+      try {
+        return toLocalInputString(new Date(initialData.ends_at));
+      } catch {
+        return '';
+      }
     }
+    // Default 7 days from now
+    return toLocalInputString(new Date(Date.now() + 7 * 86400000));
   });
   const [imageFile, setImageFile] = useState(null);
   const [imagePreviewUrl, setImagePreviewUrl] = useState(initialData?.image_url || null);
@@ -44,13 +58,18 @@ export default function AnnouncementForm({ initialData, onSave, onCancel, onPrev
     api.get('/displays')
       .then((res) => {
         if (res?.displays) {
-          setAvailableDisplays(res.displays.filter((d) => d.is_paired));
+          const paired = res.displays.filter((d) => d.is_paired);
+          setAvailableDisplays(paired);
+          // Auto-select all active displays when creating new notice
+          if (!initialData) {
+            setSelectedDisplays(paired.map((d) => d.id));
+          }
         }
       })
       .catch((err) => {
         console.error('Failed to load screens:', err);
       });
-  }, []);
+  }, [initialData]);
 
   const handleImageChange = (e) => {
     const file = e.target.files[0];
@@ -193,16 +212,22 @@ export default function AnnouncementForm({ initialData, onSave, onCancel, onPrev
 
           <fieldset className="af-box">
             <legend>Assign to Display Screens</legend>
-            {availableDisplays.map((display) => (
-              <label key={display.id} className="af-display-check">
-                <input
-                  type="checkbox"
-                  checked={selectedDisplays.includes(display.id)}
-                  onChange={() => handleDisplayToggle(display.id)}
-                />
-                {display.name}
-              </label>
-            ))}
+            {availableDisplays.length === 0 ? (
+              <p style={{ fontSize: '12px', color: '#666', fontStyle: 'italic', margin: '4px 0' }}>
+                Broadcasts automatically to all paired display screens
+              </p>
+            ) : (
+              availableDisplays.map((display) => (
+                <label key={display.id} className="af-display-check">
+                  <input
+                    type="checkbox"
+                    checked={selectedDisplays.includes(display.id)}
+                    onChange={() => handleDisplayToggle(display.id)}
+                  />
+                  {display.name}
+                </label>
+              ))
+            )}
           </fieldset>
 
           {error && <p className="af-error">{error}</p>}

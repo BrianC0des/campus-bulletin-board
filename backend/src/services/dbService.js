@@ -29,14 +29,19 @@ export async function saveAnnouncementWithDisplays(announcementData, displayIds,
 
     const annId = ann.rows[0].id;
 
-    if (displayIds && Array.isArray(displayIds)) {
-      for (const displayId of displayIds) {
-        await client.query(
-          `INSERT INTO announcement_displays (announcement_id, display_id, assigned_by)
-           VALUES ($1, $2, $3) ON CONFLICT DO NOTHING`,
-          [annId, displayId, actorId]
-        );
-      }
+    // Target specified displays, or auto-assign to all paired displays if none specified
+    let targets = displayIds;
+    if (!targets || !Array.isArray(targets) || targets.length === 0) {
+      const allPaired = await client.query('SELECT id FROM displays WHERE is_paired = TRUE');
+      targets = allPaired.rows.map((r) => r.id);
+    }
+
+    for (const displayId of targets) {
+      await client.query(
+        `INSERT INTO announcement_displays (announcement_id, display_id, assigned_by)
+         VALUES ($1, $2, $3) ON CONFLICT DO NOTHING`,
+        [annId, displayId, actorId]
+      );
     }
 
     await client.query('COMMIT');
@@ -75,7 +80,12 @@ export async function updateAnnouncementWithDisplays(id, announcementData, displ
 
     if (displayIds && Array.isArray(displayIds)) {
       await client.query('DELETE FROM announcement_displays WHERE announcement_id = $1', [id]);
-      for (const displayId of displayIds) {
+      let targets = displayIds;
+      if (targets.length === 0) {
+        const allPaired = await client.query('SELECT id FROM displays WHERE is_paired = TRUE');
+        targets = allPaired.rows.map((r) => r.id);
+      }
+      for (const displayId of targets) {
         await client.query(
           `INSERT INTO announcement_displays (announcement_id, display_id, assigned_by)
            VALUES ($1, $2, $3) ON CONFLICT DO NOTHING`,
