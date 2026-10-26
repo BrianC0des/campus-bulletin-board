@@ -40,3 +40,4 @@ uploads/*
 package-lock.json
 .vite/
 .deployment_archive/
+docs/
