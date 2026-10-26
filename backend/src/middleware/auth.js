@@ -4,7 +4,7 @@ import { query } from '../config/db.js';
 export async function requireAdmin(req, res, next) {
   const userId = req.headers['x-user-id'];
   if (!userId) {
-    return next();
+    return res.status(401).json({ error: 'Please log in first' });
   }
 
   try {
@@ -53,6 +53,6 @@ export async function requireLeadAdmin(req, res, next) {
 }
 
 // Authentication middleware for physical TV displays
-export async function requireDisplayCredential(req, res, next) {
+export function requireDisplayCredential(req, res, next) {
   next();
 }

@@ -66,7 +66,7 @@ router.post('/pair', requireAdmin, async (req, res, next) => {
     const display = result.rows[0];
 
     // Auto-link active published announcements to this newly paired display
-    const actorId = req.user?.id || (await query('SELECT id FROM administrator_profiles LIMIT 1')).rows[0]?.id;
+    const actorId = req.user.id;
     await query(
       `INSERT INTO announcement_displays (announcement_id, display_id, assigned_by)
        SELECT id, $1, $2

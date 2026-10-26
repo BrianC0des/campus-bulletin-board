@@ -65,7 +65,7 @@ router.post('/', requireAdmin, upload.single('image'), async (req, res, next) =>
       }
     }
 
-    const actorId = req.user?.id || (await query('SELECT id FROM administrator_profiles LIMIT 1')).rows[0]?.id;
+    const actorId = req.user.id;
 
     const announcement = await saveAnnouncementWithDisplays(
       {
@@ -103,7 +103,7 @@ router.put('/:id', requireAdmin, upload.single('image'), async (req, res, next) 
       }
     }
 
-    const actorId = req.user?.id || (await query('SELECT id FROM administrator_profiles LIMIT 1')).rows[0]?.id;
+    const actorId = req.user.id;
 
     const announcement = await updateAnnouncementWithDisplays(
       req.params.id,
