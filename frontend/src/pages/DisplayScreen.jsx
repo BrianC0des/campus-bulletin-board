@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect } from 'react';
 import { MOCK_ANNOUNCEMENTS } from '../mocks/mockData.js';
 import '../styles/displays.css';
