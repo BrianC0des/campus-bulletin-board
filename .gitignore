@@ -39,4 +39,4 @@ uploads/*
 !uploads/.gitkeep
 package-lock.json
 .vite/
-_deployment_archive/
+.deployment_archive/
