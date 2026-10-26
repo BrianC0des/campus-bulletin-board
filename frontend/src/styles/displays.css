@@ -137,188 +137,97 @@
   z-index: 5;
 }
 
-/* Facebook Post Layout on TV Display (Text with Image & Text Only) */
-.tv-fb-wrapper {
+/* Full-Screen Notice Feed Layout (Title, Content, and Image Underneath) */
+.tv-feed-slide {
   width: 100%;
   height: 100%;
   display: flex;
-  justify-content: center;
-  align-items: center;
-  padding: 24px 32px;
+  flex-direction: column;
+  padding: 24px 36px 12px;
   box-sizing: border-box;
-  background: #f0f2f5;
-  overflow: hidden;
-}
-
-.tv-fb-card {
-  width: 100%;
-  max-width: 860px;
-  max-height: calc(100vh - 84px);
   background: #ffffff;
-  border-radius: 8px;
-  border: 1px solid #ced0d4;
-  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.1), 0 4px 12px rgba(0, 0, 0, 0.08);
-  display: flex;
-  flex-direction: column;
   overflow: hidden;
-  box-sizing: border-box;
-  font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
 }
 
-/* Facebook Header */
-.tv-fb-header {
-  display: flex;
-  align-items: center;
-  gap: 12px;
-  padding: 14px 18px;
+.tv-feed-text {
   flex-shrink: 0;
+  margin-bottom: 14px;
 }
 
-.tv-fb-avatar {
-  width: 46px;
-  height: 46px;
-  border-radius: 50%;
-  background: #1877f2;
-  color: #ffffff;
+.tv-feed-title {
+  font-size: clamp(1.8rem, 2.8vw, 2.6rem);
   font-weight: 800;
-  font-size: 1.1rem;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  letter-spacing: 0.5px;
-  flex-shrink: 0;
-  box-shadow: 0 2px 4px rgba(24, 119, 242, 0.3);
-}
-
-.tv-fb-meta {
-  display: flex;
-  flex-direction: column;
-  line-height: 1.3;
-}
-
-.tv-fb-author {
-  display: flex;
-  align-items: center;
-  gap: 6px;
-}
-
-.tv-fb-name {
-  font-size: 1.08rem;
-  font-weight: 700;
-  color: #050505;
-}
-
-.tv-fb-badge {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  width: 16px;
-  height: 16px;
-  border-radius: 50%;
-  background: #1877f2;
-  color: #ffffff;
-  font-size: 10px;
-  font-weight: bold;
-}
-
-.tv-fb-sub {
-  display: flex;
-  align-items: center;
-  gap: 6px;
-  font-size: 0.85rem;
-  color: #65676b;
-  font-weight: 500;
-}
-
-.tv-fb-dot {
-  font-size: 0.7rem;
-}
-
-.tv-fb-globe {
-  font-size: 0.85rem;
-}
-
-/* Post Content */
-.tv-fb-content {
-  padding: 0 18px 12px;
-  flex-shrink: 0;
-}
-
-.tv-fb-title {
-  font-size: clamp(1.2rem, 1.8vw, 1.55rem);
-  font-weight: 700;
-  color: #050505;
-  margin: 0 0 6px 0;
-  line-height: 1.3;
+  line-height: 1.25;
+  color: #000000;
+  margin: 0 0 8px 0;
   word-break: break-word;
 }
 
-.tv-fb-body {
-  font-size: clamp(1.05rem, 1.35vw, 1.25rem);
-  line-height: 1.5;
-  color: #050505;
+.tv-feed-body {
+  font-size: clamp(1.15rem, 1.6vw, 1.45rem);
+  line-height: 1.6;
+  color: #1a1a1a;
   margin: 0;
   white-space: pre-wrap;
   word-break: break-word;
 }
 
-.tv-fb-content-large .tv-fb-title {
-  font-size: clamp(1.8rem, 2.8vw, 2.4rem);
-  margin-bottom: 14px;
-}
-
-.tv-fb-content-large .tv-fb-body {
-  font-size: clamp(1.25rem, 1.8vw, 1.6rem);
-  line-height: 1.6;
-}
-
-.tv-fb-text-only {
-  padding: 16px 20px;
-}
-
-/* Post Attached Image Underneath Text */
-.tv-fb-media {
+/* Image Underneath Text - Expands to Cover All Remaining Space Above Footer */
+.tv-feed-media {
   flex: 1;
   min-height: 0;
   width: 100%;
-  max-height: 52vh;
-  background: #fafafa;
-  border-top: 1px solid #e4e6eb;
-  border-bottom: 1px solid #e4e6eb;
   display: flex;
   justify-content: center;
   align-items: center;
   overflow: hidden;
+  background: #ffffff;
 }
 
-.tv-fb-media img {
+.tv-feed-media img {
   width: 100%;
   height: 100%;
-  max-height: 52vh;
   object-fit: contain;
   display: block;
 }
 
-/* Post Actions Footer */
-.tv-fb-actions {
-  display: flex;
-  justify-content: space-around;
+/* Text Only Notice (Centered Proclamation Covering Screen Above Footer) */
+.tv-feed-text-only {
+  justify-content: center;
   align-items: center;
-  padding: 8px 16px;
-  background: #ffffff;
-  flex-shrink: 0;
+  padding: 48px 80px;
 }
 
-.tv-fb-action-btn {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  font-size: 0.92rem;
-  font-weight: 600;
-  color: #65676b;
-  padding: 6px 16px;
-  border-radius: 4px;
-  cursor: default;
+.tv-feed-text-center {
+  max-width: 1100px;
+  width: 100%;
+  text-align: center;
+  margin: auto;
+}
+
+.tv-feed-title-large {
+  font-size: clamp(2.4rem, 4.5vw, 4rem);
+  font-weight: 900;
+  line-height: 1.2;
+  color: #000000;
+  margin: 0 0 24px 0;
+  word-break: break-word;
+}
+
+.tv-feed-divider {
+  width: 120px;
+  height: 3px;
+  background: #000000;
+  margin: 0 auto 28px;
+}
+
+.tv-feed-body-large {
+  font-size: clamp(1.3rem, 2.2vw, 2rem);
+  line-height: 1.7;
+  color: #222222;
+  margin: 0;
+  white-space: pre-wrap;
+  word-break: break-word;
 }
 
 /* Footer / Status bar - Compact strip for time and slide indicator */
