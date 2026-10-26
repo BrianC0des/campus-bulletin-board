@@ -63,7 +63,7 @@ A centralized web-based digital signage platform where campus administrators cre
 | :--- | :--- | :--- |
 | `administrator_profiles` | Staff credentials & roles | `id UUID PRIMARY KEY`, `email UNIQUE`, `password VARCHAR(255) NOT NULL` |
 | `announcements` | Notice titles, bodies, images, schedule | `ends_at > starts_at`, `publish_status IN ('draft', 'published', 'archived')`, `deleted_at` soft delete |
-| `displays` | Physical TV screens & kiosks | `pairing_code VARCHAR(10) UNIQUE`, `is_paired BOOLEAN`, `last_seen_at` heartbeat |
+| `displays` | Physical TV screens & display screens | `pairing_code VARCHAR(10) UNIQUE`, `is_paired BOOLEAN`, `last_seen_at` heartbeat |
 | `announcement_displays` | Many-to-many screen assignments | Composite Primary Key `(announcement_id, display_id)`, `ON DELETE CASCADE` |
 
 ---
