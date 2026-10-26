@@ -1,54 +1,142 @@
-/* ==========================================================================
-   Admin Dashboard Styles Template
-   Assigned to: Mae
-   ========================================================================== */
+/* Admin Dashboard Styles */
 
-/* --------------------------------------------------------------------------
-   📊 MAE'S SECTION: 4 Metric Stat Cards & Dashboard Overview
-   -------------------------------------------------------------------------- */
-
-.dashboard-header {
-  margin-bottom: 2rem;
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
 }
 
+body{
+    color: #000;
+}
+
+.layout {
+    display: flex;
+    min-height: 100vh;
+}
+
+.frame{
+    width: 165px;
+    flex-shrink: 0;
+    height: 100vh;
+    position: sticky;
+    top: 0;
+    display: flex;
+    flex-direction: column;
+    border: 1px solid #000;
+}
+
+.main {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+}
+
+.main-label {
+    padding: 15px;
+}
+
+.main-text {
+    margin: 0;
+    letter-spacing: 1px;
+}
+
+h1 {
+    font-size: 1.6rem;
+}
+
+
 /* 4-column responsive grid container */
-.grid-4 {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
-  gap: 1.25rem;
-  margin-bottom: 2rem;
-  /* TODO: Mae can tweak grid gaps, minimum card width, or breakpoints */
+.stats-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+    gap: 1.25rem;
+    padding: 0 20px 24px;
+    border: 0;
+    margin-bottom: 1rem;
+/* Overview panels layout */
+}
+
+.panels {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 14px;
+    padding: 0 24px 24px;
 }
 
 /* Individual Stat Summary Card */
-.stat-card {
-  background-color: #ffffff;
-  border: 1px solid var(--border-color);
-  border-radius: var(--border-radius);
-  padding: 1.25rem;
+
+.stat-cards {
+  border: 1px solid #000000;
+  padding: 18px 16px;
+  min-height: 110px;
+  background: #ffffff;
+}
+
+.stat-card-header {
+  display: flex;
+  justify-content: space-between;
+  font-size: 14px;
+  font-weight: bold;
+  letter-spacing: 1px;
+}
+
+.panel {
+  border: 1px solid #000000;
+  padding: 16px;
+  min-height: 200px;
   display: flex;
   flex-direction: column;
-  gap: 0.5rem;
-  /* TODO: Mae can add top colored border accents, shadows, or icon positioning */
+  background: #ffffff;
 }
 
-.stat-label {
-  font-size: 0.875rem;
-  font-weight: 500;
-  color: var(--secondary-color);
+.panel-title {
+  margin: 0 0 16px 0;
+  padding-bottom: 8px;
+  border-bottom: 1px solid #000000;
+  font-size: 18px;
+  font-weight: bold;
 }
 
-.stat-number {
-  font-size: 2rem;
-  font-weight: 700;
-  color: var(--text-color);
-  line-height: 1;
-}
-
-/* Quick action buttons row */
-.quick-actions {
+.panel-list {
   display: flex;
-  gap: 1rem;
-  margin-top: 1rem;
-  /* TODO: Mae can style the action buttons area */
+  flex-direction: column;
+  gap: 10px;
 }
+
+.panel-list-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 6px 0;
+  border-bottom: 1px solid #eeeeee;
+}
+
+.panel-item-title {
+  font-weight: bold;
+  font-size: 14px;
+}
+
+.panel-item-sub {
+  font-size: 12px;
+  color: #666666;
+}
+
+.panel-item-status {
+  font-size: 12px;
+  font-weight: bold;
+}
+
+.cardValue {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.5rem;
+
+}
+
+.stat-cards .cardValue.empty { 
+    width: auto;
+    height: auto;
+ }
+

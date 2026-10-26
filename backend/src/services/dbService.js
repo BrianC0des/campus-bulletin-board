@@ -1,43 +1,48 @@
-import { supabase } from '../config/supabase.js';
+import { pool, query } from '../config/db.js';
 
-/**
- * Database stored procedure wrapper helpers
- */
-export async function pairNewDisplay(codeHmac, name, location, credentialHash) {
-  return await supabase.rpc('pair_new_display', {
-    p_code_hmac: codeHmac,
-    p_name: name,
-    p_location: location,
-    p_credential_hash: credentialHash,
-  });
+// insert a new display after pairing
+export async function pairNewDisplay(pairingCode, name, location) {
+  const result = await query(
+    `INSERT INTO displays (name, location, pairing_code, is_paired, paired_at)
+     VALUES ($1, $2, $3, TRUE, CURRENT_TIMESTAMP)
+     ON CONFLICT (pairing_code) DO UPDATE
+     SET name = EXCLUDED.name, is_paired = TRUE, paired_at = CURRENT_TIMESTAMP
+     RETURNING *`,
+    [name, location || null, pairingCode]
+  );
+  return result.rows[0];
 }
 
-export async function reregisterDisplay(codeHmac, displayId, credentialHash) {
-  return await supabase.rpc('reregister_existing_display', {
-    p_code_hmac: codeHmac,
-    p_display_id: displayId,
-    p_credential_hash: credentialHash,
-  });
-}
-
-export async function unregisterDisplay(displayId, reason) {
-  return await supabase.rpc('unregister_display', {
-    p_display_id: displayId,
-    p_reason: reason,
-  });
-}
-
+// save announcement and link it to selected displays in one go
 export async function saveAnnouncementWithDisplays(announcementData, displayIds, actorId) {
-  return await supabase.rpc('save_announcement_with_displays', {
-    p_id: announcementData.id || null,
-    p_title: announcementData.title,
-    p_body: announcementData.body,
-    p_image_object_key: announcementData.imageObjectKey || null,
-    p_image_mime_type: announcementData.imageMimeType || null,
-    p_image_version: announcementData.imageVersion || 1,
-    p_starts_at: announcementData.startsAt,
-    p_ends_at: announcementData.endsAt,
-    p_actor_id: actorId,
-    p_display_ids: displayIds,
-  });
+  const client = await pool.connect();
+  try {
+    await client.query('BEGIN');
+
+    const { title, body, starts_at, ends_at, image_url } = announcementData;
+    const ann = await client.query(
+      `INSERT INTO announcements (title, body, starts_at, ends_at, image_url, created_by, publish_status)
+       VALUES ($1, $2, $3, $4, $5, $6, 'published')
+       RETURNING *`,
+      [title, body || null, starts_at, ends_at, image_url || null, actorId]
+    );
+
+    const annId = ann.rows[0].id;
+
+    for (const displayId of displayIds) {
+      await client.query(
+        `INSERT INTO announcement_displays (announcement_id, display_id, assigned_by)
+         VALUES ($1, $2, $3) ON CONFLICT DO NOTHING`,
+        [annId, displayId, actorId]
+      );
+    }
+
+    await client.query('COMMIT');
+    return ann.rows[0];
+  } catch (err) {
+    await client.query('ROLLBACK');
+    throw err;
+  } finally {
+    client.release();
+  }
 }

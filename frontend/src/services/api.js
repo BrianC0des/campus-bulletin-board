@@ -5,22 +5,27 @@ const api = axios.create({
   headers: {
     'Content-Type': 'application/json',
   },
-  withCredentials: true, // For passing display HTTP-only credential cookies
+  withCredentials: true,
 });
 
-// Request Interceptor: Automatically attach Supabase Auth JWT token
+// attach user id to every request if logged in
 api.interceptors.request.use(
   (config) => {
-    const token = localStorage.getItem('supabase_access_token');
-    if (token) {
-      config.headers.Authorization = `Bearer ${token}`;
+    const savedUser = localStorage.getItem('campus_user');
+    if (savedUser) {
+      try {
+        const user = JSON.parse(savedUser);
+        if (user.id) {
+          config.headers['x-user-id'] = user.id;
+        }
+      } catch (e) {}
     }
     return config;
   },
   (error) => Promise.reject(error)
 );
 
-// Response Interceptor: Handle common API errors (e.g. 401 Unauthorized)
+// handle errors globally
 api.interceptors.response.use(
   (response) => response.data,
   (error) => {

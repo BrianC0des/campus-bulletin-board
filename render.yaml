@@ -12,14 +12,8 @@ services:
         value: production
       - key: PORT
         value: 5000
-      - key: SUPABASE_URL
+      - key: DATABASE_URL
         sync: false
-      - key: SUPABASE_SERVICE_ROLE_KEY
-        sync: false
-      - key: R2_ACCOUNT_ID
-        sync: false
-      - key: R2_BUCKET_NAME
-        value: campus-bulletin-images
       - key: CAMPUS_TIMEZONE
         value: Asia/Manila
       - key: CLIENT_URL

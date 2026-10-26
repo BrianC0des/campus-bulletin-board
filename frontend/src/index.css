@@ -1,16 +1,10 @@
-/* ==========================================================================
-   Campus Bulletin Board — Global Stylesheet (index.css)
-   Contains CSS reset, global variables, and base utilities.
-   Feature styles are organized in separate files under src/styles/
-   ========================================================================== */
-
-/* 1. Feature Stylesheet Imports (Keeps things organized for teammates) */
+/* global stylesheet - imports all other css files */
 @import './styles/navbar.css';
 @import './styles/announcements.css';
 @import './styles/displays.css';
 @import './styles/dashboard.css';
 
-/* 2. Global CSS Variables (Students can customize colors & radius here) */
+/* global css variables */
 :root {
   --primary-color: #2563eb;
   --secondary-color: #64748b;
@@ -24,7 +18,7 @@
   --border-radius: 8px;
 }
 
-/* 3. Basic CSS Reset */
+/* css reset */
 * {
   box-sizing: border-box;
   margin: 0;
@@ -42,7 +36,7 @@ html, body, #root {
   height: 100%;
 }
 
-/* 4. Common Button Utility Classes */
+/* buttons */
 .btn {
   display: inline-flex;
   align-items: center;
@@ -78,7 +72,7 @@ html, body, #root {
   font-size: 0.75rem;
 }
 
-/* 5. Common Badge Utility Classes */
+/* badges */
 .badge {
   display: inline-flex;
   align-items: center;
@@ -103,7 +97,7 @@ html, body, #root {
   color: #b91c1c;
 }
 
-/* 6. Alert Box Utility */
+/* error alert */
 .alert-error {
   padding: 0.75rem 1rem;
   background-color: #fef2f2;
@@ -112,4 +106,17 @@ html, body, #root {
   border-radius: var(--border-radius);
   margin-bottom: 1rem;
   font-size: 0.875rem;
+}
+
+/* page header row */
+.page-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 10px 0;
+}
+
+.empty-text {
+  color: #666666;
+  padding: 20px 0;
 }

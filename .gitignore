@@ -34,10 +34,8 @@ lerna-debug.log*
 .idea/
 .vscode/
 
-# Supabase Local Cache
-.branches/
-.temp/
-supabase/.temp/
-
-# Wrangler Cache
-.wrangler/
+# Uploads
+uploads/*
+!uploads/.gitkeep
+package-lock.json
+.vite/

@@ -1,0 +1,5 @@
+# Ignore all uploaded files in this directory
+*
+# Except for this .gitignore and .gitkeep
+!.gitignore
+!.gitkeep
