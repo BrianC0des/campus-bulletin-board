@@ -60,17 +60,20 @@
   align-items: center;
   box-sizing: border-box;
   max-width: 100%;
-  padding: 16px 24px;
+  min-width: min(420px, 100%);
+  min-height: 110px;
+  padding: 24px 32px;
   margin: 12px 0 24px;
   background: #ffffff;
   color: #000000;
-  border: 2px solid #000000;
+  border: 3px solid #000000;
   border-radius: 0;
   box-shadow: none;
   font-family: monospace;
-  font-size: clamp(1.5rem, 4vw, 3rem);
-  font-weight: bold;
-  letter-spacing: clamp(2px, 0.5vw, 4px);
+  font-size: 3rem;
+  font-weight: 800;
+  letter-spacing: 4px;
+  line-height: 1.2;
   overflow-wrap: anywhere;
 }
 
@@ -168,7 +171,12 @@
   }
 
   .tv-fullscreen-screen .pairing-code-box {
+    min-width: 0;
+    width: 100%;
+    max-width: 420px;
+    min-height: 80px;
     padding: 14px 12px;
+    font-size: clamp(1.6rem, 7vw, 2.5rem);
     letter-spacing: 2px;
   }
 

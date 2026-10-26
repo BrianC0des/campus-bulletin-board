@@ -1,3 +1,4 @@
+
 import React, { useState, useEffect } from 'react';
 import { MOCK_ANNOUNCEMENTS } from '../mocks/mockData.js';
 import '../styles/displays.css';
@@ -16,7 +17,6 @@ export default function DisplayScreen() {
         announcement.status === 'active'
     )
   );
-
 
   const pairingCode = '7K4P - 92QM';
 
@@ -41,7 +41,6 @@ export default function DisplayScreen() {
   }, [slides.length]);
 
   const currentSlide = slides[currentIndex];
-
 
   if (slides.length === 0) {
     return (
@@ -70,14 +69,13 @@ export default function DisplayScreen() {
     );
   }
 
-  
   return (
     <main className="tv-fullscreen-screen">
       <header className="tv-standby-header">
         <h1>🏛️ CAMPUS DIGITAL SIGNAGE</h1>
       </header>
 
-      <section className="tv-slide-card">
+      <section key={currentIndex} className="tv-slide-card">
         {currentSlide.image_url && (
           <img
             className="tv-slide-image"
