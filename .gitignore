@@ -38,3 +38,4 @@ lerna-debug.log*
 uploads/*
 !uploads/.gitkeep
 package-lock.json
+.vite/
