@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext.jsx';
+import api from '../services/api.js';
 
 export default function Login() {
   const navigate = useNavigate();
@@ -9,21 +10,34 @@ export default function Login() {
   const [email, setEmail] = useState('admin@wmsu.edu.ph');
   const [password, setPassword] = useState('admin123');
   const [error, setError] = useState('');
+  const [submitting, setSubmitting] = useState(false);
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
     if (!email.trim() || !password.trim()) {
       setError('Please enter both email and password');
       return;
     }
 
-    login({
-      id: 'admin-001',
-      email: email.trim(),
-      fullName: 'Campus Administrator',
-      role: 'administrator',
-    });
-    navigate('/dashboard');
+    try {
+      setSubmitting(true);
+      setError('');
+      const response = await api.post('/auth/login', {
+        email: email.trim(),
+        password: password.trim(),
+      });
+
+      if (response?.user) {
+        login(response.user);
+        navigate('/dashboard');
+      } else {
+        setError('Login failed. Please check credentials.');
+      }
+    } catch (err) {
+      setError(err.message || 'Invalid email or password');
+    } finally {
+      setSubmitting(false);
+    }
   };
 
   return (
@@ -62,8 +76,9 @@ export default function Login() {
           <button
             type="submit"
             className="btn btnDark login-btn"
+            disabled={submitting}
           >
-            Sign In
+            {submitting ? 'Signing In...' : 'Sign In'}
           </button>
         </form>
       </div>

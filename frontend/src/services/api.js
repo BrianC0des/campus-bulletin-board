@@ -1,16 +1,25 @@
 import axios from 'axios';
 
+const defaultBaseUrl =
+  typeof window !== 'undefined' && window.location.hostname && window.location.hostname !== 'localhost'
+    ? `http://${window.location.hostname}:5000/api`
+    : 'http://localhost:5000/api';
+
 const api = axios.create({
-  baseURL: import.meta.env.VITE_API_URL || 'http://localhost:5000/api',
+  baseURL: import.meta.env.VITE_API_URL || defaultBaseUrl,
   headers: {
     'Content-Type': 'application/json',
   },
   withCredentials: true,
 });
 
-// attach user id to every request if logged in
+// attach user id to every request if logged in & handle FormData
 api.interceptors.request.use(
   (config) => {
+    if (config.data instanceof FormData) {
+      delete config.headers['Content-Type'];
+    }
+
     const savedUser = localStorage.getItem('campus_user');
     if (savedUser) {
       try {

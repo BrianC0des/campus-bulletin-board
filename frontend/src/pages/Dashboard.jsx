@@ -1,6 +1,7 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import '../styles/dashboard.css';
 import { MOCK_ANNOUNCEMENTS, MOCK_DISPLAYS } from '../mocks/mockData.js';
+import api from '../services/api.js';
 
 const cardText = [
   { id: 'active', title: 'Active Content' },
@@ -34,50 +35,35 @@ function Panel({ title, children }) {
   );
 }
 
-function RecentContent() {
-  const recent = MOCK_ANNOUNCEMENTS.slice(0, 3);
-  return (
-    <Panel title="Recent Content">
-      <div className="panel-list">
-        {recent.map((a) => (
-          <div key={a.id} className="panel-list-item">
-            <div>
-              <div className="panel-item-title">{a.title}</div>
-              <div className="panel-item-sub">Ends: {new Date(a.ends_at).toLocaleDateString()}</div>
-            </div>
-            <span className="panel-item-status">[ {a.status.toUpperCase()} ]</span>
-          </div>
-        ))}
-      </div>
-    </Panel>
-  );
-}
-
-function DisplaysPanel() {
-  return (
-    <Panel title="DISPLAYS">
-      <div className="panel-list">
-        {MOCK_DISPLAYS.map((d) => (
-          <div key={d.id} className="panel-list-item">
-            <div>
-              <div className="panel-item-title">{d.name}</div>
-              <div className="panel-item-sub">{d.location}</div>
-            </div>
-            <span className="panel-item-status">
-              [ {d.is_paired ? 'ONLINE' : 'UNPAIRED'} ]
-            </span>
-          </div>
-        ))}
-      </div>
-    </Panel>
-  );
-}
-
 export function DashboardHome() {
-  const activeCount = MOCK_ANNOUNCEMENTS.filter((a) => a.status === 'active').length;
-  const scheduledCount = MOCK_ANNOUNCEMENTS.filter((a) => a.status === 'scheduled').length;
-  const expiredCount = MOCK_ANNOUNCEMENTS.filter((a) => a.status === 'expired').length;
-  const displaysCount = MOCK_DISPLAYS.filter((d) => d.is_paired).length;
+  const [announcements, setAnnouncements] = useState([]);
+  const [displays, setDisplays] = useState([]);
+
+  useEffect(() => {
+    Promise.allSettled([api.get('/announcements'), api.get('/displays')])
+      .then(([annRes, dispRes]) => {
+        if (annRes.status === 'fulfilled' && annRes.value?.announcements) {
+          setAnnouncements(annRes.value.announcements);
+        } else {
+          setAnnouncements(MOCK_ANNOUNCEMENTS);
+        }
+
+        if (dispRes.status === 'fulfilled' && dispRes.value?.displays) {
+          setDisplays(dispRes.value.displays);
+        } else {
+          setDisplays(MOCK_DISPLAYS);
+        }
+      })
+      .catch(() => {
+        setAnnouncements(MOCK_ANNOUNCEMENTS);
+        setDisplays(MOCK_DISPLAYS);
+      });
+  }, []);
+
+  const activeCount = announcements.filter((a) => a.status === 'active').length;
+  const scheduledCount = announcements.filter((a) => a.status === 'scheduled').length;
+  const expiredCount = announcements.filter((a) => a.status === 'expired').length;
+  const displaysCount = displays.filter((d) => d.is_paired).length;
 
   const contentData = {
     active: { value: activeCount, status: 'LIVE' },
@@ -86,14 +72,18 @@ export function DashboardHome() {
     displays: { value: displaysCount, status: 'ONLINE' },
   };
 
+  const recent = announcements.slice(0, 4);
+
   return (
-    <>
-      <div className="main-label">
-        <p className="main-text">Administrator Dashboard</p>
-        <h1>Dashboard</h1>
+    <div>
+      <div className="page-header">
+        <div>
+          <h1 className="page-title">Dashboard</h1>
+          <p className="page-sub">Campus Bulletin Board Administrator Overview</p>
+        </div>
       </div>
 
-      <div className="stat-cards stats-grid">
+      <div className="stats-grid">
         {cardText.map((card) => (
           <StatCard
             key={card.id}
@@ -105,10 +95,45 @@ export function DashboardHome() {
       </div>
 
       <div className="panels">
-        <RecentContent />
-        <DisplaysPanel />
+        <Panel title="Recent Content">
+          <div className="panel-list">
+            {recent.length === 0 ? (
+              <p className="empty-text">No recent notices available.</p>
+            ) : (
+              recent.map((a) => (
+                <div key={a.id} className="panel-list-item">
+                  <div>
+                    <div className="panel-item-title">{a.title}</div>
+                    <div className="panel-item-sub">Ends: {new Date(a.ends_at).toLocaleDateString()}</div>
+                  </div>
+                  <span className="panel-item-status">[ {a.status?.toUpperCase() || 'ACTIVE'} ]</span>
+                </div>
+              ))
+            )}
+          </div>
+        </Panel>
+
+        <Panel title="Campus Displays">
+          <div className="panel-list">
+            {displays.length === 0 ? (
+              <p className="empty-text">No displays registered.</p>
+            ) : (
+              displays.slice(0, 5).map((d) => (
+                <div key={d.id} className="panel-list-item">
+                  <div>
+                    <div className="panel-item-title">{d.name}</div>
+                    <div className="panel-item-sub">{d.location || 'Unassigned location'}</div>
+                  </div>
+                  <span className="panel-item-status">
+                    [ {d.is_paired ? 'ONLINE' : 'UNPAIRED'} ]
+                  </span>
+                </div>
+              ))
+            )}
+          </div>
+        </Panel>
       </div>
-    </>
+    </div>
   );
 }
 

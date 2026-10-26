@@ -22,15 +22,15 @@ export default function DisplayCard({ display, onUnregister }) {
       </div>
 
       <div className="display-fleet-info">
-        <div>Code: <strong>{pairing_code}</strong></div>
-        <div>Paired: {paired_at ? new Date(paired_at).toLocaleDateString() : 'Pending pairing...'}</div>
+        <div>Location: <strong>{location || '—'}</strong></div>
+        <div>Since: {paired_at ? new Date(paired_at).toLocaleDateString() : '—'}</div>
       </div>
 
       <div className="display-fleet-actions">
         <button
           type="button"
           className="btn btn-secondary"
-          onClick={() => window.open('/display', '_blank')}
+          onClick={() => window.open('/live', '_blank')}
         >
           View Screen
         </button>

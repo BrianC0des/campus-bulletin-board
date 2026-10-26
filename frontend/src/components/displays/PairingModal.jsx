@@ -88,7 +88,7 @@ export default function PairingModal({ isOpen, onClose, onPairSuccess }) {
               type="text"
               value={name}
               onChange={(e) => setName(e.target.value)}
-              placeholder="e.g. Library Kiosk"
+              placeholder="e.g. Library Display Screen"
               required
             />
           </div>

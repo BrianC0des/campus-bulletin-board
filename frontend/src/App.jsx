@@ -10,14 +10,15 @@ import Dashboard from './pages/Dashboard.jsx';
 import Announcements from './pages/Announcements.jsx';
 import Displays from './pages/Displays.jsx';
 import Users from './pages/Users.jsx';
-import DisplayScreen from './pages/DisplayScreen.jsx';
+import LiveScreen from './pages/LiveScreen.jsx';
 
 export default function App() {
   return (
     <AuthProvider>
       <Routes>
-        {/* Physical display screen — no admin layout */}
-        <Route path="/display" element={<DisplayScreen />} />
+        {/* Physical display screen / live broadcast — no admin layout */}
+        <Route path="/live" element={<LiveScreen />} />
+        <Route path="/display" element={<Navigate to="/live" replace />} />
 
         <Route path="/login" element={<Login />} />
 
