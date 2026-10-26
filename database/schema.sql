@@ -39,8 +39,8 @@ CREATE TABLE IF NOT EXISTS displays (
 -- Scheduled bulletin notices with start/end windows and soft-delete
 CREATE TABLE IF NOT EXISTS announcements (
     id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
-    title VARCHAR(255) NOT NULL,
-    body TEXT NOT NULL,
+    title VARCHAR(255),
+    body TEXT,
     publish_status VARCHAR(20) DEFAULT 'draft' NOT NULL,
     starts_at TIMESTAMPTZ NOT NULL,
     ends_at TIMESTAMPTZ NOT NULL,

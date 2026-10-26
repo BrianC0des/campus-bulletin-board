@@ -47,8 +47,11 @@ router.get('/:id', requireAdmin, async (req, res, next) => {
 router.post('/', requireAdmin, upload.single('image'), async (req, res, next) => {
   try {
     const { title, body, starts_at, ends_at } = req.body;
-    if (!title) {
-      return res.status(400).json({ error: 'Title is required' });
+    const imageUrl = req.file ? `/uploads/${req.file.filename}` : (req.body.image_url || null);
+
+    const resolvedTitle = (title && title.trim()) || (imageUrl ? 'Graphic Poster' : '');
+    if (!resolvedTitle && !body && !imageUrl) {
+      return res.status(400).json({ error: 'Please provide a title, content, or upload an image.' });
     }
 
     let displayIds = [];
@@ -62,12 +65,11 @@ router.post('/', requireAdmin, upload.single('image'), async (req, res, next) =>
       }
     }
 
-    const imageUrl = req.file ? `/uploads/${req.file.filename}` : (req.body.image_url || null);
     const actorId = req.user?.id || (await query('SELECT id FROM administrator_profiles LIMIT 1')).rows[0]?.id;
 
     const announcement = await saveAnnouncementWithDisplays(
       {
-        title: title.trim(),
+        title: resolvedTitle || 'Campus Notice',
         body: body ? body.trim() : null,
         starts_at: starts_at || new Date().toISOString(),
         ends_at: ends_at || new Date(Date.now() + 7 * 86400000).toISOString(),
@@ -87,9 +89,8 @@ router.post('/', requireAdmin, upload.single('image'), async (req, res, next) =>
 router.put('/:id', requireAdmin, upload.single('image'), async (req, res, next) => {
   try {
     const { title, body, starts_at, ends_at } = req.body;
-    if (!title) {
-      return res.status(400).json({ error: 'Title is required' });
-    }
+    const imageUrl = req.file ? `/uploads/${req.file.filename}` : req.body.image_url;
+    const resolvedTitle = (title && title.trim()) || (imageUrl ? 'Graphic Poster' : 'Campus Notice');
 
     let displayIds = undefined;
     if (req.body.display_ids !== undefined) {
@@ -102,13 +103,12 @@ router.put('/:id', requireAdmin, upload.single('image'), async (req, res, next) 
       }
     }
 
-    const imageUrl = req.file ? `/uploads/${req.file.filename}` : req.body.image_url;
     const actorId = req.user?.id || (await query('SELECT id FROM administrator_profiles LIMIT 1')).rows[0]?.id;
 
     const announcement = await updateAnnouncementWithDisplays(
       req.params.id,
       {
-        title: title.trim(),
+        title: resolvedTitle,
         body: body ? body.trim() : null,
         starts_at: starts_at || new Date().toISOString(),
         ends_at: ends_at || new Date(Date.now() + 7 * 86400000).toISOString(),

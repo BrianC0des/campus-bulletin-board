@@ -88,8 +88,9 @@ export default function AnnouncementForm({ initialData, onSave, onCancel, onPrev
   const handleSubmit = (e) => {
     e.preventDefault();
 
-    if (!title.trim()) {
-      setError('Title is required.');
+    const hasImage = Boolean(imageFile || imagePreviewUrl);
+    if (!title.trim() && !hasImage && !body.trim()) {
+      setError('Please provide a title, content, or upload an image poster.');
       return;
     }
 
@@ -109,10 +110,14 @@ export default function AnnouncementForm({ initialData, onSave, onCancel, onPrev
       status = 'expired';
     }
 
+    const resolvedTitle =
+      title.trim() ||
+      (hasImage ? imageFile?.name?.replace(/\.[^/.]+$/, '') || 'Graphic Poster' : 'Campus Notice');
+
     if (onSave) {
       onSave({
         id: initialData?.id,
-        title: title.trim(),
+        title: resolvedTitle,
         body: body.trim(),
         message: body.trim(),
         starts_at: startsAt ? new Date(startsAt).toISOString() : new Date().toISOString(),
@@ -136,7 +141,7 @@ export default function AnnouncementForm({ initialData, onSave, onCancel, onPrev
         {/* LEFT COLUMN */}
         <div className="af-main">
           <fieldset className="af-box">
-            <legend>Notice Title</legend>
+            <legend>Notice Title (Optional if image uploaded)</legend>
             <input
               className="af-input"
               type="text"
@@ -144,27 +149,25 @@ export default function AnnouncementForm({ initialData, onSave, onCancel, onPrev
               onChange={(e) => {
                 setTitle(e.target.value);
               }}
-              placeholder="e.g. Midterm Examination Schedule & Guidelines"
-              required
+              placeholder="e.g. Midterm Examination Schedule (or leave blank for image-only)"
             />
           </fieldset>
 
           <fieldset className="af-box">
-            <legend>Notice Content & Instructions</legend>
+            <legend>Notice Content & Instructions (Optional)</legend>
             <textarea
               className="af-input"
               value={body}
               onChange={(e) => {
                 setBody(e.target.value);
               }}
-              placeholder="Enter announcement details, instructions, or venue..."
-              rows={8}
-              required
+              placeholder="Enter announcement details (optional if uploading a poster)..."
+              rows={6}
             />
           </fieldset>
 
           <fieldset className="af-box">
-            <legend>Graphic Poster / Banner Image (optional)</legend>
+            <legend>Graphic Poster / Banner Image (Pubmat flyer)</legend>
             <input
               type="file"
               accept="image/jpeg,image/png,image/webp,image/gif"
