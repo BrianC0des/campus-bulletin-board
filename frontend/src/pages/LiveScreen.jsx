@@ -141,6 +141,16 @@ export default function LiveScreen() {
   const hasImage = Boolean(currentSlide?.image_url);
   const displayTitle = isRawFilename(currentSlide?.title) ? '' : currentSlide?.title;
 
+  const authorName = currentSlide?.author_name || 'WMSU Administrator';
+  const authorDept = currentSlide?.author_department || 'College of Computer Studies';
+  const authorInitials = authorName
+    .split(' ')
+    .map((w) => w[0])
+    .filter(Boolean)
+    .slice(0, 2)
+    .join('')
+    .toUpperCase() || 'WA';
+
   // State 1: Not yet paired — show pairing code
   if (!isPaired) {
     return (
@@ -199,7 +209,7 @@ export default function LiveScreen() {
   return (
     <main className="tv-fullscreen-screen tv-live-mode">
       <section key={currentIndex} className="tv-slide-viewport">
-        {/* Case A: Poster Only */}
+        {/* Case A: Poster Only - Fills 100% of the screen leaving only the small footer */}
         {hasImage && !hasBody && (
           <div className="tv-poster-hero">
             <img
@@ -214,27 +224,92 @@ export default function LiveScreen() {
           </div>
         )}
 
-        {/* Case B: Poster + Body Text */}
+        {/* Case B: Poster + Body Text (Facebook Post Layout - Underneath, Not Side by Side) */}
         {hasImage && hasBody && (
-          <div className="tv-split-slide">
-            <div className="tv-split-media">
-              <img
-                src={getImageUrl(currentSlide.image_url)}
-                alt={displayTitle || 'Campus announcement'}
-              />
-            </div>
-            <div className="tv-split-info">
-              {displayTitle && <h2 className="tv-split-title">{displayTitle}</h2>}
-              <p className="tv-split-body">{currentSlide.body}</p>
-            </div>
+          <div className="tv-fb-wrapper">
+            <article className="tv-fb-card">
+              <header className="tv-fb-header">
+                <div className="tv-fb-avatar">{authorInitials}</div>
+                <div className="tv-fb-meta">
+                  <div className="tv-fb-author">
+                    <span className="tv-fb-name">{authorName}</span>
+                    <span className="tv-fb-badge">✓</span>
+                  </div>
+                  <div className="tv-fb-sub">
+                    <span>{authorDept}</span>
+                    <span className="tv-fb-dot">•</span>
+                    <span>Active Broadcast</span>
+                    <span className="tv-fb-dot">•</span>
+                    <span className="tv-fb-globe">🌐</span>
+                  </div>
+                </div>
+              </header>
+
+              <div className="tv-fb-content">
+                {displayTitle && <h2 className="tv-fb-title">{displayTitle}</h2>}
+                <p className="tv-fb-body">{currentSlide.body}</p>
+              </div>
+
+              <div className="tv-fb-media">
+                <img
+                  src={getImageUrl(currentSlide.image_url)}
+                  alt={displayTitle || 'Announcement image'}
+                />
+              </div>
+
+              <footer className="tv-fb-actions">
+                <div className="tv-fb-action-btn">
+                  <span>👍</span> <span>Like</span>
+                </div>
+                <div className="tv-fb-action-btn">
+                  <span>💬</span> <span>Comment</span>
+                </div>
+                <div className="tv-fb-action-btn">
+                  <span>↗️</span> <span>Share</span>
+                </div>
+              </footer>
+            </article>
           </div>
         )}
 
-        {/* Case C: Text Only Notice */}
+        {/* Case C: Text Only Notice (Facebook Text Post) */}
         {!hasImage && (
-          <div className="tv-text-slide">
-            {displayTitle && <h2>{displayTitle}</h2>}
-            {hasBody && <p>{currentSlide.body}</p>}
+          <div className="tv-fb-wrapper">
+            <article className="tv-fb-card tv-fb-text-only">
+              <header className="tv-fb-header">
+                <div className="tv-fb-avatar">{authorInitials}</div>
+                <div className="tv-fb-meta">
+                  <div className="tv-fb-author">
+                    <span className="tv-fb-name">{authorName}</span>
+                    <span className="tv-fb-badge">✓</span>
+                  </div>
+                  <div className="tv-fb-sub">
+                    <span>{authorDept}</span>
+                    <span className="tv-fb-dot">•</span>
+                    <span>Official Announcement</span>
+                    <span className="tv-fb-dot">•</span>
+                    <span className="tv-fb-globe">🌐</span>
+                  </div>
+                </div>
+              </header>
+
+              <div className="tv-fb-content tv-fb-content-large">
+                {displayTitle && <h2 className="tv-fb-title">{displayTitle}</h2>}
+                {hasBody && <p className="tv-fb-body">{currentSlide.body}</p>}
+              </div>
+
+              <footer className="tv-fb-actions">
+                <div className="tv-fb-action-btn">
+                  <span>👍</span> <span>Like</span>
+                </div>
+                <div className="tv-fb-action-btn">
+                  <span>💬</span> <span>Comment</span>
+                </div>
+                <div className="tv-fb-action-btn">
+                  <span>↗️</span> <span>Share</span>
+                </div>
+              </footer>
+            </article>
           </div>
         )}
       </section>

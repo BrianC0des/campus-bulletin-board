@@ -26,8 +26,11 @@ router.get('/active-content', requireDisplayCredential, async (req, res, next) =
         a.body,
         a.image_url,
         a.starts_at,
-        a.ends_at
+        a.ends_at,
+        p.full_name AS author_name,
+        p.department AS author_department
       FROM announcements a
+      LEFT JOIN administrator_profiles p ON a.created_by = p.id
       JOIN announcement_displays ad ON a.id = ad.announcement_id
       JOIN displays d ON ad.display_id = d.id
       WHERE a.deleted_at IS NULL
