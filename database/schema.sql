@@ -6,11 +6,16 @@
 CREATE TABLE IF NOT EXISTS administrator_profiles (
     id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
     email VARCHAR(255) UNIQUE NOT NULL,
-    password VARCHAR(255) NOT NULL,
+    password_hash VARCHAR(255) NOT NULL,
     full_name VARCHAR(150) NOT NULL,
     role VARCHAR(50) DEFAULT 'admin' NOT NULL,
+    status VARCHAR(20) DEFAULT 'active' NOT NULL,
     created_at TIMESTAMPTZ DEFAULT CURRENT_TIMESTAMP NOT NULL,
-    updated_at TIMESTAMPTZ DEFAULT CURRENT_TIMESTAMP NOT NULL
+    updated_at TIMESTAMPTZ DEFAULT CURRENT_TIMESTAMP NOT NULL,
+
+    -- Constraints
+    CONSTRAINT chk_admin_role CHECK (role IN ('lead_admin', 'admin')),
+    CONSTRAINT chk_admin_status CHECK (status IN ('active', 'disabled'))
 );
 
 -- TABLE: displays
@@ -78,16 +83,16 @@ SELECT
     a.ends_at,
     a.image_url,
     a.created_by,
-    p.email AS author_email,
+    p.full_name AS author_name,
     a.created_at,
     a.deleted_at
 FROM announcements a
 JOIN administrator_profiles p ON a.created_by = p.id
 WHERE a.deleted_at IS NULL;
 
--- VIEW: v_kiosk_active_announcements
--- Real-time active slide feed consumed by wall-mounted TV screens
-CREATE OR REPLACE VIEW v_kiosk_active_announcements AS
+-- VIEW: v_display_screen_announcements
+-- Real-time active slide feed consumed by wall-mounted display screens
+CREATE OR REPLACE VIEW v_display_screen_announcements AS
 SELECT 
     ad.display_id,
     a.id AS announcement_id,

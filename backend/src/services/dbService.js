@@ -29,12 +29,14 @@ export async function saveAnnouncementWithDisplays(announcementData, displayIds,
 
     const annId = ann.rows[0].id;
 
-    for (const displayId of displayIds) {
-      await client.query(
-        `INSERT INTO announcement_displays (announcement_id, display_id, assigned_by)
-         VALUES ($1, $2, $3) ON CONFLICT DO NOTHING`,
-        [annId, displayId, actorId]
-      );
+    if (displayIds && Array.isArray(displayIds)) {
+      for (const displayId of displayIds) {
+        await client.query(
+          `INSERT INTO announcement_displays (announcement_id, display_id, assigned_by)
+           VALUES ($1, $2, $3) ON CONFLICT DO NOTHING`,
+          [annId, displayId, actorId]
+        );
+      }
     }
 
     await client.query('COMMIT');
@@ -46,3 +48,49 @@ export async function saveAnnouncementWithDisplays(announcementData, displayIds,
     client.release();
   }
 }
+
+// update existing announcement and refresh display links
+export async function updateAnnouncementWithDisplays(id, announcementData, displayIds, actorId) {
+  const client = await pool.connect();
+  try {
+    await client.query('BEGIN');
+
+    const { title, body, starts_at, ends_at, image_url } = announcementData;
+
+    let updateQuery = `
+      UPDATE announcements
+      SET title = $1, body = $2, starts_at = $3, ends_at = $4, updated_at = CURRENT_TIMESTAMP
+    `;
+    const params = [title, body || null, starts_at, ends_at];
+
+    if (image_url !== undefined) {
+      params.push(image_url);
+      updateQuery += `, image_url = $${params.length}`;
+    }
+
+    params.push(id);
+    updateQuery += ` WHERE id = $${params.length} RETURNING *`;
+
+    const ann = await client.query(updateQuery, params);
+
+    if (displayIds && Array.isArray(displayIds)) {
+      await client.query('DELETE FROM announcement_displays WHERE announcement_id = $1', [id]);
+      for (const displayId of displayIds) {
+        await client.query(
+          `INSERT INTO announcement_displays (announcement_id, display_id, assigned_by)
+           VALUES ($1, $2, $3) ON CONFLICT DO NOTHING`,
+          [id, displayId, actorId]
+        );
+      }
+    }
+
+    await client.query('COMMIT');
+    return ann.rows[0];
+  } catch (err) {
+    await client.query('ROLLBACK');
+    throw err;
+  } finally {
+    client.release();
+  }
+}
+
