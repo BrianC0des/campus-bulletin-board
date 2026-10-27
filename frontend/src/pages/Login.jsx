@@ -11,6 +11,7 @@ export default function Login() {
   const [password, setPassword] = useState('admin123');
   const [error, setError] = useState('');
   const [submitting, setSubmitting] = useState(false);
+  const [showForgotModal, setShowForgotModal] = useState(false);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -67,7 +68,10 @@ export default function Login() {
               <a
                 href="#forgot-password"
                 className="forgot-password-link"
-                onClick={(e) => e.preventDefault()}
+                onClick={(e) => {
+                  e.preventDefault();
+                  setShowForgotModal(true);
+                }}
               >
                 Forgot password?
               </a>
@@ -91,6 +95,69 @@ export default function Login() {
           </button>
         </form>
       </div>
+
+      {showForgotModal && (
+        <div
+          className="modalBackdrop"
+          role="dialog"
+          aria-modal="true"
+          onClick={() => setShowForgotModal(false)}
+        >
+          <div className="modalContent" onClick={(e) => e.stopPropagation()}>
+            <div className="modalHeader">
+              <div>
+                <p className="labelSmall">Security & Account Recovery</p>
+                <h2>Password Reset Policy</h2>
+              </div>
+              <button
+                type="button"
+                className="modalClose"
+                onClick={() => setShowForgotModal(false)}
+                aria-label="Close dialog"
+              >
+                ✕
+              </button>
+            </div>
+
+            <div style={{ fontSize: '13px', lineHeight: '1.6', color: '#222', marginBottom: '20px' }}>
+              <p style={{ marginBottom: '12px' }}>
+                For physical security and broadcast integrity across campus digital displays, administrator accounts are centrally provisioned and managed by the university.
+              </p>
+              <div
+                style={{
+                  background: '#f9f9f9',
+                  border: '1px solid #000000',
+                  padding: '12px 14px',
+                  marginBottom: '14px',
+                }}
+              >
+                <p style={{ margin: 0, fontWeight: 'bold', color: '#000' }}>
+                  Management Information Systems (MIS) Office
+                </p>
+                <p style={{ margin: '4px 0 0', color: '#444' }}>
+                  Email: <span style={{ fontWeight: '600' }}>mis@wmsu.edu.ph</span>
+                </p>
+                <p style={{ margin: '2px 0 0', color: '#444' }}>
+                  Location: WMSU Computer Center Building, 2nd Floor
+                </p>
+              </div>
+              <p style={{ margin: 0, fontSize: '12px', color: '#666' }}>
+                Please coordinate with your department ICT coordinator or visit the MIS Office with your faculty/staff identification to have your credentials re-issued.
+              </p>
+            </div>
+
+            <div className="modalActions" style={{ display: 'flex', justifyContent: 'flex-end' }}>
+              <button
+                type="button"
+                className="btn btnDark"
+                onClick={() => setShowForgotModal(false)}
+              >
+                Understood
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 }
