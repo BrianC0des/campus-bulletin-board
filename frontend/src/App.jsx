@@ -11,6 +11,7 @@ import Announcements from './pages/Announcements.jsx';
 import Displays from './pages/Displays.jsx';
 import Users from './pages/Users.jsx';
 import DisplayScreen from './pages/DisplayScreen.jsx';
+import LiveScreen from './pages/LiveScreen.jsx';
 
 export default function App() {
   return (
@@ -18,6 +19,7 @@ export default function App() {
       <Routes>
         {/* Physical display screen — no admin layout */}
         <Route path="/display" element={<DisplayScreen />} />
+        <Route path="/live" element={<LiveScreen />} />
 
         <Route path="/login" element={<Login />} />
 

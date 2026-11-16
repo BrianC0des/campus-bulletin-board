@@ -460,3 +460,91 @@
   letter-spacing: 2px !important;
   font-weight: bold !important;
 }
+
+
+/* --------------------------------------------------------------------------
+   JAY JASPER'S SECTION: Slide Rotation Speed Control
+   -------------------------------------------------------------------------- */
+.rotation-control {
+  margin: 10px 0;
+  padding: 12px 0;
+  border-top: 1px solid #eeeeee;
+}
+
+.rotation-control-label {
+  margin: 0 0 8px;
+  font-size: 12px;
+  font-weight: bold;
+  letter-spacing: 0.5px;
+  color: #333333;
+}
+
+.rotation-presets {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 6px;
+}
+
+.rotation-preset-btn {
+  padding: 5px 12px;
+  border: 1px solid #000000;
+  background: #ffffff;
+  color: #000000;
+  font-family: inherit;
+  font-size: 12px;
+  font-weight: bold;
+  cursor: pointer;
+  transition: background 0.15s, color 0.15s;
+}
+
+.rotation-preset-btn:hover {
+  background: #000000;
+  color: #ffffff;
+}
+
+.rotation-preset-active {
+  background: #000000;
+  color: #ffffff;
+}
+
+.rotation-custom {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  margin-left: 4px;
+}
+
+.rotation-custom-input {
+  width: 52px;
+  padding: 5px 6px;
+  border: 1px solid #000000;
+  background: #ffffff;
+  color: #000000;
+  font-family: inherit;
+  font-size: 12px;
+  font-weight: bold;
+  text-align: center;
+}
+
+.rotation-custom-input::-webkit-inner-spin-button,
+.rotation-custom-input::-webkit-outer-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+
+.rotation-custom-input[type="number"] {
+  -moz-appearance: textfield;
+}
+
+.rotation-custom-unit {
+  font-size: 11px;
+  font-weight: bold;
+  color: #666666;
+}
+
+.rotation-save-btn {
+  padding: 5px 10px !important;
+  font-size: 11px !important;
+  font-weight: bold !important;
+}

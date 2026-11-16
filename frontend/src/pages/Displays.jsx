@@ -4,7 +4,16 @@ import DisplayCard from '../components/displays/DisplayCard.jsx';
 import PairingModal from '../components/displays/PairingModal.jsx';
 
 export default function Displays() {
-  const [displays, setDisplays] = useState(MOCK_DISPLAYS);
+  const [displays, setDisplays] = useState(() => {
+    const savedSec = localStorage.getItem('display_rotation_seconds');
+    if (savedSec && Number(savedSec) >= 3) {
+      return MOCK_DISPLAYS.map((d) => ({
+        ...d,
+        rotation_seconds: Number(savedSec),
+      }));
+    }
+    return MOCK_DISPLAYS;
+  });
   const [search, setSearch] = useState('');
   const [filter, setFilter] = useState('all');
   const [isPairModalOpen, setIsPairModalOpen] = useState(false);
@@ -42,6 +51,14 @@ export default function Displays() {
         displays.map((d) => (d.id === id ? { ...d, is_paired: false } : d))
       );
     }
+  };
+
+  const handleUpdateRotation = (id, seconds) => {
+    setDisplays(
+      displays.map((d) =>
+        d.id === id ? { ...d, rotation_seconds: seconds } : d
+      )
+    );
   };
 
   return (
@@ -84,6 +101,7 @@ export default function Displays() {
                 key={display.id}
                 display={display}
                 onUnregister={handleUnregister}
+                onUpdateRotation={handleUpdateRotation}
               />
             ))}
           </div>

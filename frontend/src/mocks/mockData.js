@@ -106,7 +106,8 @@ export const MOCK_DISPLAYS = [
     is_paired: true,
     is_online: true,
     last_seen_at: "2026-10-04T00:05:00.000Z",
-    active_announcements_count: 3
+    active_announcements_count: 3,
+    rotation_seconds: 10
   },
   {
     id: "disp-002",
@@ -115,7 +116,8 @@ export const MOCK_DISPLAYS = [
     is_paired: true,
     is_online: true,
     last_seen_at: "2026-10-04T00:04:12.000Z",
-    active_announcements_count: 2
+    active_announcements_count: 2,
+    rotation_seconds: 10
   },
   {
     id: "disp-003",
@@ -124,7 +126,8 @@ export const MOCK_DISPLAYS = [
     is_paired: true,
     is_online: false, // Simulates an offline screen
     last_seen_at: "2026-10-03T18:22:00.000Z",
-    active_announcements_count: 0
+    active_announcements_count: 0,
+    rotation_seconds: 10
   },
   {
     id: "disp-004",
@@ -133,7 +136,8 @@ export const MOCK_DISPLAYS = [
     is_paired: true,
     is_online: true,
     last_seen_at: "2026-10-04T00:06:30.000Z",
-    active_announcements_count: 1
+    active_announcements_count: 1,
+    rotation_seconds: 10
   }
 ];
 
