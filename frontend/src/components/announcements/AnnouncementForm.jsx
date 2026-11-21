@@ -1,23 +1,64 @@
-import { useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import '../../styles/announcements.css';
 
 function AnnouncementForm() {
   const [title, setTitle] = useState('');
   const [message, setMessage] = useState('');
-  const [startsAt, setStartsAt] = useState('');
-  const [endsAt, setEndsAt] = useState('');
-  const [error, setError] = useState('');
+  const [images, setImages] = useState([]);
+  const [collegeScope, setCollegeScope] = useState('all');
+  const imageUrls = useRef(new Set());
+
+  useEffect(() => {
+    const urls = imageUrls.current;
+    return () => {
+      urls.forEach((previewUrl) => URL.revokeObjectURL(previewUrl));
+    };
+  }, []);
+
+  const handleImageChange = (e) => {
+    const selectedFiles = Array.from(e.target.files || []);
+
+    const newImages = selectedFiles.map((file) => {
+      const previewUrl = URL.createObjectURL(file);
+      imageUrls.current.add(previewUrl);
+      return { file, previewUrl };
+    });
+
+    setImages((currentImages) => [
+      ...currentImages,
+      ...newImages,
+    ]);
+
+    // Allow selecting the same file again after removing it.
+    e.target.value = '';
+  };
+
+  const removeImage = (previewUrl) => {
+    setImages((currentImages) => {
+      const imageToRemove = currentImages.find((image) => image.previewUrl === previewUrl);
+      if (imageToRemove) {
+        URL.revokeObjectURL(imageToRemove.previewUrl);
+        imageUrls.current.delete(imageToRemove.previewUrl);
+      }
+      return currentImages.filter((image) => image.previewUrl !== previewUrl);
+    });
+  };
 
   const handleSubmit = (e) => {
     e.preventDefault();
 
-    if (startsAt && endsAt && endsAt <= startsAt) {
-      setError('End date must be later than start date.');
-      return;
-    }
+    console.log({
+      title,
+      message,
+      collegeScope,
+      images: images.map(({ file }) => file),
+    });
+  };
 
-    setError('');
-    console.log({ title, message, startsAt, endsAt });
+  const handleFacebookShare = () => {
+    const shareUrl = new URL('https://www.facebook.com/sharer/sharer.php');
+    shareUrl.searchParams.set('u', window.location.href);
+    window.open(shareUrl.toString(), '_blank', 'noopener,noreferrer');
   };
 
   return (
@@ -55,34 +96,60 @@ function AnnouncementForm() {
         {/* RIGHT COLUMN */}
         <div className="af-side">
           <fieldset className="af-box">
-            <legend>Schedule - Campus Time Zone</legend>
-
-            <label className="af-label" htmlFor="startsAt">
-              Start date / time
+            <legend>Pictures</legend>
+            <label className="af-label" htmlFor="announcement-images">
+              Add pictures
             </label>
             <input
               className="af-input"
-              id="startsAt"
-              type="datetime-local"
-              value={startsAt}
-              onChange={(e) => setStartsAt(e.target.value)}
-              required
+              id="announcement-images"
+              type="file"
+              accept="image/*"
+              multiple
+              onChange={handleImageChange}
             />
 
-            <label className="af-label" htmlFor="endsAt">
-              End date / time
-            </label>
-            <input
-              className="af-input"
-              id="endsAt"
-              type="datetime-local"
-              value={endsAt}
-              onChange={(e) => setEndsAt(e.target.value)}
-              required
-            />
+            {images.length > 0 && (
+              <div className="af-image-list">
+                {images.map(({ file, previewUrl }) => (
+                  <div className="af-image-item" key={previewUrl}>
+                    <img className="af-image-preview" src={previewUrl} alt={file.name} />
+                    <span className="af-image-name">{file.name}</span>
+                    <button
+                      className="af-remove-image"
+                      type="button"
+                      onClick={() => removeImage(previewUrl)}
+                    >
+                      Remove
+                    </button>
+                  </div>
+                ))}
+              </div>
+            )}
           </fieldset>
 
-          {error && <p className="af-error">{error}</p>}
+          <fieldset className="af-box">
+            <legend>College Scope</legend>
+            <label className="af-label" htmlFor="college-scope">
+              Display announcement to
+            </label>
+            <select
+              className="af-input"
+              id="college-scope"
+              value={collegeScope}
+              onChange={(e) => setCollegeScope(e.target.value)}
+            >
+              <option value="all">All Colleges</option>
+              <option value="college-of-computing-studies">College of Computing Studies</option>
+              <option value="college-of-engineering">College of Engineering</option>
+              <option value="college-of-education">College of Education</option>
+              <option value="college-of-business">College of Business</option>
+            </select>
+          </fieldset>
+
+          <button className="af-button" type="button" onClick={handleFacebookShare}>
+            Share on Facebook
+          </button>
 
           <button className="af-button" type="submit">Save</button>
         </div>
