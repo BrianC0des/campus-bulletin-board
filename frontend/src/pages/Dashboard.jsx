@@ -8,6 +8,7 @@ const cardText = [
   { id: 'scheduled', title: 'Scheduled Content' },
   { id: 'expired', title: 'Expired Content' },
   { id: 'displays', title: 'Registered Displays' },
+  { id: 'users', title: 'Total Admins' },
 ];
 
 function StatCard({ title, value, status }) {
@@ -38,10 +39,11 @@ function Panel({ title, children }) {
 export function DashboardHome() {
   const [announcements, setAnnouncements] = useState([]);
   const [displays, setDisplays] = useState([]);
+  const [admins, setAdmins] = useState([]);
 
   useEffect(() => {
-    Promise.allSettled([api.get('/announcements'), api.get('/displays')])
-      .then(([annRes, dispRes]) => {
+    Promise.allSettled([api.get('/announcements'), api.get('/displays'), api.get('/users')])
+      .then(([annRes, dispRes, usersRes]) => {
         if (annRes.status === 'fulfilled' && annRes.value?.announcements) {
           setAnnouncements(annRes.value.announcements);
         } else {
@@ -53,10 +55,15 @@ export function DashboardHome() {
         } else {
           setDisplays(MOCK_DISPLAYS);
         }
+
+        if (usersRes.status === 'fulfilled' && usersRes.value?.administrators) {
+          setAdmins(usersRes.value.administrators);
+        }
       })
       .catch(() => {
         setAnnouncements(MOCK_ANNOUNCEMENTS);
         setDisplays(MOCK_DISPLAYS);
+        setAdmins([]);
       });
   }, []);
 
@@ -65,11 +72,17 @@ export function DashboardHome() {
   const expiredCount = announcements.filter((a) => a.status === 'expired').length;
   const displaysCount = displays.filter((d) => d.is_paired).length;
 
+  const activeAdmins = admins.filter((a) => a.status === 'active').length;
+  const collegesCount = new Set(
+    admins.map((a) => a.college).filter((c) => c && c !== 'ALL')
+  ).size;
+
   const contentData = {
     active: { value: activeCount, status: 'LIVE' },
     scheduled: { value: scheduledCount, status: 'PENDING' },
     expired: { value: expiredCount, status: 'ARCHIVED' },
     displays: { value: displaysCount, status: 'ONLINE' },
+    users: { value: activeAdmins, status: 'ACTIVE' },
   };
 
   const recent = announcements.slice(0, 4);

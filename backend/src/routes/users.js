@@ -5,11 +5,22 @@ import { requireLeadAdmin } from '../middleware/auth.js';
 
 const router = express.Router();
 
+const VALID_COLLEGES = ['ALL', 'CCS', 'COE', 'CN', 'CLA', 'CTE', 'CBA'];
+
+// Auto-add the college column if it doesn't exist yet
+try {
+  await query(
+    "ALTER TABLE administrator_profiles ADD COLUMN IF NOT EXISTS college VARCHAR(20) DEFAULT 'ALL'"
+  );
+} catch (err) {
+  console.error('Could not add college column:', err.message);
+}
+
 // GET /api/users - List administrators (Lead Admin only)
 router.get('/', requireLeadAdmin, async (req, res, next) => {
   try {
     const result = await query(
-      'SELECT id, email, full_name, role, department, position, status, created_at FROM administrator_profiles ORDER BY created_at ASC'
+      'SELECT id, email, full_name, role, department, position, college, status, created_at FROM administrator_profiles ORDER BY created_at ASC'
     );
     res.json({ administrators: result.rows });
   } catch (err) {
@@ -20,19 +31,26 @@ router.get('/', requireLeadAdmin, async (req, res, next) => {
 // POST /api/users - Create new administrator (Lead Admin only)
 router.post('/', requireLeadAdmin, async (req, res, next) => {
   try {
-    const { email, password, full_name, role, department, position } = req.body;
+    const { email, password, full_name, role, department, position, college } = req.body;
 
     if (!email || !password || !full_name) {
       return res.status(400).json({ error: 'Email, password, and full name are required' });
     }
 
     const assignedRole = role === 'lead_admin' ? 'lead_admin' : 'admin';
+    const requestedCollege = college ? college.trim().toUpperCase() : 'ALL';
+    const assignedCollege = assignedRole === 'lead_admin' ? 'ALL' : requestedCollege;
+
+    if (!VALID_COLLEGES.includes(assignedCollege)) {
+      return res.status(400).json({ error: 'Invalid college' });
+    }
+
     const passwordHash = await bcrypt.hash(password.trim(), 10);
 
     const result = await query(
-      `INSERT INTO administrator_profiles (email, password_hash, full_name, role, department, position, status)
-       VALUES ($1, $2, $3, $4, $5, $6, 'active')
-       RETURNING id, email, full_name, role, department, position, status, created_at`,
+      `INSERT INTO administrator_profiles (email, password_hash, full_name, role, department, position, college, status)
+       VALUES ($1, $2, $3, $4, $5, $6, $7, 'active')
+       RETURNING id, email, full_name, role, department, position, college, status, created_at`,
       [
         email.trim().toLowerCase(),
         passwordHash,
@@ -40,6 +58,7 @@ router.post('/', requireLeadAdmin, async (req, res, next) => {
         assignedRole,
         department ? department.trim() : null,
         position ? position.trim() : null,
+        assignedCollege,
       ]
     );
 
@@ -71,7 +90,7 @@ router.patch('/:id/status', requireLeadAdmin, async (req, res, next) => {
       `UPDATE administrator_profiles
        SET status = $1, updated_at = CURRENT_TIMESTAMP
        WHERE id = $2
-       RETURNING id, email, full_name, role, department, position, status`,
+       RETURNING id, email, full_name, role, department, position, college, status`,
       [status, id]
     );
 

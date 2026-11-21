@@ -3,6 +3,8 @@ import { useAuth } from '../context/AuthContext.jsx';
 import api from '../services/api.js';
 import '../styles/displays.css';
 
+const COLLEGES = ['ALL', 'CCS', 'COE', 'CN', 'CLA', 'CTE', 'CBA'];
+
 export default function Users() {
   const { user: currentUser } = useAuth();
   const [admins, setAdmins] = useState([]);
@@ -17,6 +19,7 @@ export default function Users() {
   const [department, setDepartment] = useState('');
   const [position, setPosition] = useState('');
   const [role, setRole] = useState('admin');
+  const [college, setCollege] = useState('ALL');
   const [modalError, setModalError] = useState('');
   const [submitting, setSubmitting] = useState(false);
 
@@ -74,10 +77,14 @@ export default function Users() {
         department: department.trim() || undefined,
         position: position.trim() || undefined,
         role,
+        college: role === 'lead_admin' ? 'ALL' : college,
       });
 
       if (response?.administrator) {
-        setAdmins((prev) => [...prev, response.administrator]);
+        setAdmins((prev) => [
+          ...prev,
+          { ...response.administrator, college: role === 'lead_admin' ? 'ALL' : college },
+        ]);
         setIsAddModalOpen(false);
         setFullName('');
         setEmail('');
@@ -85,12 +92,30 @@ export default function Users() {
         setDepartment('');
         setPosition('');
         setRole('admin');
+        setCollege('ALL');
       }
     } catch (err) {
       setModalError(err.message || 'Failed to create administrator');
     } finally {
       setSubmitting(false);
     }
+  };
+
+  const handleExportCsv = () => {
+    const headers = ['Name', 'Email', 'Role', 'College', 'Department', 'Position', 'Status'];
+    const esc = (v) => `"${String(v ?? '').replace(/"/g, '""')}"`;
+    const rows = admins.map((a) => [
+      a.full_name, a.email, a.role, a.college || 'ALL', a.department, a.position, a.status,
+    ]);
+    const csv = [headers, ...rows].map((r) => r.map(esc).join(',')).join('\n');
+
+    const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
+    const url = URL.createObjectURL(blob);
+    const link = document.createElement('a');
+    link.href = url;
+    link.download = 'users.csv';
+    link.click();
+    URL.revokeObjectURL(url);
   };
 
   return (
@@ -100,12 +125,17 @@ export default function Users() {
           <h1 className="page-title">User Management</h1>
           <p className="page-sub">Lead Administrator Control Panel</p>
         </div>
-        <button
-          className="btn btn-primary"
-          onClick={() => setIsAddModalOpen(true)}
-        >
-          + Add Administrator
-        </button>
+        <div style={{ display: 'flex', gap: 8 }}>
+          <button type="button" className="btn btn-secondary" onClick={handleExportCsv}>
+            [ Export Users CSV ]
+          </button>
+          <button
+            className="btn btn-primary"
+            onClick={() => setIsAddModalOpen(true)}
+          >
+            + Add Administrator
+          </button>
+        </div>
       </div>
 
       {error && <div className="login-error" style={{ marginBottom: 16 }}>{error}</div>}
@@ -119,6 +149,7 @@ export default function Users() {
               <tr>
                 <th>Name</th>
                 <th>Department / College</th>
+                <th>College</th>
                 <th>Position</th>
                 <th>Email</th>
                 <th>Role</th>
@@ -136,6 +167,9 @@ export default function Users() {
                     </td>
                     <td style={{ fontSize: '13px', color: admin.department ? '#111' : '#888' }}>
                       {admin.department || '—'}
+                    </td>
+                    <td>
+                      <span className="badge">{admin.college || 'ALL'}</span>
                     </td>
                     <td style={{ fontSize: '13px', color: admin.position ? '#111' : '#888' }}>
                       {admin.position || '—'}
@@ -261,6 +295,21 @@ export default function Users() {
                 >
                   <option value="admin">Administrator (Standard)</option>
                   <option value="lead_admin">Lead Administrator</option>
+                </select>
+              </div>
+
+              <div className="modalField">
+                <label className="labelSmall" htmlFor="newAdminCollege">Assigned College</label>
+                <select
+                  id="newAdminCollege"
+                  value={role === 'lead_admin' ? 'ALL' : college}
+                  onChange={(e) => setCollege(e.target.value)}
+                  disabled={role === 'lead_admin'}
+                  style={{ width: '100%', padding: '8px', border: '1px solid #000' }}
+                >
+                  {COLLEGES.map((c) => (
+                    <option key={c} value={c}>{c}</option>
+                  ))}
                 </select>
               </div>
 
