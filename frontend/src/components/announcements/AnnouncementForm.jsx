@@ -60,10 +60,6 @@ export default function AnnouncementForm({ initialData, onSave, onCancel, onPrev
         if (res?.displays) {
           const paired = res.displays.filter((d) => d.is_paired);
           setAvailableDisplays(paired);
-          // Auto-select all active displays when creating new notice
-          if (!initialData) {
-            setSelectedDisplays(paired.map((d) => d.id));
-          }
         }
       })
       .catch((err) => {

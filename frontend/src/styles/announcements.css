@@ -219,7 +219,7 @@
 
 .announcements-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+  grid-template-columns: repeat(auto-fill, minmax(360px, 1fr));
   gap: 16px;
   margin-top: 16px;
 }
@@ -232,10 +232,50 @@
   flex-direction: column;
 }
 
+.announcement-card-badges-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 10px;
+  padding-bottom: 8px;
+  border-bottom: 1px dashed #ddd;
+  flex-wrap: wrap;
+}
+
+.college-scope-badge {
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.5px;
+  padding: 3px 8px;
+  background: #f4f4f5;
+  border: 1px solid #000;
+  color: #111;
+}
+
+.assignment-status-badge {
+  font-size: 11px;
+  font-weight: 700;
+  padding: 3px 8px;
+  border: 1px solid #000;
+}
+
+.assignment-status-badge.unassigned {
+  background: #fafafa;
+  color: #555;
+  border-color: #999;
+}
+
+.assignment-status-badge.broadcasting {
+  background: #ecfdf5;
+  color: #065f46;
+  border-color: #059669;
+}
+
 .announcement-card-image {
-  height: 140px;
+  height: 160px;
   overflow: hidden;
-  border-bottom: 1px solid #000;
+  border: 1px solid #000;
   margin-bottom: 12px;
 }
 
@@ -245,10 +285,43 @@
   object-fit: cover;
 }
 
+.announcement-card-multi-photos {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 8px;
+  margin-bottom: 12px;
+}
+
+.announcement-card-thumb-item {
+  position: relative;
+  height: 110px;
+  border: 1px solid #000;
+  overflow: hidden;
+  background: #f5f5f5;
+}
+
+.announcement-card-thumb-item img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.announcement-photo-badge {
+  position: absolute;
+  bottom: 4px;
+  left: 4px;
+  background: rgba(0, 0, 0, 0.75);
+  color: #fff;
+  font-size: 10px;
+  padding: 2px 6px;
+  font-weight: 600;
+}
+
 .announcement-card-top {
   display: flex;
   justify-content: space-between;
   align-items: flex-start;
+  gap: 8px;
   margin-bottom: 8px;
 }
 
@@ -256,6 +329,7 @@
   font-size: 15px;
   margin: 0;
   font-weight: bold;
+  line-height: 1.35;
 }
 
 .announcement-card-status {
@@ -263,25 +337,64 @@
   font-weight: bold;
   letter-spacing: 1px;
   text-transform: uppercase;
+  flex-shrink: 0;
 }
 
 .announcement-card-body {
   font-size: 13px;
   color: #333;
   flex: 1;
-  margin: 8px 0 12px 0;
+  margin: 6px 0 12px 0;
+  line-height: 1.5;
 }
 
 .announcement-card-meta {
   font-size: 11px;
-  color: #666;
+  color: #555;
   border-top: 1px solid #eee;
   padding-top: 8px;
   margin-top: auto;
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+}
+
+.announcement-card-author {
+  color: #222;
 }
 
 .announcement-displays-tag {
-  margin-top: 4px;
+  margin-top: 2px;
+  color: #065f46;
+  font-weight: 600;
+}
+
+.announcement-card-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  margin-top: 12px;
+  padding-top: 10px;
+  border-top: 1px solid #000;
+}
+
+.btn-assign-display {
+  font-weight: 700;
+  border-color: #000 !important;
+  background: #f8fafc;
+}
+
+.btn-assign-display:hover {
+  background: #000 !important;
+  color: #fff !important;
+}
+
+.btn-fb-share,
+.btn-fb-link {
+  text-decoration: none;
+  display: inline-flex;
+  align-items: center;
+  font-weight: 600;
 }
 
 .announcements-filter-row {
@@ -385,3 +498,380 @@
   font-size: 11px;
   color: #666666;
 }
+
+/* Assign Display Modal & Facebook Share Confirm Modal */
+.modal-backdrop {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.6);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 300;
+  padding: 16px;
+}
+
+.assign-modal-box {
+  width: 100%;
+  max-width: 620px;
+  background: #ffffff;
+  border: 2px solid #000000;
+  padding: 20px;
+  box-shadow: 6px 6px 0 #000000;
+}
+
+.assign-modal-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 12px;
+  padding-bottom: 14px;
+  margin-bottom: 14px;
+  border-bottom: 2px solid #000000;
+}
+
+.assign-modal-eyebrow {
+  margin: 0 0 4px;
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 1.2px;
+  color: #555;
+  text-transform: uppercase;
+}
+
+.assign-modal-title {
+  margin: 0;
+  font-size: 18px;
+  font-weight: 800;
+  color: #000;
+}
+
+.assign-modal-subtitle {
+  margin: 4px 0 0;
+  font-size: 12px;
+  color: #444;
+}
+
+.assign-modal-close {
+  border: 1px solid #000;
+  background: #fff;
+  color: #000;
+  width: 30px;
+  height: 30px;
+  cursor: pointer;
+  font-weight: bold;
+  font-size: 14px;
+}
+
+.assign-modal-close:hover {
+  background: #000;
+  color: #fff;
+}
+
+.assign-quick-select {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-bottom: 14px;
+  padding: 8px 10px;
+  background: #f8f8f8;
+  border: 1px solid #000;
+}
+
+.assign-quick-label {
+  font-size: 12px;
+  font-weight: 700;
+  margin-right: 4px;
+}
+
+.assign-quick-btn {
+  padding: 4px 10px;
+  font-size: 11px;
+  font-weight: 600;
+  border: 1px solid #000;
+  background: #fff;
+  cursor: pointer;
+}
+
+.assign-quick-btn:hover {
+  background: #000;
+  color: #fff;
+}
+
+.display-checkbox-list {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  max-height: 220px;
+  overflow-y: auto;
+  margin-bottom: 16px;
+  padding: 4px 0;
+}
+
+.display-checkbox-item {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 10px 12px;
+  border: 1px solid #ccc;
+  background: #fff;
+  cursor: pointer;
+}
+
+.display-checkbox-item.selected {
+  border: 2px solid #000;
+  background: #f9fafb;
+}
+
+.display-checkbox-info {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.display-checkbox-name {
+  font-size: 13px;
+  font-weight: 700;
+  color: #111;
+}
+
+.display-college-tag {
+  font-size: 11px;
+  font-weight: 600;
+  color: #555;
+}
+
+.display-checkbox-location {
+  font-size: 11px;
+  color: #666;
+}
+
+.display-status-pill {
+  font-size: 11px;
+  font-weight: 700;
+  padding: 2px 8px;
+  border: 1px solid #000;
+}
+
+.display-status-pill.online {
+  background: #ecfdf5;
+  color: #065f46;
+  border-color: #059669;
+}
+
+.display-status-pill.offline {
+  background: #f3f4f6;
+  color: #6b7280;
+  border-color: #9ca3af;
+}
+
+.assign-empty-msg {
+  font-size: 13px;
+  color: #555;
+  padding: 12px;
+  border: 1px dashed #999;
+  text-align: center;
+}
+
+.duration-presets {
+  margin-bottom: 18px;
+  padding: 12px;
+  border: 1px solid #000;
+  background: #fafafa;
+}
+
+.duration-presets-label {
+  display: block;
+  font-size: 12px;
+  font-weight: 700;
+  margin-bottom: 10px;
+  color: #111;
+}
+
+.preset-pills {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.pill {
+  padding: 7px 12px;
+  font-size: 12px;
+  font-weight: 600;
+  border: 1px solid #000;
+  background: #ffffff;
+  color: #111111;
+  cursor: pointer;
+}
+
+.pill:hover {
+  background: #eeeeee;
+}
+
+.pill.active {
+  background: #000000;
+  color: #ffffff;
+  font-weight: 700;
+}
+
+.pill-radio {
+  font-family: monospace;
+}
+
+.assign-modal-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 10px;
+  padding-top: 12px;
+  border-top: 1px solid #000;
+}
+
+/* Facebook Share Modal Specifics */
+.fb-caption-group {
+  margin-bottom: 14px;
+}
+
+.fb-caption-textarea {
+  width: 100%;
+  padding: 10px;
+  border: 1px solid #000;
+  font-family: inherit;
+  font-size: 13px;
+  line-height: 1.5;
+  resize: vertical;
+}
+
+.fb-media-preview {
+  margin-bottom: 16px;
+}
+
+.fb-media-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
+  gap: 8px;
+}
+
+.fb-media-thumb {
+  height: 90px;
+  border: 1px solid #000;
+  overflow: hidden;
+  background: #f5f5f5;
+}
+
+.fb-media-thumb img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+/* Issue #11: College-Based Filtering Tabs & CSV Export Feature */
+.page-header-actions {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+.btn-export-csv {
+  font-weight: 700;
+  border-color: #000 !important;
+  background: #ffffff;
+}
+
+.btn-export-csv:hover:not(:disabled) {
+  background: #000 !important;
+  color: #fff !important;
+}
+
+.btn-export-csv:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.announcements-filter-panel {
+  border: 1px solid #000;
+  background: #ffffff;
+  padding: 14px 16px;
+  margin: 12px 0 20px 0;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.announcements-filter-top {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  flex-wrap: wrap;
+}
+
+.filter-field-group {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex: 1;
+  min-width: 240px;
+}
+
+.filter-field-label {
+  font-size: 12px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  color: #111;
+  white-space: nowrap;
+}
+
+.announcements-filter-top .announcements-search {
+  flex: 1;
+  width: auto;
+}
+
+.college-filter-select {
+  flex: 1;
+  padding: 8px 12px;
+  border: 1px solid #000;
+  background: #fff;
+  color: #111;
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.college-filter-tabs {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  flex-wrap: wrap;
+  padding-top: 10px;
+  border-top: 1px dashed #ccc;
+}
+
+.college-tab-btn {
+  padding: 5px 10px;
+  font-size: 11px;
+  font-weight: 700;
+  border: 1px solid #000;
+  background: #f8f8f8;
+  color: #111;
+  cursor: pointer;
+}
+
+.college-tab-btn:hover {
+  background: #e5e5e5;
+}
+
+.college-tab-btn.active {
+  background: #000;
+  color: #fff;
+}
+
+.announcements-filter-panel .announcements-filter-row {
+  margin: 0;
+  padding-top: 10px;
+  border-top: 1px dashed #ccc;
+}
+
