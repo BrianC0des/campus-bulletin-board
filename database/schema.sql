@@ -1,5 +1,5 @@
 -- Campus Bulletin Board Digital Signage System
--- PostgreSQL schema (v1.5)
+-- PostgreSQL schema (v1.6)
 
 -- TABLE: administrator_profiles
 -- Campus staff accounts authenticated via institutional email & password
@@ -11,13 +11,26 @@ CREATE TABLE IF NOT EXISTS administrator_profiles (
     role VARCHAR(50) DEFAULT 'admin' NOT NULL,
     department VARCHAR(100),
     position VARCHAR(100),
+    college VARCHAR(60) DEFAULT 'ALL',
+    allowed_colleges TEXT[] DEFAULT '{}',
     status VARCHAR(20) DEFAULT 'active' NOT NULL,
+    disabled_reason TEXT,
     created_at TIMESTAMPTZ DEFAULT CURRENT_TIMESTAMP NOT NULL,
     updated_at TIMESTAMPTZ DEFAULT CURRENT_TIMESTAMP NOT NULL,
 
     -- Constraints
     CONSTRAINT chk_admin_role CHECK (role IN ('lead_admin', 'admin')),
-    CONSTRAINT chk_admin_status CHECK (status IN ('active', 'disabled'))
+    CONSTRAINT chk_admin_status CHECK (status IN ('active', 'disabled', 'pending'))
+);
+
+-- TABLE: colleges
+-- Dynamic campus colleges, departments, and administrative offices
+CREATE TABLE IF NOT EXISTS colleges (
+    id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+    code VARCHAR(30) UNIQUE NOT NULL,
+    name VARCHAR(150) NOT NULL,
+    category VARCHAR(50) DEFAULT 'Academic Colleges' NOT NULL,
+    created_at TIMESTAMPTZ DEFAULT CURRENT_TIMESTAMP NOT NULL
 );
 
 -- TABLE: displays
@@ -27,6 +40,10 @@ CREATE TABLE IF NOT EXISTS displays (
     pairing_code VARCHAR(10) UNIQUE,
     name VARCHAR(100),
     location VARCHAR(200),
+    department TEXT DEFAULT 'Campus-Wide',
+    rotation_speed INTEGER DEFAULT 10 NOT NULL,
+    orientation VARCHAR(16) DEFAULT 'landscape' CHECK (orientation IN ('landscape','portrait')),
+    layout_mode VARCHAR(20) DEFAULT 'carousel' CHECK (layout_mode IN ('carousel','split_2','grid_4')),
     is_paired BOOLEAN DEFAULT FALSE NOT NULL,
     paired_at TIMESTAMPTZ,
     is_online BOOLEAN DEFAULT FALSE NOT NULL,
@@ -43,8 +60,20 @@ CREATE TABLE IF NOT EXISTS announcements (
     body TEXT,
     publish_status VARCHAR(20) DEFAULT 'draft' NOT NULL,
     starts_at TIMESTAMPTZ NOT NULL,
-    ends_at TIMESTAMPTZ NOT NULL,
+    ends_at TIMESTAMPTZ,
     image_url TEXT,
+    image_urls TEXT[] DEFAULT '{}',
+    target_college VARCHAR(60) DEFAULT 'ALL',
+    category VARCHAR(30) DEFAULT 'general',
+    template_id VARCHAR(40) DEFAULT 'general_split',
+    template_data JSONB DEFAULT '{}'::jsonb,
+    daily_start_time TIME,
+    daily_end_time TIME,
+    recurrence_days SMALLINT[],
+    playback_duration INTEGER,
+    priority VARCHAR(20) DEFAULT 'normal' CHECK (priority IN ('normal','priority','emergency')),
+    fb_post_id TEXT,
+    fb_post_url TEXT,
     created_by UUID NOT NULL REFERENCES administrator_profiles(id) ON DELETE RESTRICT,
     deleted_at TIMESTAMPTZ,
     created_at TIMESTAMPTZ DEFAULT CURRENT_TIMESTAMP NOT NULL,
@@ -52,7 +81,7 @@ CREATE TABLE IF NOT EXISTS announcements (
 
     -- Table Constraints
     CONSTRAINT chk_publish_status CHECK (publish_status IN ('draft', 'published', 'archived')),
-    CONSTRAINT chk_schedule_order CHECK (ends_at > starts_at)
+    CONSTRAINT chk_schedule_order CHECK (ends_at IS NULL OR ends_at > starts_at)
 );
 
 -- TABLE: announcement_displays
@@ -78,7 +107,7 @@ SELECT
         WHEN a.publish_status = 'draft' THEN 'draft'
         WHEN a.publish_status = 'archived' THEN 'expired'
         WHEN CURRENT_TIMESTAMP < a.starts_at THEN 'scheduled'
-        WHEN CURRENT_TIMESTAMP >= a.starts_at AND CURRENT_TIMESTAMP < a.ends_at THEN 'active'
+        WHEN CURRENT_TIMESTAMP >= a.starts_at AND (a.ends_at IS NULL OR CURRENT_TIMESTAMP < a.ends_at) THEN 'active'
         ELSE 'expired'
     END AS status,
     a.starts_at,
@@ -89,7 +118,19 @@ SELECT
     p.department AS author_department,
     p.position AS author_position,
     a.created_at,
-    a.deleted_at
+    a.deleted_at,
+    a.target_college,
+    a.image_urls,
+    a.category,
+    a.template_id,
+    a.template_data,
+    a.daily_start_time,
+    a.daily_end_time,
+    a.recurrence_days,
+    a.playback_duration,
+    a.priority,
+    a.fb_post_id,
+    a.fb_post_url
 FROM announcements a
 JOIN administrator_profiles p ON a.created_by = p.id
 WHERE a.deleted_at IS NULL;
@@ -104,13 +145,25 @@ SELECT
     a.body,
     a.image_url,
     a.starts_at,
-    a.ends_at
+    a.ends_at,
+    a.image_urls,
+    a.target_college,
+    a.category,
+    a.template_id,
+    a.template_data,
+    a.daily_start_time,
+    a.daily_end_time,
+    a.recurrence_days,
+    a.playback_duration,
+    a.priority,
+    a.fb_post_id,
+    a.fb_post_url
 FROM announcements a
 JOIN announcement_displays ad ON a.id = ad.announcement_id
 JOIN displays d ON ad.display_id = d.id
 WHERE a.deleted_at IS NULL
   AND a.publish_status = 'published'
   AND CURRENT_TIMESTAMP >= a.starts_at
-  AND CURRENT_TIMESTAMP < a.ends_at
+  AND (a.ends_at IS NULL OR CURRENT_TIMESTAMP < a.ends_at)
   AND d.is_paired = TRUE;
 

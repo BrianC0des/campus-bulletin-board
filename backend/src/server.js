@@ -9,6 +9,7 @@ import announcementRoutes from './routes/announcements.js';
 import displayRoutes from './routes/displays.js';
 import pairingRoutes from './routes/pairing.js';
 import userRoutes from './routes/users.js';
+import collegeRoutes from './routes/colleges.js';
 import { errorHandler } from './middleware/errors.js';
 
 dotenv.config();
@@ -20,7 +21,8 @@ const app = express();
 const PORT = process.env.PORT || 5000;
 
 app.use(cors({ origin: process.env.CLIENT_URL || 'http://localhost:5173', credentials: true }));
-app.use(express.json());
+// 10mb: base64-encoded poster PNGs would otherwise hit 413
+app.use(express.json({ limit: '10mb' }));
 
 // serve uploaded images as static files
 app.use('/uploads', express.static(path.join(__dirname, '../uploads')));
@@ -36,6 +38,7 @@ app.use('/api/announcements', announcementRoutes);
 app.use('/api/displays', displayRoutes);
 app.use('/api/pairing', pairingRoutes);
 app.use('/api/users', userRoutes);
+app.use('/api/colleges', collegeRoutes);
 
 app.use(errorHandler);
 

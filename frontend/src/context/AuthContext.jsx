@@ -7,17 +7,26 @@ export function AuthProvider({ children }) {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    // Check initial local session from localStorage
-    const savedUser = localStorage.getItem('campus_user');
-
-    if (savedUser) {
+    const readSavedUser = () => {
+      const savedUser = localStorage.getItem('campus_user');
+      if (!savedUser) return null;
       try {
-        setUser(JSON.parse(savedUser));
-      } catch (e) {
+        return JSON.parse(savedUser);
+      } catch {
         localStorage.removeItem('campus_user');
+        return null;
       }
-    }
+    };
+
+    // Check initial local session from localStorage
+    setUser(readSavedUser());
     setLoading(false);
+
+    const onUserUpdated = () => {
+      setUser(readSavedUser());
+    };
+    window.addEventListener('campus_user_updated', onUserUpdated);
+    return () => window.removeEventListener('campus_user_updated', onUserUpdated);
   }, []);
 
   const login = (userProfile) => {
@@ -27,6 +36,7 @@ export function AuthProvider({ children }) {
 
   const logout = () => {
     localStorage.removeItem('campus_user');
+    localStorage.removeItem('campus_token');
     setUser(null);
   };
 

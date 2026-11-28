@@ -41,3 +41,4 @@ package-lock.json
 .vite/
 .deployment_archive/
 docs/
+fixes.md

@@ -1,57 +1,165 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef, useCallback } from 'react';
 import api from '../services/api.js';
-import { getImageUrl } from '../utils/imageUrl.js';
-import '../styles/displays.css';
+import TemplateRenderer, { ScaledStage } from '../components/announcements/templates/TemplateRenderer.jsx';
+import { useSignageSettings } from '../utils/signageSettings.js';
+
+const PAIRING_POLL_MS = 5000;
+const MIN_SLIDE_MS = 3000;
+
+const manilaTime = () =>
+  new Date().toLocaleTimeString('en-PH', { timeZone: 'Asia/Manila', hour: '2-digit', minute: '2-digit', second: '2-digit' });
+
+const idSignature = (list) => list.map((s) => s.id ?? s.title).join('|');
+
+const isSlideInWindow = (slide, nowMs = Date.now()) => {
+  if (!slide || slide.status === 'expired') return false;
+  if (slide.starts_at) {
+    const startMs = new Date(slide.starts_at).getTime();
+    if (!Number.isNaN(startMs) && startMs > nowMs) return false;
+  }
+  if (slide.ends_at) {
+    const endMs = new Date(slide.ends_at).getTime();
+    if (!Number.isNaN(endMs) && endMs <= nowMs) return false;
+  }
+  return true;
+};
 
 export default function LiveScreen() {
-  const [currentTime, setCurrentTime] = useState(
-    new Date().toLocaleTimeString('en-PH', { timeZone: 'Asia/Manila', hour: '2-digit', minute: '2-digit', second: '2-digit' })
-  );
-
+  const { settings: signageSettings } = useSignageSettings();
+  const [currentTime, setCurrentTime] = useState(manilaTime());
   const [currentIndex, setCurrentIndex] = useState(0);
   const [pairingCode, setPairingCode] = useState('--------');
   const [isPaired, setIsPaired] = useState(false);
-  const [displayId, setDisplayId] = useState(null);
+  const [displayName, setDisplayName] = useState('CAMPUS DISPLAY');
+  const [layoutMode, setLayoutMode] = useState('carousel');
   const [slides, setSlides] = useState([]);
-  const [rotationSeconds, setRotationSeconds] = useState(10);
+  const [rotationSeconds, setRotationSeconds] = useState(null);
+  const [overrideActive, setOverrideActive] = useState(false);
+  const [connectionError, setConnectionError] = useState(false);
 
-  // Fetch real-time active slide playlist
-  const fetchActiveContent = async (activeDisplayId) => {
-    try {
-      const idToUse = activeDisplayId !== undefined ? activeDisplayId : displayId;
-      const url = idToUse
-        ? `/displays/active-content?display_id=${encodeURIComponent(idToUse)}`
-        : '/displays/active-content';
-      const res = await api.get(url);
-      if (res?.announcements) {
-        setSlides(res.announcements);
-        if (res.rotationSeconds) setRotationSeconds(res.rotationSeconds);
-      }
-    } catch (err) {
-      console.error('Failed to fetch active slides:', err);
-    }
-  };
-
-  // Poll pairing status using the stored code
-  const checkPairingStatus = async (code) => {
-    try {
-      const data = await api.get(`/pairing/status?code=${encodeURIComponent(code)}`);
-      if (data?.isPaired) {
-        setIsPaired(true);
-        if (data.displayId) setDisplayId(data.displayId);
-        fetchActiveContent(data.displayId);
-      } else {
-        setIsPaired(false);
-        setDisplayId(null);
-        setSlides([]);
-      }
-    } catch (err) {
-      console.error('Failed to check pairing status:', err);
-    }
-  };
+  // Refs let interval callbacks read the latest values without re-subscribing.
+  const displayIdRef = useRef(null);
+  const slidesRef = useRef([]);
+  const indexRef = useRef(0);
+  const pairedRef = useRef(false);
 
   useEffect(() => {
-    // Reuse existing code from localStorage so refreshing keeps same code
+    indexRef.current = currentIndex;
+  }, [currentIndex]);
+
+  const applyContent = useCallback((res) => {
+    if (!res) return;
+    if (Array.isArray(res.announcements)) {
+      const next = res.announcements;
+      const prev = slidesRef.current;
+      if (idSignature(prev) !== idSignature(next)) {
+        const currentId = prev[indexRef.current]?.id || prev[indexRef.current]?.announcement_id;
+        const keep = currentId !== undefined
+          ? next.findIndex((s) => (s.id || s.announcement_id) === currentId)
+          : -1;
+        setCurrentIndex(keep >= 0 ? keep : 0);
+      }
+      if (JSON.stringify(prev) !== JSON.stringify(next)) {
+        slidesRef.current = next;
+        setSlides(next);
+      }
+      try {
+        localStorage.setItem('paskil_cached_slides', JSON.stringify(next));
+      } catch {
+        // ignore storage quota errors
+      }
+    }
+    setRotationSeconds(res.rotationSeconds > 0 ? res.rotationSeconds : null);
+    if (res.displayName) setDisplayName(res.displayName);
+    if (res.layoutMode) setLayoutMode(res.layoutMode);
+    setOverrideActive(Boolean(res.overrideActive));
+  }, []);
+
+  const fetchActiveContent = useCallback(
+    async (activeDisplayId) => {
+      try {
+        const idToUse = activeDisplayId !== undefined ? activeDisplayId : displayIdRef.current;
+        const url = idToUse
+          ? `/displays/active-content?display_id=${encodeURIComponent(idToUse)}`
+          : '/displays/active-content';
+        applyContent(await api.get(url));
+        setConnectionError(false);
+      } catch {
+        setConnectionError(true);
+        if (slidesRef.current.length === 0) {
+          try {
+            const cached = JSON.parse(localStorage.getItem('paskil_cached_slides') || '[]');
+            const validCached = Array.isArray(cached) ? cached.filter((s) => isSlideInWindow(s)) : [];
+            if (validCached.length > 0) {
+              slidesRef.current = validCached;
+              setSlides(validCached);
+            }
+          } catch {
+            // ignore
+          }
+        }
+      }
+    },
+    [applyContent]
+  );
+
+  const requestNewPairingCode = useCallback(async () => {
+    try {
+      const fresh = await api.post('/pairing/code');
+      if (fresh?.pairingCode) {
+        localStorage.setItem('live_pairing_code', fresh.pairingCode);
+        setPairingCode(fresh.pairingCode);
+        setConnectionError(false);
+        return fresh.pairingCode;
+      }
+    } catch {
+      setConnectionError(true);
+    }
+    return null;
+  }, []);
+
+  const checkPairingStatus = useCallback(
+    async (code) => {
+      try {
+        const data = await api.get(`/pairing/status?code=${encodeURIComponent(code)}`);
+        setConnectionError(false);
+        if (data?.found === false) {
+          pairedRef.current = false;
+          displayIdRef.current = null;
+          slidesRef.current = [];
+          setIsPaired(false);
+          setSlides([]);
+          setOverrideActive(false);
+          localStorage.removeItem('live_pairing_code');
+          await requestNewPairingCode();
+          return;
+        }
+        if (data?.isPaired) {
+          const wasPaired = pairedRef.current;
+          pairedRef.current = true;
+          setIsPaired(true);
+          if (data.displayId) {
+            displayIdRef.current = data.displayId;
+          }
+          if (data.displayName) setDisplayName(data.displayName);
+          if (!wasPaired) await fetchActiveContent(data.displayId);
+        } else {
+          pairedRef.current = false;
+          displayIdRef.current = null;
+          slidesRef.current = [];
+          setIsPaired(false);
+          setSlides([]);
+          setOverrideActive(false);
+        }
+      } catch {
+        setConnectionError(true);
+      }
+    },
+    [fetchActiveContent, requestNewPairingCode]
+  );
+
+  useEffect(() => {
+    let cancelled = false;
     let code = localStorage.getItem('live_pairing_code');
 
     const initCode = async () => {
@@ -61,196 +169,218 @@ export default function LiveScreen() {
           if (data?.pairingCode) {
             code = data.pairingCode;
             localStorage.setItem('live_pairing_code', code);
+            setConnectionError(false);
           }
         } catch {
-          code = '7K4P-92QM';
+          setConnectionError(true);
+          code = 'OFFLINE';
         }
       }
+      if (cancelled) return;
       setPairingCode(code);
-
-      // Check immediately if already paired
-      await checkPairingStatus(code);
+      if (code && code !== 'OFFLINE') await checkPairingStatus(code);
     };
-
     initCode();
 
-    // Poll pairing status and active content every 5s for fast reactivity
-    const pairPoll = setInterval(async () => {
+    const pairPoll = setInterval(() => {
       const storedCode = localStorage.getItem('live_pairing_code');
-      if (storedCode) await checkPairingStatus(storedCode);
-    }, 5000);
+      if (storedCode) {
+        checkPairingStatus(storedCode);
+      } else {
+        code = null;
+        initCode();
+      }
+    }, PAIRING_POLL_MS);
 
+    const contentPollMs = Math.max(5, signageSettings.pollIntervalSeconds || 15) * 1000;
     const contentPoll = setInterval(() => {
-      fetchActiveContent();
-    }, 5000);
+      if (pairedRef.current) fetchActiveContent();
+    }, contentPollMs);
+
+    const clockInterval = setInterval(() => setCurrentTime(manilaTime()), 1000);
+
+    const notifyOffline = () => {
+      if (!displayIdRef.current) return;
+      const payload = JSON.stringify({ display_id: displayIdRef.current, status: 'offline' });
+      const baseUrl = import.meta.env.VITE_API_URL || 'http://localhost:5000/api';
+      if (navigator.sendBeacon) {
+        navigator.sendBeacon(`${baseUrl}/displays/heartbeat`, new Blob([payload], { type: 'application/json' }));
+      }
+    };
+    window.addEventListener('pagehide', notifyOffline);
 
     return () => {
+      cancelled = true;
       clearInterval(pairPoll);
       clearInterval(contentPoll);
+      clearInterval(clockInterval);
+      window.removeEventListener('pagehide', notifyOffline);
     };
-  }, [displayId]);
+  }, [checkPairingStatus, fetchActiveContent, signageSettings.pollIntervalSeconds]);
 
-  // Manila Clock Timer
+  const safeIndex = slides.length ? currentIndex % slides.length : 0;
+  const currentSlide = slides[safeIndex];
+  const effectiveOverride = overrideActive && signageSettings.emergencyPreemption;
+
+  const groupSize = effectiveOverride
+    ? 1
+    : layoutMode === 'grid_4' && slides.length >= 2
+      ? Math.min(4, slides.length)
+      : layoutMode === 'split_2' && slides.length >= 2
+        ? 2
+        : 1;
+
+  // Per-slide (or per-group) rotation timer.
   useEffect(() => {
-    const clockTimer = setInterval(() => {
-      setCurrentTime(
-        new Date().toLocaleTimeString('en-PH', { timeZone: 'Asia/Manila', hour: '2-digit', minute: '2-digit', second: '2-digit' })
-      );
-    }, 1000);
-
-    return () => clearInterval(clockTimer);
-  }, []);
-
-  // Slide Rotation Timer
-  useEffect(() => {
-    if (slides.length <= 1) {
-      setCurrentIndex(0);
-      return;
-    }
-
-    const slideTimer = setInterval(() => {
-      setCurrentIndex((prev) => (prev + 1) % slides.length);
-    }, rotationSeconds * 1000);
-
-    return () => clearInterval(slideTimer);
-  }, [slides.length, rotationSeconds]);
-
-  // Safely clamp currentIndex if slides change or an announcement expires
-  useEffect(() => {
-    if (currentIndex >= slides.length) {
-      setCurrentIndex(0);
-    }
-  }, [slides.length, currentIndex]);
-
-  const currentSlide = slides[currentIndex] || slides[0];
-
-  // Helper to test if title is just an ugly generated filename
-  const isRawFilename = (t) => {
-    if (!t) return true;
-    return (
-      /^screenshot[-_0-9]+/i.test(t) ||
-      /^img[-_0-9]+/i.test(t) ||
-      t.toLowerCase().endsWith('.png') ||
-      t.toLowerCase().endsWith('.jpg') ||
-      t.toLowerCase().endsWith('.jpeg') ||
-      t === 'Graphic Poster'
+    if (slides.length <= groupSize || !currentSlide) return undefined;
+    const seconds = currentSlide.playback_duration || rotationSeconds || signageSettings.defaultSlideDuration || 15;
+    const timer = setTimeout(
+      () => setCurrentIndex((prev) => (prev + groupSize) % slides.length),
+      Math.max(MIN_SLIDE_MS, seconds * 1000)
     );
-  };
+    return () => clearTimeout(timer);
+  }, [safeIndex, slides.length, groupSize, currentSlide?.announcement_id, currentSlide?.playback_duration, rotationSeconds, signageSettings.defaultSlideDuration]);
 
-  const hasBody = Boolean(currentSlide?.body && currentSlide.body.trim());
-  const hasImage = Boolean(currentSlide?.image_url);
-  const displayTitle = isRawFilename(currentSlide?.title) ? '' : currentSlide?.title;
-
-  // State 1: Not yet paired — show pairing code
   if (!isPaired) {
     return (
-      <main className="tv-fullscreen-screen">
-        <header className="tv-standby-header">
-          <h1>CAMPUS DIGITAL SIGNAGE</h1>
-          <span className="tv-live-badge">[ UNPAIRED ]</span>
-        </header>
-
-        <section className="tv-standby-content">
-          <p className="tv-instructions">PAIRING CODE</p>
-
-          <div className="pairing-code-box">
-            {pairingCode}
+      <div className="public-page" style={{ width: '100vw', height: '100vh', padding: 0, justifyContent: 'center' }}>
+        <div className="public-screen unregistered-screen" style={{ width: 'min(980px, 92vw)', height: 'min(580px, 85vh)' }}>
+          <div className="pairing-display-header">PASKIL / UNREGISTERED DISPLAY</div>
+          <div className="pairing-display-body">
+            <div className="pairing-state">NEW DISPLAY DETECTION</div>
+            <div className="pairing-label">PAIRING CODE</div>
+            <strong style={{ letterSpacing: '0.12em', fontFamily: 'monospace' }}>{pairingCode}</strong>
+            <p>
+              Open the <span style={{ color: '#fff', fontWeight: 700 }}>PASKIL Administrator Portal</span> on your computer.<br />
+              Navigate to <span style={{ color: 'var(--lime)', fontWeight: 700 }}>Displays → + Register display</span> and enter this code.
+            </p>
+            <div className="pairing-expiry">
+              {connectionError
+                ? 'Cannot reach PASKIL server — retrying automatically...'
+                : 'Code bound exclusively to this physical screen. Refreshes on network change.'}
+            </div>
+            <div className="waiting-line">{currentTime} • WAITING FOR REGISTRATION CONFIRMATION...</div>
           </div>
-
-          <p className="tv-instructions">
-            Open Admin Dashboard &gt; Displays &gt; Pair New Display to connect this screen.
-          </p>
-        </section>
-
-        <footer className="tv-clock">
-          <span className="tv-footer-clock">{currentTime}</span>
-          <div className="tv-footer-indicator">[ STANDBY ]</div>
-        </footer>
-      </main>
+        </div>
+      </div>
     );
   }
 
-  // State 2: Paired but no announcements yet (or all announcements expired)
-  if (!slides || slides.length === 0 || !currentSlide) {
+  if (!slides || slides.length === 0) {
     return (
-      <main className="tv-fullscreen-screen">
-        <header className="tv-standby-header">
-          <h1>CAMPUS DIGITAL SIGNAGE</h1>
-          <span className="tv-live-badge">[ CONNECTED ]</span>
-        </header>
-
-        <section className="tv-standby-content">
-          <div className="pairing-code-box" style={{ fontSize: '1.25rem', padding: '16px 28px', letterSpacing: '2px' }}>
-            DISPLAY CONNECTED
-          </div>
-          <p className="tv-instructions">
-            Waiting for active published announcements to broadcast.
-          </p>
-        </section>
-
-        <footer className="tv-clock">
-          <span className="tv-footer-clock">{currentTime}</span>
-          <div className="tv-footer-indicator">[ IDLE ]</div>
-        </footer>
-      </main>
-    );
-  }
-
-  return (
-    <main className="tv-fullscreen-screen tv-live-mode">
-      <section key={currentIndex} className="tv-slide-viewport">
-        {/* Case A: Poster Only - Fills 100% of the screen leaving only the small footer */}
-        {hasImage && !hasBody && (
-          <div className="tv-poster-hero">
-            <img
-              src={getImageUrl(currentSlide.image_url)}
-              alt={displayTitle || 'Campus announcement'}
-            />
-            {displayTitle && (
-              <div className="tv-poster-hero-caption">
-                {displayTitle}
-              </div>
+      <div className="public-page" style={{ width: '100vw', height: '100vh', padding: 0, justifyContent: 'center', position: 'relative' }}>
+        <div className="public-screen state-screen" style={{ width: 'min(980px, 92vw)', height: 'min(580px, 85vh)' }}>
+          <div className="pairing-display-header">PASKIL / {displayName.toUpperCase()}</div>
+          <div className="state-message">
+            <strong style={{ fontSize: '28px' }}>
+              {connectionError ? 'CONNECTION LOST' : 'NO ANNOUNCEMENTS SCHEDULED'}
+            </strong>
+            <span style={{ color: '#b8c0cc' }}>
+              {connectionError
+                ? 'Cannot reach PASKIL server — retrying automatically...'
+                : 'All broadcasts are up to date'}
+            </span>
+            {signageSettings.showClockAndTimezone && (
+              <div style={{ color: '#9ca5b3', marginTop: '20px' }}>{currentTime} • Philippine Standard Time</div>
             )}
           </div>
-        )}
-
-        {/* Case B: Title + Content + Image Underneath (Full Screen Cover Above Footer) */}
-        {hasImage && hasBody && (
-          <div className="tv-feed-slide">
-            <div className="tv-feed-text">
-              {displayTitle && <h2 className="tv-feed-title">{displayTitle}</h2>}
-              <p className="tv-feed-body">{currentSlide.body}</p>
-            </div>
-            <div className="tv-feed-media">
-              <img
-                src={getImageUrl(currentSlide.image_url)}
-                alt={displayTitle || 'Announcement image'}
-              />
-            </div>
-          </div>
-        )}
-
-        {/* Case C: Text Only Notice (Title + Content) */}
-        {!hasImage && (
-          <div className="tv-feed-slide tv-feed-text-only">
-            <div className="tv-feed-text-center">
-              {displayTitle && <h2 className="tv-feed-title-large">{displayTitle}</h2>}
-              <div className="tv-feed-divider"></div>
-              {hasBody && <p className="tv-feed-body-large">{currentSlide.body}</p>}
-            </div>
-          </div>
-        )}
-      </section>
-
-      <footer className="tv-clock">
-        <span className="tv-footer-clock">{currentTime}</span>
-        <span className="tv-footer-branding">CAMPUS DIGITAL SIGNAGE</span>
-        <div className="tv-footer-indicator">
-          <span>SLIDE {currentIndex + 1} OF {slides.length}</span>
-          <span>•</span>
-          <span>PHILIPPINE STANDARD TIME</span>
         </div>
-      </footer>
-    </main>
+        {connectionError && (
+          <div
+            role="status"
+            style={{
+              position: 'absolute',
+              bottom: 14,
+              right: 16,
+              zIndex: 20,
+              padding: '7px 14px',
+              borderRadius: 999,
+              background: 'rgba(16, 24, 39, 0.88)',
+              border: '1px solid rgba(255, 255, 255, 0.2)',
+              color: '#f8fafc',
+              fontSize: 12,
+              fontWeight: 600,
+            }}
+          >
+            Offline • Auto-reconnecting...
+          </div>
+        )}
+      </div>
+    );
+  }
+
+  const visibleSlides = Array.from({ length: groupSize }, (_, i) => slides[(safeIndex + i) % slides.length]);
+
+  return (
+    <div
+      className="public-page live-fullscreen"
+      style={{
+        width: '100vw',
+        height: '100vh',
+        margin: 0,
+        padding: 0,
+        background: '#101827',
+        position: 'relative',
+        overflow: 'hidden',
+      }}
+    >
+      <div
+        className={`public-screen live-screen-stage live-layout-${groupSize > 1 ? layoutMode : 'carousel'}`}
+        style={{
+          width: '100vw',
+          maxWidth: '100vw',
+          height: '100vh',
+          maxHeight: '100vh',
+          border: 0,
+          borderRadius: 0,
+          margin: 0,
+          padding: 0,
+          display: 'grid',
+          gridTemplateColumns: groupSize >= 2 ? 'repeat(2, minmax(0, 1fr))' : '1fr',
+          gridTemplateRows: groupSize >= 3 ? 'repeat(2, minmax(0, 1fr))' : '1fr',
+          gap: groupSize > 1 ? 6 : 0,
+          background: '#101827',
+        }}
+      >
+        {visibleSlides.map((slide, idx) => {
+          const slideNum = ((safeIndex + idx) % slides.length) + 1;
+          const itemLabel = `${String(slideNum).padStart(2, '0')} / ${String(slides.length).padStart(2, '0')}`;
+          return (
+            <div key={`${slide.id || slide.announcement_id}-${idx}`} style={{ width: '100%', height: '100%', minWidth: 0, minHeight: 0 }}>
+              <ScaledStage orientation="landscape" fit="cover-viewport">
+                <TemplateRenderer
+                  announcement={slide}
+                  orientation="landscape"
+                  displayName={displayName}
+                  currentTime={currentTime}
+                  itemLabel={itemLabel}
+                />
+              </ScaledStage>
+            </div>
+          );
+        })}
+      </div>
+
+      {connectionError && (
+        <div
+          role="status"
+          style={{
+            position: 'absolute',
+            bottom: 14,
+            right: 16,
+            zIndex: 20,
+            padding: '7px 14px',
+            borderRadius: 999,
+            background: 'rgba(16, 24, 39, 0.88)',
+            border: '1px solid rgba(255, 255, 255, 0.2)',
+            color: '#f8fafc',
+            fontSize: 12,
+            fontWeight: 600,
+          }}
+        >
+          Offline • Playing cached slides — Auto-reconnecting...
+        </div>
+      )}
+    </div>
   );
 }

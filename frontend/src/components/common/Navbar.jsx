@@ -8,7 +8,7 @@ export default function Navbar({ onLogout }) {
 
   return (
     <nav className="navbar">
-      <div className="nav-brand">Campus Bulletin Board</div>
+      <div className="nav-brand">PASKIL</div>
       <div className="nav-links">
         <NavLink to="/dashboard" className="nav-link">Dashboard</NavLink>
         <NavLink to="/announcements" className="nav-link">Announcements</NavLink>

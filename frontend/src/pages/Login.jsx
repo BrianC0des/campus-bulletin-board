@@ -2,27 +2,34 @@ import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext.jsx';
 import api from '../services/api.js';
+import PaskilLogo from '../components/common/PaskilLogo.jsx';
 
 export default function Login() {
   const navigate = useNavigate();
   const { login } = useAuth();
 
-  const [email, setEmail] = useState('admin@wmsu.edu.ph');
-  const [password, setPassword] = useState('admin123');
+  const [mode, setMode] = useState('login');
+  const [email, setEmail] = useState(import.meta.env.DEV ? 'admin@wmsu.edu.ph' : '');
+  const [password, setPassword] = useState(import.meta.env.DEV ? 'admin123' : '');
+  const [firstName, setFirstName] = useState('');
+  const [middleName, setMiddleName] = useState('');
+  const [lastName, setLastName] = useState('');
+  const [position, setPosition] = useState('');
   const [error, setError] = useState('');
+  const [successMsg, setSuccessMsg] = useState('');
   const [submitting, setSubmitting] = useState(false);
-  const [showForgotModal, setShowForgotModal] = useState(false);
 
-  const handleSubmit = async (e) => {
+  const handleLogin = async (e) => {
     e.preventDefault();
     if (!email.trim() || !password.trim()) {
-      setError('Please enter both email and password');
+      setError('Please enter both email and password.');
       return;
     }
 
     try {
       setSubmitting(true);
       setError('');
+      setSuccessMsg('');
       const response = await api.post('/auth/login', {
         email: email.trim(),
         password: password.trim(),
@@ -32,132 +39,199 @@ export default function Login() {
         login(response.user);
         navigate('/dashboard');
       } else {
-        setError('Login failed. Please check credentials.');
+        setError('Login failed. Please verify your credentials.');
       }
     } catch (err) {
-      setError(err.message || 'Invalid email or password');
+      setError(err.message || 'Invalid email or password.');
+    } finally {
+      setSubmitting(false);
+    }
+  };
+
+  const handleRegister = async (e) => {
+    e.preventDefault();
+    const combinedName = [firstName, middleName, lastName].map((s) => s.trim()).filter(Boolean).join(' ');
+    if (!firstName.trim() || !lastName.trim() || !email.trim() || !password.trim()) {
+      setError('First name, last name, institutional email, and password are required.');
+      return;
+    }
+    if (password.trim().length < 6) {
+      setError('Password must be at least 6 characters.');
+      return;
+    }
+    try {
+      setSubmitting(true);
+      setError('');
+      setSuccessMsg('');
+      const res = await api.post('/auth/register', {
+        full_name: combinedName,
+        email: email.trim(),
+        password: password.trim(),
+        position: position.trim() || 'College Coordinator',
+      });
+      setSuccessMsg(
+        res?.message || 'Account request submitted. A Lead Campus Administrator will review and approve your access.'
+      );
+      setFirstName('');
+      setMiddleName('');
+      setLastName('');
+      setPassword('');
+      setPosition('');
+    } catch (err) {
+      setError(err.message || 'Could not submit registration request.');
     } finally {
       setSubmitting(false);
     }
   };
 
   return (
-    <div className="login-container">
-      <div className="login-box">
-        <h1>Campus Bulletin Board</h1>
-        <p className="subtitle">Administrator Sign In</p>
-
-        {error && <p className="login-error">{error}</p>}
-
-        <form onSubmit={handleSubmit}>
-          <div className="login-field">
-            <label htmlFor="loginEmail">Email</label>
-            <input
-              id="loginEmail"
-              type="email"
-              value={email}
-              onChange={(e) => setEmail(e.target.value)}
-              placeholder="admin@wmsu.edu.ph"
-              required
-            />
-          </div>
-
-          <div className="login-field">
-            <div className="login-field-header">
-              <label htmlFor="loginPassword">Password</label>
-              <a
-                href="#forgot-password"
-                className="forgot-password-link"
-                onClick={(e) => {
-                  e.preventDefault();
-                  setShowForgotModal(true);
-                }}
-              >
-                Forgot password?
-              </a>
-            </div>
-            <input
-              id="loginPassword"
-              type="password"
-              value={password}
-              onChange={(e) => setPassword(e.target.value)}
-              placeholder="••••••••"
-              required
-            />
-          </div>
-
-          <button
-            type="submit"
-            className="btn btnDark login-btn"
-            disabled={submitting}
-          >
-            {submitting ? 'Signing In...' : 'Sign In'}
-          </button>
-        </form>
+    <div className="login-page" style={{ minHeight: '100vh' }}>
+      <div className="login-title">
+        <PaskilLogo tagline={false} className="login-brand" />
+        <h1>
+          Make campus
+          <br />
+          <em>impossible to miss.</em>
+        </h1>
+        <p>One control room for every screen, story, and student moment.</p>
       </div>
 
-      {showForgotModal && (
-        <div
-          className="modalBackdrop"
-          role="dialog"
-          aria-modal="true"
-          onClick={() => setShowForgotModal(false)}
-        >
-          <div className="modalContent" onClick={(e) => e.stopPropagation()}>
-            <div className="modalHeader">
-              <div>
-                <p className="labelSmall">Security & Account Recovery</p>
-                <h2>Password Reset Policy</h2>
-              </div>
-              <button
-                type="button"
-                className="modalClose"
-                onClick={() => setShowForgotModal(false)}
-                aria-label="Close dialog"
-              >
-                ✕
-              </button>
-            </div>
-
-            <div style={{ fontSize: '13px', lineHeight: '1.6', color: '#222', marginBottom: '20px' }}>
-              <p style={{ marginBottom: '12px' }}>
-                For physical security and broadcast integrity across campus digital displays, administrator accounts are centrally provisioned and managed by the university.
-              </p>
-              <div
-                style={{
-                  background: '#f9f9f9',
-                  border: '1px solid #000000',
-                  padding: '12px 14px',
-                  marginBottom: '14px',
-                }}
-              >
-                <p style={{ margin: 0, fontWeight: 'bold', color: '#000' }}>
-                  Management Information Systems (MIS) Office
-                </p>
-                <p style={{ margin: '4px 0 0', color: '#444' }}>
-                  Email: <span style={{ fontWeight: '600' }}>mis@wmsu.edu.ph</span>
-                </p>
-                <p style={{ margin: '2px 0 0', color: '#444' }}>
-                  Location: WMSU Computer Center Building, 2nd Floor
-                </p>
-              </div>
-              <p style={{ margin: 0, fontSize: '12px', color: '#666' }}>
-                Please coordinate with your department ICT coordinator or visit the MIS Office with your faculty/staff identification to have your credentials re-issued.
-              </p>
-            </div>
-
-            <div className="modalActions" style={{ display: 'flex', justifyContent: 'flex-end' }}>
-              <button
-                type="button"
-                className="btn btnDark"
-                onClick={() => setShowForgotModal(false)}
-              >
-                Understood
-              </button>
-            </div>
-          </div>
+      <form className="sketch-box login-box" onSubmit={mode === 'login' ? handleLogin : handleRegister}>
+        <div className="login-box-heading">
+          <span>{mode === 'login' ? 'SECURE ACCESS' : 'ADMIN REGISTRATION'}</span>
+          <strong>{mode === 'login' ? '01' : '02'}</strong>
         </div>
-      )}
+        <h2>{mode === 'login' ? 'Welcome back' : 'Request access'}</h2>
+
+        <div className="auth-mode-tabs" role="tablist" aria-label="Authentication mode">
+          <button
+            type="button"
+            role="tab"
+            aria-selected={mode === 'login'}
+            className={mode === 'login' ? 'active' : ''}
+            onClick={() => {
+              setMode('login');
+              setError('');
+              setSuccessMsg('');
+            }}
+          >
+            Sign In
+          </button>
+          <button
+            type="button"
+            role="tab"
+            aria-selected={mode === 'signup'}
+            className={mode === 'signup' ? 'active' : ''}
+            onClick={() => {
+              setMode('signup');
+              setError('');
+              setSuccessMsg('');
+              setEmail('');
+              setPassword('');
+            }}
+          >
+            Sign Up
+          </button>
+        </div>
+
+        {mode === 'signup' && (
+          <>
+            <div className="composite-name-fields">
+              <label>
+                FIRST NAME
+                <input
+                  className="field"
+                  type="text"
+                  value={firstName}
+                  onChange={(e) => setFirstName(e.target.value)}
+                  placeholder="Juan"
+                  required
+                />
+              </label>
+              <label>
+                MIDDLE NAME
+                <input
+                  className="field"
+                  type="text"
+                  value={middleName}
+                  onChange={(e) => setMiddleName(e.target.value)}
+                  placeholder="Optional"
+                />
+              </label>
+              <label>
+                LAST NAME
+                <input
+                  className="field"
+                  type="text"
+                  value={lastName}
+                  onChange={(e) => setLastName(e.target.value)}
+                  placeholder="Dela Cruz"
+                  required
+                />
+              </label>
+            </div>
+
+            <label>
+              POSITION / ROLE TITLE
+              <input
+                className="field"
+                type="text"
+                value={position}
+                onChange={(e) => setPosition(e.target.value)}
+                placeholder="e.g. College PIO / Staff"
+              />
+            </label>
+          </>
+        )}
+
+        <label>
+          CAMPUS EMAIL
+          <input
+            className="field"
+            type="email"
+            value={email}
+            onChange={(e) => setEmail(e.target.value)}
+            placeholder="name@wmsu.edu.ph"
+            required
+          />
+        </label>
+
+        <label>
+          PASSWORD
+          <input
+            className="field"
+            type="password"
+            value={password}
+            onChange={(e) => setPassword(e.target.value)}
+            placeholder={mode === 'signup' ? 'Minimum 6 characters' : 'Enter your password'}
+            required
+          />
+        </label>
+
+        {successMsg && (
+          <div className="pairing-success" role="status" style={{ gridTemplateColumns: '1fr', marginBottom: 12 }}>
+            <strong>Request Submitted</strong>
+            <span>{successMsg}</span>
+          </div>
+        )}
+
+        <div
+          className="error-placeholder"
+          role={error ? 'alert' : undefined}
+          style={error ? { color: '#b91c1c', borderColor: '#b91c1c', background: '#fef2f2' } : undefined}
+        >
+          {error || (mode === 'login' ? 'Authorized administrators only' : 'Lead Admin approval required before login')}
+        </div>
+
+        <button type="submit" className="wire-button dark" disabled={submitting}>
+          {submitting
+            ? mode === 'login' ? 'Entering control room...' : 'Submitting request...'
+            : mode === 'login' ? 'Enter control room' : 'Submit sign up request'}{' '}
+          <span>→</span>
+        </button>
+      </form>
+
+      <span className="corner-note">CAMPUS DIGITAL SIGNAGE CONTROL ROOM</span>
     </div>
   );
 }

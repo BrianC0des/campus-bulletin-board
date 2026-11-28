@@ -1,48 +1,61 @@
 import React from 'react';
-import { getImageUrl } from '../../utils/imageUrl.js';
+import TemplateRenderer, { ScaledStage } from './templates/TemplateRenderer.jsx';
 
-export default function AnnouncementPreview({ title, body, imageUrl, image_url, onClose }) {
-  const activeImage = imageUrl || image_url;
-  const hasContent = Boolean(title?.trim() || body?.trim() || activeImage);
-
-  const currentTime = new Date().toLocaleTimeString('en-PH', {
-    timeZone: 'Asia/Manila',
-    hour: '2-digit',
-    minute: '2-digit',
-  });
+export default function AnnouncementPreview({
+  announcement,
+  title,
+  body,
+  imageUrl,
+  images,
+  onClose,
+}) {
+  // Back-compat: callers may still pass loose title/body/images props.
+  const activeImages = images?.length ? images : imageUrl ? [imageUrl] : [];
+  const resolved = announcement || {
+    title: title || 'CAMPUS ANNOUNCEMENT',
+    body: body || '',
+    image_urls: activeImages,
+  };
 
   return (
-    <div className="preview-modal-overlay" onClick={onClose}>
-      <div className="preview-modal-content" onClick={(e) => e.stopPropagation()}>
-        <div className="preview-modal-bar">
-          <span>Campus Signage Preview</span>
-          {onClose && (
-            <button type="button" className="btn btn-sm btn-secondary" onClick={onClose}>
-              Close
-            </button>
-          )}
+    <div>
+      <div className="page-heading">
+        <div>
+          <div className="eyebrow">CONTROL ROOM / CONTENT</div>
+          <h2>Content Preview</h2>
         </div>
+        <button type="button" className="wire-button" onClick={onClose}>
+          Back
+        </button>
+      </div>
 
-        <div className="preview-modal-body">
-          {!hasContent ? (
-            <p className="empty-text">Type in the form to see live preview...</p>
-          ) : (
-            <>
-              {activeImage && (
-                <div className="preview-image-wrap">
-                  <img src={getImageUrl(activeImage)} alt="Announcement preview" />
-                </div>
-              )}
-              {title?.trim() && <h2 className="preview-title">{title}</h2>}
-              {body?.trim() && <p className="preview-body">{body}</p>}
-            </>
-          )}
-        </div>
+      <div
+        className="screen-frame screen-frame-large"
+        style={{
+          width: 'min(100%, calc((100vh - 220px) * 16 / 9))',
+          minWidth: 320,
+          margin: '0 auto',
+          overflow: 'hidden',
+        }}
+      >
+        <ScaledStage orientation="landscape" fit="contain">
+          <TemplateRenderer
+            announcement={resolved}
+            orientation="landscape"
+            displayName="PREVIEW"
+            itemLabel="01 / 01"
+          />
+        </ScaledStage>
+      </div>
 
-        <div className="preview-modal-footer">
-          <span>{currentTime} • Philippine Standard Time</span>
-          <span>1080p Digital Signage</span>
-        </div>
+      <div className="preview-bottom">
+        <button type="button" className="wire-button" onClick={onClose}>
+          Back
+        </button>
+        <span>Full-screen responsive display preview</span>
+        <button type="button" className="wire-button dark" onClick={onClose}>
+          Done previewing
+        </button>
       </div>
     </div>
   );
